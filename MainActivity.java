@@ -11,15 +11,21 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.WakeLockOptions;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.debug.Debug;
 
 import android.view.KeyEvent;
 
+import com.badlogic.gdx.math.Vector2;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 
-public class MainActivity extends BaseGameActivity {
+public class MainActivity extends BaseGameActivity implements IOnSceneTouchListener {
 
 	//---------------------------------------------
     // VARIABLES
@@ -95,4 +101,21 @@ public class MainActivity extends BaseGameActivity {
 	    return false; 
 	}
 
+	@Override
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+		switch(pSceneTouchEvent.getAction()) {
+		case TouchEvent.ACTION_DOWN:
+			Debug.d("Activity DOWN");
+			return true;
+		case TouchEvent.ACTION_MOVE:
+			Debug.d("Activity MOVE");
+			ResourcesManager.getInstance().touching = false;
+			return true;
+		case TouchEvent.ACTION_UP:
+			Debug.d("Activity UP");
+			ResourcesManager.getInstance().touching = false;
+			return true;
+		}
+		return false;
+	}
 }

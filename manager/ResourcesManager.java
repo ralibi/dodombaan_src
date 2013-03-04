@@ -30,6 +30,8 @@ public class ResourcesManager {
     public MainActivity activity;
     public Camera camera;
     public VertexBufferObjectManager vbom;
+    public float screenRatio;
+	public boolean touching = false;
     
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
@@ -365,6 +367,7 @@ public class ResourcesManager {
         getInstance().activity = activity;
         getInstance().camera = camera;
         getInstance().vbom = vbom;
+        getInstance().screenRatio = getInstance().camera.getSurfaceWidth() / getInstance().camera.getWidth();     
     }
     
     //---------------------------------------------

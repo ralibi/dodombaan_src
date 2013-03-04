@@ -7,6 +7,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import android.app.Activity;
 
+import com.ralibi.dodombaan.MainActivity;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -32,6 +33,7 @@ public abstract class BaseScene extends Scene {
         this.activity = resourcesManager.activity;
         this.vbom = resourcesManager.vbom;
         this.camera = resourcesManager.camera;
+        this.setOnSceneTouchListener(ResourcesManager.getInstance().activity);
         createScene();
     }
     
