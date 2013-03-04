@@ -66,8 +66,7 @@ public class SettingsScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public SceneType getSceneType() {
-		// TODO Auto-generated method stub
-		return null;
+		return SceneType.SCENE_SETTINGS;
 	}
 
 	@Override

@@ -8,8 +8,10 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.util.GLState;
+import org.andengine.util.debug.Debug;
 
 import com.ralibi.dodombaan.base.BaseScene;
+import com.ralibi.dodombaan.manager.GameDataManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -27,6 +29,8 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	
 	@Override
 	public void createScene() {
+		Debug.d("Player 1: " + GameDataManager.getInstance().p1SheepIndex);
+		Debug.d("Player 2: " + GameDataManager.getInstance().p2SheepIndex);
 		createBackground();
 		createMenuChildScene();
 		createHUD();

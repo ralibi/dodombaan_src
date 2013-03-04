@@ -74,8 +74,7 @@ public class MatchOverScene extends BaseScene implements IOnMenuItemClickListene
 
 	@Override
 	public SceneType getSceneType() {
-		// TODO Auto-generated method stub
-		return null;
+		return SceneType.SCENE_MATCH_OVER;
 	}
 
 	@Override

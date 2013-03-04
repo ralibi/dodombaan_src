@@ -1,9 +1,13 @@
 package com.ralibi.dodombaan.component;
-import org.andengine.entity.IEntity;
+
+import java.util.List;
+
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
 
-import com.badlogic.gdx.math.Vector2;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 
 import android.view.GestureDetector;
@@ -13,15 +17,30 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 
 public class ScrollEntity extends ClippingEntity {
 
-	protected float ratio = ResourcesManager.getInstance().camera.getSurfaceHeight() / ResourcesManager.getInstance().camera.getHeight();
 
-	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
+	//---------------------------------------------
+    // VARIABLES
+    //---------------------------------------------
+	
+	protected float ratio = ResourcesManager.getInstance().camera.getSurfaceHeight() / ResourcesManager.getInstance().camera.getHeight();
+	private float mTouchX = 0, mTouchOffsetX = 0;
+	// private float mTouchY = 0, mTouchOffsetY = 0;
+	private int size = 0;
+	private int itemWidth = 0;
+	private int itemHeight = 0;
+	
 	private GestureDetector mDetector;
 	private ScrollPanel scrollPanel;
+	
 
-	public ScrollEntity(float x, float y, int width, int height) {
+	//---------------------------------------------
+    // CONSTRUCTOR
+    //---------------------------------------------
+
+	public ScrollEntity(float x, float y, int width, int height, ScrollPanel pScrollPanel) {
 		super(x, y, width, height);
-
+		setScrollPanel(pScrollPanel);
+		
 		ResourcesManager.getInstance().activity.runOnUiThread(new Runnable() {
 
 			@SuppressWarnings("deprecation")
@@ -32,14 +51,14 @@ public class ScrollEntity extends ClippingEntity {
 						float newVelocityX = 0;
 						if(velocityX > 2000) newVelocityX = 2000;
 						if(velocityX < -2000) newVelocityX = -2000;
-						scrollPanel.mPhysicsHandler.setVelocityX(newVelocityX / ratio);
+						scrollPanel.getmPhysicsHandler().setVelocityX(newVelocityX / ratio);
 						if(velocityX > 0){
-							scrollPanel.isMovingRight = true;
-							scrollPanel.mPhysicsHandler.setAccelerationX(-2000);
+							scrollPanel.setMovingRight(true);
+							scrollPanel.getmPhysicsHandler().setAccelerationX(-2000);
 						}
 						else{
-							scrollPanel.isMovingRight = false;
-							scrollPanel.mPhysicsHandler.setAccelerationX(2000);
+							scrollPanel.setMovingRight(false);
+							scrollPanel.getmPhysicsHandler().setAccelerationX(2000);
 						}
 						Debug.d("fliiiing");
 						return true;
@@ -51,10 +70,42 @@ public class ScrollEntity extends ClippingEntity {
 		//this.mDetector = new GestureDetector(new SimpleOnGestureListener());
 	}
 
+
+
+	//---------------------------------------------
+    // GETTERS SETTERS
+    //---------------------------------------------
+	
+	public ScrollPanel getScrollPanel() {
+		return scrollPanel;
+	}
+
+	public void setScrollPanel(ScrollPanel scrollPanel) {
+		this.scrollPanel = scrollPanel;
+	}
+	
+	public int getSelectedMenuIndex() {
+		return size + Math.round((getScrollPanel().getX() - getWidth() / 2) / itemWidth);
+	}
+	
+	
+	
+	//---------------------------------------------
+    // METHODS
+    //---------------------------------------------
+	public void createMenus() {
+		
+	}
+	
+	
+	
+	//---------------------------------------------
+    // OVERRIDES
+    //---------------------------------------------
+	
 	@Override
 	public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 
-		scrollPanel = (ScrollPanel) this.getChildByIndex(0);
 
 		this.mDetector.onTouchEvent(pSceneTouchEvent.getMotionEvent());
 
@@ -62,59 +113,63 @@ public class ScrollEntity extends ClippingEntity {
 		
 		switch(pSceneTouchEvent.getAction()){
 		case TouchEvent.ACTION_MOVE:{
-			ResourcesManager.getInstance().touching = true;
+			scrollPanel.setTouching(true);
 			float newX = pSceneTouchEvent.getMotionEvent().getX();
-			float newY = pSceneTouchEvent.getMotionEvent().getY();
+			// float newY = pSceneTouchEvent.getMotionEvent().getY();
 
 			mTouchOffsetX = (newX - mTouchX) / ratio;
-			mTouchOffsetY = -(newY - mTouchY) / ratio;
-
-
-			Debug.d("mTouchX" + mTouchX);
-			Debug.d("mTouchY: " + mTouchY);
-			Debug.d("newX: " + newX);
-			Debug.d("newY: " + newY);
+			//mTouchOffsetY = -(newY - mTouchY) / ratio;
 
 			mTouchX = newX;
-			mTouchY = newY;
-
+			// mTouchY = newY;
 
 			float x = scrollPanel.getX() + mTouchOffsetX;
 			// float y = contentEntity.getY() + mTouchOffsetY;
 
-
-			if(x > 0 + 200){
-				x = 0 + 200;
+			if(x > 0 + itemWidth){
+				x = 0 + itemWidth;
 			}
-			else if(x < -200 * 5){
-				x = -200 * 5;
+			else if(x < -itemWidth * size){
+				x = -itemWidth * size;
 			}
 
 			scrollPanel.setPosition(x, scrollPanel.getY());
-			return true; // don't forget to break, or return true directly if the event was handled
+			return true;
 		}
 		case TouchEvent.ACTION_DOWN:{
-			ResourcesManager.getInstance().touching = true;
+			scrollPanel.setTouching(true);
 			Debug.d("Scroll down");
-			scrollPanel.mPhysicsHandler.setVelocityX(0);
-			scrollPanel.mPhysicsHandler.setAccelerationX(0);
+			scrollPanel.getmPhysicsHandler().setVelocityX(0);
+			scrollPanel.getmPhysicsHandler().setAccelerationX(0);
 			mTouchX = pSceneTouchEvent.getMotionEvent().getX();
-			mTouchY = pSceneTouchEvent.getMotionEvent().getY();
+			// mTouchY = pSceneTouchEvent.getMotionEvent().getY();
 			return true; 
 		}
 		case TouchEvent.ACTION_UP:{
-			// do stuff when the finger goes up again and ends the touch event (your case)
-			ResourcesManager.getInstance().touching = false;
+			scrollPanel.setTouching(false);
 			return true; 
 		}
 		default:{
-			// none of the above
-			ResourcesManager.getInstance().touching = false;
+			scrollPanel.setTouching(false);
 			return false;
 		}
 		}
+	}
 
 
+
+	public void buildSprite(int textureWidth, int textureHeight, List<ITextureRegion> textureRegions, VertexBufferObjectManager vbom) {
+		size = textureRegions.size();
+		itemWidth = textureWidth;
+		itemHeight = textureHeight;
+		for (int i = 0; i < size; i++) {
+			Sprite sprite = new Sprite(0 + i * itemWidth, itemHeight / 2, textureRegions.get(i), vbom){		
+				public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+					return true;
+				}
+			};
+			scrollPanel.attachChild(sprite);
+		}
 	}
 
 }

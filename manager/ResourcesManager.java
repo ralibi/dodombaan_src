@@ -1,5 +1,8 @@
 package com.ralibi.dodombaan.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.opengl.font.Font;
@@ -31,7 +34,6 @@ public class ResourcesManager {
     public Camera camera;
     public VertexBufferObjectManager vbom;
     public float screenRatio;
-	public boolean touching = false;
     
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
@@ -52,13 +54,8 @@ public class ResourcesManager {
 	public ITextureRegion sheepSelectionBackgroundRegion;
 	public ITextureRegion sheepSelectionNextRegion;
 	public ITextureRegion sheepSelectionBackRegion;
-
-	public ITextureRegion sheepSelectionSheep1Region;
-	public ITextureRegion sheepSelectionSheep2Region;
-	public ITextureRegion sheepSelectionSheep3Region;
-	public ITextureRegion sheepSelectionSheep4Region;
-	public ITextureRegion sheepSelectionSheep5Region;
-	public ITextureRegion sheepSelectionSheep6Region;
+	
+	public List<ITextureRegion> sheepSelectionSheepRegions = new ArrayList<ITextureRegion>();;
 	
 	private BuildableBitmapTextureAtlas sheepSelectionTextureAtlas;
 
@@ -250,12 +247,9 @@ public class ResourcesManager {
         sheepSelectionNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/next.png");
         sheepSelectionBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/back.png");
 
-        sheepSelectionSheep1Region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_1.png");
-        sheepSelectionSheep2Region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_2.png");
-        sheepSelectionSheep3Region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_3.png");
-        sheepSelectionSheep4Region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_4.png");
-        sheepSelectionSheep5Region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_5.png");
-        sheepSelectionSheep6Region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_6.png");
+        for (int i = 0; i < 6; i++) {
+			sheepSelectionSheepRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_" + (i + 1) + ".png"));
+		}
         
         try 
         {

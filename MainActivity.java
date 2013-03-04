@@ -13,17 +13,16 @@ import org.andengine.engine.options.WakeLockOptions;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.extension.physics.box2d.util.Vector2Pool;
-import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.debug.Debug;
 
 import android.view.KeyEvent;
 
-import com.badlogic.gdx.math.Vector2;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager;
+import com.ralibi.dodombaan.manager.SceneManager.SceneType;
+import com.ralibi.dodombaan.scene.SheepSelectionScene;
 
 public class MainActivity extends BaseGameActivity implements IOnSceneTouchListener {
 
@@ -32,7 +31,7 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
     //---------------------------------------------
 	
 	private Camera camera;
-	private ResourcesManager resourcesManager;
+	// private ResourcesManager resourcesManager;
 	
 	@Override
 	public Engine onCreateEngine(EngineOptions pEngineOptions) 
@@ -55,7 +54,7 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 			throws IOException {
 		
 		ResourcesManager.prepareManager(mEngine, this, camera, getVertexBufferObjectManager());
-	    resourcesManager = ResourcesManager.getInstance();
+	    // resourcesManager = ResourcesManager.getInstance();
 	    pOnCreateResourcesCallback.onCreateResourcesFinished();
 	    
 	}
@@ -109,11 +108,19 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 			return true;
 		case TouchEvent.ACTION_MOVE:
 			Debug.d("Activity MOVE");
-			ResourcesManager.getInstance().touching = false;
+
+			if(SceneManager.getInstance().getCurrentScene().getSceneType() == SceneType.SCENE_SHEEP_SELECTION){
+				Debug.d("Sheep selection");
+				((SheepSelectionScene)SceneManager.getInstance().getCurrentScene()).untouchScrollEntities();
+			}
+			
 			return true;
 		case TouchEvent.ACTION_UP:
 			Debug.d("Activity UP");
-			ResourcesManager.getInstance().touching = false;
+			if(SceneManager.getInstance().getCurrentScene().getSceneType() == SceneType.SCENE_SHEEP_SELECTION){
+				Debug.d("Sheep selection");
+				((SheepSelectionScene)SceneManager.getInstance().getCurrentScene()).untouchScrollEntities();
+			}
 			return true;
 		}
 		return false;
