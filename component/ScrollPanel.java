@@ -5,12 +5,7 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
-import org.andengine.entity.scene.menu.item.SpriteMenuItem;
-import org.andengine.entity.sprite.Sprite;
 
-import android.location.Address;
-
-import com.ralibi.dodombaan.manager.ResourcesManager;
 
 public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 
@@ -22,7 +17,9 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 	private boolean movingRight = false;
 	private boolean touching = false;
 
-	private MenuScene menuChildScene;
+	private int itemCount = 0;
+	private int itemWidth = 0;
+	private int itemHeight = 0;
 
 	//---------------------------------------------
     // CONSTRUCTOR
@@ -66,6 +63,30 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 	public void setTouching(boolean touching) {
 		this.touching = touching;
 	}
+	
+	public int getItemCount() {
+		return itemCount;
+	}
+
+	public void setItemCount(int itemCount) {
+		this.itemCount = itemCount;
+	}
+
+	public int getItemWidth() {
+		return itemWidth;
+	}
+
+	public void setItemWidth(int itemWidth) {
+		this.itemWidth = itemWidth;
+	}
+
+	public int getItemHeight() {
+		return itemHeight;
+	}
+
+	public void setItemHeight(int itemHeight) {
+		this.itemHeight = itemHeight;
+	}
 
 
 	//---------------------------------------------
@@ -89,6 +110,8 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 		super.onManagedUpdate(pSecondsElapsed);
 		
 		if(!this.touching){
+			float paddingLeft = (getParent().getWidth()-itemWidth)/2;
+			
 			if(movingRight && this.mPhysicsHandler.getVelocityX() < 0){
 				this.mPhysicsHandler.setAccelerationX(0);
 				this.mPhysicsHandler.setVelocityX(0);
@@ -102,23 +125,23 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 				this.mPhysicsHandler.setAccelerationX(0);
 				this.mPhysicsHandler.setVelocityX(0);
 				
-				int the_mod = (int)(this.getX() - 100) % 200;
+				int the_mod = (int)(this.getX() - itemWidth/2) % itemWidth;
 				if(the_mod != 0){
-					if(the_mod < -100){
+					if(the_mod < -itemWidth/2){
 						// Floor
-						this.setX((int)Math.floor((this.getX() - 100.0) / 200.0) * 200 + 100 + 25);
+						this.setX((int)Math.floor((this.getX() - itemWidth/2) / itemWidth) * itemWidth + itemWidth/2 + paddingLeft);
 					}
 					else{
-						this.setX((int)Math.ceil((this.getX() - 100.0) / 200.0) * 200 + 100 + 25);
+						this.setX((int)Math.ceil((this.getX() - itemWidth/2) / itemWidth) * itemWidth + itemWidth/2 + paddingLeft);
 					}
 				}
 			}
 			
-			if(this.getX() > 0 + 100 + 25){
-				this.setX(0 + 100 + 25);
+			if(this.getX() > 0 + itemWidth/2 + paddingLeft){
+				this.setX(0 + itemWidth/2 + paddingLeft);
 			}
-			else if(this.getX() < -200 * 5 + 100 + 25){
-				this.setX(-200 * 5 + 100 + 25);
+			else if(this.getX() < (-itemWidth * (itemCount-1)) + itemWidth/2 + paddingLeft){
+				this.setX((-itemWidth * (itemCount-1)) + itemWidth/2 + paddingLeft);
 			}
 		}
 	}

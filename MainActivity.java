@@ -107,20 +107,10 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 			Debug.d("Activity DOWN");
 			return true;
 		case TouchEvent.ACTION_MOVE:
-			Debug.d("Activity MOVE");
-
-			if(SceneManager.getInstance().getCurrentScene().getSceneType() == SceneType.SCENE_SHEEP_SELECTION){
-				Debug.d("Sheep selection");
-				((SheepSelectionScene)SceneManager.getInstance().getCurrentScene()).untouchScrollEntities();
-			}
-			
+			SceneManager.getInstance().getCurrentScene().unTouchScrollMenu();
 			return true;
 		case TouchEvent.ACTION_UP:
-			Debug.d("Activity UP");
-			if(SceneManager.getInstance().getCurrentScene().getSceneType() == SceneType.SCENE_SHEEP_SELECTION){
-				Debug.d("Sheep selection");
-				((SheepSelectionScene)SceneManager.getInstance().getCurrentScene()).untouchScrollEntities();
-			}
+			SceneManager.getInstance().getCurrentScene().unTouchScrollMenu();
 			return true;
 		}
 		return false;

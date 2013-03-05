@@ -31,4 +31,10 @@ public class LoadingScene extends BaseScene {
 		
 	}
 
+	@Override
+	public void unTouchScrollMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

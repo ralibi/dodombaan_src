@@ -90,4 +90,10 @@ public class SettingsScene extends BaseScene implements IOnMenuItemClickListener
 		}
 	}
 
+	@Override
+	public void unTouchScrollMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

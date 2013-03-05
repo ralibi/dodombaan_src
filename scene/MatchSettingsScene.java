@@ -10,6 +10,8 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.util.GLState;
 
 import com.ralibi.dodombaan.base.BaseScene;
+import com.ralibi.dodombaan.component.ScrollMenuEntity;
+import com.ralibi.dodombaan.component.ScrollPanel;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -19,11 +21,23 @@ public class MatchSettingsScene extends BaseScene implements IOnMenuItemClickLis
 	private final int MENU_NEXT = 1;
 	
 	private MenuScene menuChildScene;
+
+	private ScrollMenuEntity scrollEntityArena;
 	
 	@Override
 	public void createScene() {
 		createBackground();
 		createMenuChildScene();
+		createArenaScrollMenu();
+	}
+
+	private void createArenaScrollMenu() {
+		ScrollPanel arenaPanel = new ScrollPanel();
+		scrollEntityArena = new ScrollMenuEntity(400, 240, 720, 240, arenaPanel);
+		scrollEntityArena.buildSprite(600, 240, resourcesManager.matchSettingsArenaRegions, vbom);
+		scrollEntityArena.attachChild(arenaPanel);
+		registerTouchArea(scrollEntityArena);
+		attachChild(scrollEntityArena);
 	}
 
 	private void createBackground() {
@@ -88,6 +102,11 @@ public class MatchSettingsScene extends BaseScene implements IOnMenuItemClickLis
 		default:
 			return false;
 		}
+	}
+
+	@Override
+	public void unTouchScrollMenu() {
+		this.scrollEntityArena.getScrollPanel().setTouching(false);
 	}
 
 }

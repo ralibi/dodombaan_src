@@ -15,7 +15,7 @@ import android.view.MotionEvent;
 import android.view.GestureDetector.SimpleOnGestureListener;
 
 
-public class ScrollEntity extends ClippingEntity {
+public class ScrollMenuEntity extends ClippingEntity {
 
 
 	//---------------------------------------------
@@ -25,9 +25,6 @@ public class ScrollEntity extends ClippingEntity {
 	protected float ratio = ResourcesManager.getInstance().camera.getSurfaceHeight() / ResourcesManager.getInstance().camera.getHeight();
 	private float mTouchX = 0, mTouchOffsetX = 0;
 	// private float mTouchY = 0, mTouchOffsetY = 0;
-	private int size = 0;
-	private int itemWidth = 0;
-	private int itemHeight = 0;
 	
 	private GestureDetector mDetector;
 	private ScrollPanel scrollPanel;
@@ -37,36 +34,9 @@ public class ScrollEntity extends ClippingEntity {
     // CONSTRUCTOR
     //---------------------------------------------
 
-	public ScrollEntity(float x, float y, int width, int height, ScrollPanel pScrollPanel) {
+	public ScrollMenuEntity(float x, float y, int width, int height, ScrollPanel pScrollPanel) {
 		super(x, y, width, height);
 		setScrollPanel(pScrollPanel);
-		
-		ResourcesManager.getInstance().activity.runOnUiThread(new Runnable() {
-
-			@SuppressWarnings("deprecation")
-			public void run() {
-				mDetector = new GestureDetector(new SimpleOnGestureListener(){
-					public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-					{     
-						float newVelocityX = 0;
-						if(velocityX > 2000) newVelocityX = 2000;
-						if(velocityX < -2000) newVelocityX = -2000;
-						scrollPanel.getmPhysicsHandler().setVelocityX(newVelocityX / ratio);
-						if(velocityX > 0){
-							scrollPanel.setMovingRight(true);
-							scrollPanel.getmPhysicsHandler().setAccelerationX(-2000);
-						}
-						else{
-							scrollPanel.setMovingRight(false);
-							scrollPanel.getmPhysicsHandler().setAccelerationX(2000);
-						}
-						Debug.d("fliiiing");
-						return true;
-					}
-				});
-			}
-		});
-
 		//this.mDetector = new GestureDetector(new SimpleOnGestureListener());
 	}
 
@@ -85,7 +55,7 @@ public class ScrollEntity extends ClippingEntity {
 	}
 	
 	public int getSelectedMenuIndex() {
-		return size + Math.round((getScrollPanel().getX() - getWidth() / 2) / itemWidth);
+		return scrollPanel.getItemCount() + Math.round((getScrollPanel().getX() - getWidth() / 2) / scrollPanel.getItemWidth());
 	}
 	
 	
@@ -93,10 +63,6 @@ public class ScrollEntity extends ClippingEntity {
 	//---------------------------------------------
     // METHODS
     //---------------------------------------------
-	public void createMenus() {
-		
-	}
-	
 	
 	
 	//---------------------------------------------
@@ -125,12 +91,13 @@ public class ScrollEntity extends ClippingEntity {
 
 			float x = scrollPanel.getX() + mTouchOffsetX;
 			// float y = contentEntity.getY() + mTouchOffsetY;
-
-			if(x > 0 + itemWidth){
-				x = 0 + itemWidth;
+			float paddingLeft = (getWidth() - scrollPanel.getItemWidth()) / 2;
+			
+			if(x > 0 + scrollPanel.getItemWidth() + paddingLeft){
+				x = 0 + scrollPanel.getItemWidth() + paddingLeft;
 			}
-			else if(x < -itemWidth * size){
-				x = -itemWidth * size;
+			else if(x < -scrollPanel.getItemWidth() * (scrollPanel.getItemCount()-1) + paddingLeft){
+				x = -scrollPanel.getItemWidth() * (scrollPanel.getItemCount()-1) + paddingLeft;
 			}
 
 			scrollPanel.setPosition(x, scrollPanel.getY());
@@ -159,17 +126,53 @@ public class ScrollEntity extends ClippingEntity {
 
 
 	public void buildSprite(int textureWidth, int textureHeight, List<ITextureRegion> textureRegions, VertexBufferObjectManager vbom) {
-		size = textureRegions.size();
-		itemWidth = textureWidth;
-		itemHeight = textureHeight;
-		for (int i = 0; i < size; i++) {
-			Sprite sprite = new Sprite(0 + i * itemWidth, itemHeight / 2, textureRegions.get(i), vbom){		
+		scrollPanel.setItemCount(textureRegions.size());
+		scrollPanel.setItemWidth(textureWidth);
+		scrollPanel.setItemHeight(textureHeight);
+		for (int i = 0; i < scrollPanel.getItemCount(); i++) {
+			Sprite sprite = new Sprite(0 + i * scrollPanel.getItemWidth(), scrollPanel.getItemHeight() / 2, textureRegions.get(i), vbom){		
 				public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 					return true;
 				}
 			};
 			scrollPanel.attachChild(sprite);
 		}
+		
+		
+		createNewThread();
+	}
+
+
+
+	private void createNewThread() {
+
+		ResourcesManager.getInstance().activity.runOnUiThread(new Runnable() {
+
+			@SuppressWarnings("deprecation")
+			public void run() {
+				mDetector = new GestureDetector(new SimpleOnGestureListener(){
+					public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+					{     
+						float newVelocityX = 0;
+						float vValue = scrollPanel.getItemWidth() * 10;
+						if(velocityX > vValue) newVelocityX = vValue;
+						if(velocityX < -vValue) newVelocityX = -vValue;
+						scrollPanel.getmPhysicsHandler().setVelocityX(newVelocityX / ratio);
+						if(velocityX > 0){
+							scrollPanel.setMovingRight(true);
+							scrollPanel.getmPhysicsHandler().setAccelerationX(-vValue);
+						}
+						else{
+							scrollPanel.setMovingRight(false);
+							scrollPanel.getmPhysicsHandler().setAccelerationX(vValue);
+						}
+						Debug.d("fliiiing");
+						return true;
+					}
+				});
+			}
+		});
+		
 	}
 
 }

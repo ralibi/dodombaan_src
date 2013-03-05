@@ -12,7 +12,7 @@ import org.andengine.util.debug.Debug;
 
 
 import com.ralibi.dodombaan.base.BaseScene;
-import com.ralibi.dodombaan.component.ScrollEntity;
+import com.ralibi.dodombaan.component.ScrollMenuEntity;
 import com.ralibi.dodombaan.component.ScrollPanel;
 import com.ralibi.dodombaan.manager.GameDataManager;
 import com.ralibi.dodombaan.manager.SceneManager;
@@ -30,8 +30,8 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 	
 	private MenuScene menuChildScene;
 
-	private ScrollEntity scrollEntityP1;
-	private ScrollEntity scrollEntityP2;
+	private ScrollMenuEntity scrollMenuSheepP1;
+	private ScrollMenuEntity scrollMenuSheepP2;
 
 	
 	
@@ -39,25 +39,25 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 	public void createScene() {
 		createBackground();
 		createMenuChildScene();
-		createScrollEntity();
+		createScrollMenuSheep();
 	}
 
-	private void createScrollEntity() {
+	private void createScrollMenuSheep() {
 
 		ScrollPanel sheepSelectP1 = new ScrollPanel();
-		scrollEntityP1 = new ScrollEntity(200, 240, 250, 200, sheepSelectP1);
-		scrollEntityP1.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, vbom);
-		scrollEntityP1.attachChild(sheepSelectP1);
-		registerTouchArea(scrollEntityP1);
-		attachChild(scrollEntityP1);
+		scrollMenuSheepP1 = new ScrollMenuEntity(200, 240, 250, 200, sheepSelectP1);
+		scrollMenuSheepP1.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, vbom);
+		scrollMenuSheepP1.attachChild(sheepSelectP1);
+		registerTouchArea(scrollMenuSheepP1);
+		attachChild(scrollMenuSheepP1);
 		
 
 		ScrollPanel sheepSelectP2 = new ScrollPanel();
-		scrollEntityP2 = new ScrollEntity(600, 240, 250, 200, sheepSelectP2);
-		scrollEntityP2.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, vbom);
-		scrollEntityP2.attachChild(sheepSelectP2);
-		registerTouchArea(scrollEntityP2);
-		attachChild(scrollEntityP2);
+		scrollMenuSheepP2 = new ScrollMenuEntity(600, 240, 250, 200, sheepSelectP2);
+		scrollMenuSheepP2.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, vbom);
+		scrollMenuSheepP2.attachChild(sheepSelectP2);
+		registerTouchArea(scrollMenuSheepP2);
+		attachChild(scrollMenuSheepP2);
 	}
 
 	protected void itemClick(int i) {
@@ -98,15 +98,6 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 	}
 	
 	
-	
-	public void untouchScrollEntities() {
-		if(this.scrollEntityP1 != null && this.scrollEntityP2 != null){
-			this.scrollEntityP1.getScrollPanel().setTouching(false);
-			this.scrollEntityP2.getScrollPanel().setTouching(false);
-		}
-	}
-	
-
 	@Override
 	public void onBackKeyPressed() {
 	    SceneManager.getInstance().loadMenuSceneFromSheepSelection(engine);
@@ -131,13 +122,19 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 			SceneManager.getInstance().loadMenuSceneFromSheepSelection(engine);
 			return true;
 		case MENU_NEXT:
-			GameDataManager.getInstance().p1SheepIndex = scrollEntityP1.getSelectedMenuIndex();
-			GameDataManager.getInstance().p2SheepIndex = scrollEntityP2.getSelectedMenuIndex();
+			GameDataManager.getInstance().p1SheepIndex = scrollMenuSheepP1.getSelectedMenuIndex();
+			GameDataManager.getInstance().p2SheepIndex = scrollMenuSheepP2.getSelectedMenuIndex();
 			SceneManager.getInstance().loadMatchSettingsSceneFromSheepSelection(engine);
 			return true;
 		default:
 			return false;
 		}
+	}
+
+	@Override
+	public void unTouchScrollMenu() {
+		this.scrollMenuSheepP1.getScrollPanel().setTouching(false);
+		this.scrollMenuSheepP2.getScrollPanel().setTouching(false);
 	}
 	
 

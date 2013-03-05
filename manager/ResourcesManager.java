@@ -55,7 +55,7 @@ public class ResourcesManager {
 	public ITextureRegion sheepSelectionNextRegion;
 	public ITextureRegion sheepSelectionBackRegion;
 	
-	public List<ITextureRegion> sheepSelectionSheepRegions = new ArrayList<ITextureRegion>();;
+	public List<ITextureRegion> sheepSelectionSheepRegions = new ArrayList<ITextureRegion>();
 	
 	private BuildableBitmapTextureAtlas sheepSelectionTextureAtlas;
 
@@ -64,6 +64,9 @@ public class ResourcesManager {
 	public ITextureRegion matchSettingsBackgroundRegion;
 	public ITextureRegion matchSettingsNextRegion;
 	public ITextureRegion matchSettingsBackRegion;
+	
+	public List<ITextureRegion> matchSettingsArenaRegions = new ArrayList<ITextureRegion>();
+	
 	private BuildableBitmapTextureAtlas matchSettingsTextureAtlas;
 
 	// GamePlayScene
@@ -210,11 +213,15 @@ public class ResourcesManager {
     
     private void loadMatchSettingsGraphics() {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        matchSettingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
+        matchSettingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
         
         matchSettingsBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "match_settings/match_settings_background.png");
         matchSettingsNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/next.png");
         matchSettingsBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/back.png");
+
+        for (int i = 0; i < 4; i++) {
+        	matchSettingsArenaRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "match_settings/arenas/arena (" + (i + 1) + ").png"));
+		}
         
         try 
         {
@@ -248,7 +255,7 @@ public class ResourcesManager {
         sheepSelectionBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/back.png");
 
         for (int i = 0; i < 6; i++) {
-			sheepSelectionSheepRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep_" + (i + 1) + ".png"));
+			sheepSelectionSheepRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep (" + (i + 1) + ").png"));
 		}
         
         try 

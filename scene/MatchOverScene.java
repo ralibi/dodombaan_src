@@ -103,4 +103,10 @@ public class MatchOverScene extends BaseScene implements IOnMenuItemClickListene
 		}
 	}
 
+	@Override
+	public void unTouchScrollMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

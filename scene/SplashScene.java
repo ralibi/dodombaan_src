@@ -48,4 +48,10 @@ public class SplashScene extends BaseScene {
 		this.dispose();
 	}
 
+	@Override
+	public void unTouchScrollMenu() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

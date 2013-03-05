@@ -43,6 +43,8 @@ public abstract class BaseScene extends Scene {
     public abstract void createScene();
     
     public abstract void onBackKeyPressed();
+
+    public abstract void unTouchScrollMenu();
     
     public abstract SceneType getSceneType();
     
