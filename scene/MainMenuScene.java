@@ -21,7 +21,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	private final int MENU_MULTIPLAYER_SINGLE_DEVICE = 0;
 	private final int MENU_MULTIPLAYER_OVER_BLUETOOTH = 1;
-	private final int MENU_OPTIONS = 2;
+	private final int MENU_SETTINGS = 2;
+	private final int MENU_EXIT = 3;
 	
 	//---------------------------------------------
     // VARIABLES
@@ -31,7 +32,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	@Override
 	public void createScene() {
 		createBackground();
-		createMenuChildScene();
+		createMenuChildScene();	
 	}
 
 	private void createBackground() {
@@ -68,18 +69,21 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	    final IMenuItem multiplayerSingleDeviceItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MULTIPLAYER_SINGLE_DEVICE, resourcesManager.multiplayerSingleDeviceRegion, vbom), 1.2f, 1);
 	    final IMenuItem multiplayerOverBluetoothItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_MULTIPLAYER_OVER_BLUETOOTH, resourcesManager.multiplayerOverBluetoothRegion, vbom), 1.2f, 1);
-	    final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, resourcesManager.settingsRegion, vbom), 1.2f, 1);
+	    final IMenuItem settingsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SETTINGS, resourcesManager.settingsRegion, vbom), 1.2f, 1);
+	    final IMenuItem exitMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_EXIT, resourcesManager.exitRegion, vbom), 1.2f, 1);
 	    
 	    menuChildScene.addMenuItem(multiplayerSingleDeviceItem);
 	    menuChildScene.addMenuItem(multiplayerOverBluetoothItem);
-	    menuChildScene.addMenuItem(optionsMenuItem);
+	    menuChildScene.addMenuItem(settingsMenuItem);
+	    menuChildScene.addMenuItem(exitMenuItem);
 	    
 	    menuChildScene.buildAnimations();
 	    menuChildScene.setBackgroundEnabled(false);
 
-	    multiplayerSingleDeviceItem.setPosition(0, 0);
-	    multiplayerOverBluetoothItem.setPosition(0, -80);
-	    optionsMenuItem.setPosition(0, -160);
+	    multiplayerSingleDeviceItem.setPosition(0, 80);
+	    multiplayerOverBluetoothItem.setPosition(0, 0);
+	    settingsMenuItem.setPosition(0, -80);
+	    exitMenuItem.setPosition(0, -160);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
 	    
@@ -95,8 +99,11 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			return true;
 		case MENU_MULTIPLAYER_OVER_BLUETOOTH:
 			return true;
-		case MENU_OPTIONS:
+		case MENU_SETTINGS:
 			SceneManager.getInstance().loadSettingsScene(engine);
+			return true;
+		case MENU_EXIT:
+			System.exit(0);
 			return true;
 		default:
 			return false;

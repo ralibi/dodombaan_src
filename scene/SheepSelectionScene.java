@@ -46,17 +46,19 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 
 		ScrollPanel sheepSelectP1 = new ScrollPanel();
 		scrollMenuSheepP1 = new ScrollMenuEntity(200, 240, 250, 200, sheepSelectP1);
-		scrollMenuSheepP1.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, vbom);
+		scrollMenuSheepP1.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
 		scrollMenuSheepP1.attachChild(sheepSelectP1);
 		registerTouchArea(scrollMenuSheepP1);
+		registerTouchArea(scrollMenuSheepP1.getScrollPanel().getChildByIndex(0));
 		attachChild(scrollMenuSheepP1);
 		
 
 		ScrollPanel sheepSelectP2 = new ScrollPanel();
 		scrollMenuSheepP2 = new ScrollMenuEntity(600, 240, 250, 200, sheepSelectP2);
-		scrollMenuSheepP2.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, vbom);
+		scrollMenuSheepP2.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
 		scrollMenuSheepP2.attachChild(sheepSelectP2);
 		registerTouchArea(scrollMenuSheepP2);
+		registerTouchArea(scrollMenuSheepP2.getScrollPanel().getChildByIndex(0));
 		attachChild(scrollMenuSheepP2);
 	}
 

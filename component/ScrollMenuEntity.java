@@ -2,6 +2,7 @@ package com.ralibi.dodombaan.component;
 
 import java.util.List;
 
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -71,12 +72,8 @@ public class ScrollMenuEntity extends ClippingEntity {
 	
 	@Override
 	public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-
-
 		this.mDetector.onTouchEvent(pSceneTouchEvent.getMotionEvent());
 
-		Debug.d("Touch screen");
-		
 		switch(pSceneTouchEvent.getAction()){
 		case TouchEvent.ACTION_MOVE:{
 			scrollPanel.setTouching(true);
@@ -110,7 +107,7 @@ public class ScrollMenuEntity extends ClippingEntity {
 			scrollPanel.getmPhysicsHandler().setAccelerationX(0);
 			mTouchX = pSceneTouchEvent.getMotionEvent().getX();
 			// mTouchY = pSceneTouchEvent.getMotionEvent().getY();
-			return true; 
+			return false; 
 		}
 		case TouchEvent.ACTION_UP:{
 			scrollPanel.setTouching(false);
@@ -118,27 +115,27 @@ public class ScrollMenuEntity extends ClippingEntity {
 		}
 		default:{
 			scrollPanel.setTouching(false);
-			return false;
+			return true;
 		}
 		}
 	}
 
 
 
-	public void buildSprite(int textureWidth, int textureHeight, List<ITextureRegion> textureRegions, VertexBufferObjectManager vbom) {
+	public void buildSprite(int textureWidth, int textureHeight, List<ITextureRegion> textureRegions, Scene pScene, VertexBufferObjectManager vbom) {
 		scrollPanel.setItemCount(textureRegions.size());
 		scrollPanel.setItemWidth(textureWidth);
 		scrollPanel.setItemHeight(textureHeight);
 		for (int i = 0; i < scrollPanel.getItemCount(); i++) {
 			Sprite sprite = new Sprite(0 + i * scrollPanel.getItemWidth(), scrollPanel.getItemHeight() / 2, textureRegions.get(i), vbom){		
 				public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-					return true;
+					Debug.d("button menu TOUCHED");
+					return false;
 				}
 			};
 			scrollPanel.attachChild(sprite);
+			pScene.registerTouchArea(sprite);
 		}
-		
-		
 		createNewThread();
 	}
 
@@ -166,7 +163,7 @@ public class ScrollMenuEntity extends ClippingEntity {
 							scrollPanel.setMovingRight(false);
 							scrollPanel.getmPhysicsHandler().setAccelerationX(vValue);
 						}
-						Debug.d("fliiiing");
+						// Debug.d("fliiiing");
 						return true;
 					}
 				});

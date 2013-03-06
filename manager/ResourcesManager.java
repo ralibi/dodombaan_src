@@ -48,6 +48,7 @@ public class ResourcesManager {
 	public ITextureRegion multiplayerSingleDeviceRegion;
 	public ITextureRegion multiplayerOverBluetoothRegion;
 	public ITextureRegion settingsRegion;
+	public ITextureRegion exitRegion;
 	private BuildableBitmapTextureAtlas  menuTextureAtlas;
 	
 	// SheepSelectionScene
@@ -113,12 +114,13 @@ public class ResourcesManager {
 
 	private void loadMenuGraphics()
     {
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         menuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-        menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu_background.png");
-        multiplayerSingleDeviceRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "multiplayer_single_device.png");
-        multiplayerOverBluetoothRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "multiplayer_over_bluetooth.png");
-        settingsRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "settings.png");
+        menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/menu_background.png");
+        multiplayerSingleDeviceRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_single_device.png");
+        multiplayerOverBluetoothRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_over_bluetooth.png");
+        settingsRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/settings.png");
+        exitRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "shared/exit.png");
         try 
         {
             this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));

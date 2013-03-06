@@ -21,8 +21,6 @@ import android.view.KeyEvent;
 
 import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager;
-import com.ralibi.dodombaan.manager.SceneManager.SceneType;
-import com.ralibi.dodombaan.scene.SheepSelectionScene;
 
 public class MainActivity extends BaseGameActivity implements IOnSceneTouchListener {
 
