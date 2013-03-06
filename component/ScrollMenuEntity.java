@@ -56,7 +56,7 @@ public class ScrollMenuEntity extends ClippingEntity {
 	}
 	
 	public int getSelectedMenuIndex() {
-		return scrollPanel.getItemCount() + Math.round((getScrollPanel().getX() - getWidth() / 2) / scrollPanel.getItemWidth());
+		return -1 * Math.round((getScrollPanel().getX() - getWidth() / 2) / scrollPanel.getItemWidth());
 	}
 	
 	

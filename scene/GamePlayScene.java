@@ -11,25 +11,21 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
-import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.input.sensor.acceleration.AccelerationData;
 import org.andengine.input.sensor.acceleration.IAccelerationListener;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.debug.Debug;
 
-import android.hardware.SensorManager;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.ralibi.dodombaan.base.BaseScene;
-import com.ralibi.dodombaan.manager.GameDataManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
+import com.ralibi.dodombaan.object.Sheep;
 
 public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener, IAccelerationListener {
 
@@ -39,107 +35,127 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	private final int P1_WIN = 3;
 	private final int P2_WIN = 4;
 	
+	
 	private PhysicsWorld mPhysicsWorld;
 
 	private boolean paused = false;
+
+	private Sheep sheepP1;
+	private Sheep sheepP2;
+	private Sprite arena;
+	private Sprite nailP1;
+	private Sprite nailP2;
 	
 	private Sprite pauseButton;
+	private MenuScene menuChildScene;
+	
 	
 	// private ScrollMenu gamePlayHUD;
 	
-	private MenuScene menuChildScene;
+	
+	
 	
 	@Override
 	public void createScene() {
-		Debug.d("Player 1: " + GameDataManager.getInstance().p1SheepIndex);
-		Debug.d("Player 2: " + GameDataManager.getInstance().p2SheepIndex);
+		Debug.d("Player 1: " + gameDataManager.p1SheepIndex);
+		Debug.d("Player 2: " + gameDataManager.p2SheepIndex);
 		createBackground();
 		createPauseButton();
 		createMenuChildScene();
 		
-		createTestPhysic();
 
+		setTouchAreaBindingOnActionDownEnabled(true);
+
+		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, 0), false);
+		registerUpdateHandler(this.mPhysicsWorld);
+		
+		createWall();
+		createArena();
+		createSheep();
+		createNail();
+		
+		engine.enableAccelerationSensor(activity, this);
 	}
 
-	private void createTestPhysic() {
+	private void createArena() {
+		arena = new Sprite(400, 240, resourcesManager.gamePlayPlayingArenaRegions.get(gameDataManager.arenaIndex), vbom);
+		attachChild(arena);
+	}
 
-		int CAMERA_HEIGHT = 480;
-		int CAMERA_WIDTH = 800;
+	private void createNail() {
+		nailP1 = new Sprite(80, 240, resourcesManager.gamePlayNailRegion, vbom){
+			@Override	
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				sheepP1.moveForward();
+				return false;
+			}
+		};
+		nailP2 = new Sprite(720, 240, resourcesManager.gamePlayNailRegion, vbom){
+			@Override	
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				sheepP2.moveForward();
+				return false;
+			}
+		};
+		FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+		Body bodyNailP1 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP1, BodyType.StaticBody, FIXTURE_DEF);
+		Body bodyNailP2 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP2, BodyType.StaticBody, FIXTURE_DEF);
+		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP1, bodyNailP1, true, true));
+		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP2, bodyNailP2, true, true));
 
-		final Rectangle ground = new Rectangle(CAMERA_WIDTH/2, CAMERA_HEIGHT - 2, CAMERA_WIDTH, 2, vbom);
-		final Rectangle roof = new Rectangle(CAMERA_WIDTH/2, 0, CAMERA_WIDTH, 2, vbom);
-		final Rectangle left = new Rectangle(0, CAMERA_HEIGHT/2, 2, CAMERA_HEIGHT, vbom);
-		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, CAMERA_HEIGHT/2, 2, CAMERA_HEIGHT, vbom);
+		registerTouchArea(nailP1);
+		registerTouchArea(nailP2);
 		
-		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
+		attachChild(nailP1);
+		attachChild(nailP2);
+	}
+
+	private void createSheep() {
+		
+//		registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() {
+//			@Override
+//			public void onTimePassed(final TimerHandler pTimerHandler) {
+//				if (bodyAbdomain != null) {
+//					
+//					applyCenterForce(bodyAbdomain);
+//					applyCenterForce(bodyHorn);
+//					applyCenterForce(bodyTail);
+//				}              
+//				//Reset the timer
+//				pTimerHandler.reset();
+//			}                      
+//		}));
+
+
+		sheepP1 = new Sheep(180, 240, gameDataManager.p1SheepIndex, 1);
+		sheepP1.createAndAttachSheep(this, mPhysicsWorld, vbom);
+		
+		sheepP2 = new Sheep(620, 240, gameDataManager.p2SheepIndex, -1);
+		sheepP2.createAndAttachSheep(this, mPhysicsWorld, vbom);
+		
+	}
+
+	private void createWall() {
+		final Rectangle ground = new Rectangle(camera.getWidth()/2, camera.getHeight() - 2, camera.getWidth(), 2, vbom);
+		final Rectangle roof = new Rectangle(camera.getWidth()/2, 0, camera.getWidth(), 2, vbom);
+		final Rectangle left = new Rectangle(0, camera.getHeight()/2, 2, camera.getHeight(), vbom);
+		final Rectangle right = new Rectangle(camera.getWidth() - 2, camera.getHeight()/2, 2, camera.getHeight(), vbom);
+
 		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
+		
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
-		
-
-//		attachChild(ground);
-//		attachChild(roof);
-//		attachChild(left);
-//		attachChild(right);
-		
-		registerUpdateHandler(this.mPhysicsWorld);
-		
-
-		final Sprite face;
-		final Body body;
-
-		FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-
-		face = new Sprite(400f, 400f, resourcesManager.gamePlayP1WinRegion, vbom);
-		// body = PhysicsFactory.createCircleBody(this.mPhysicsWorld, face, BodyType.DynamicBody, FIXTURE_DEF);
+	}
 
 
-		//attachChild(face);
-		//this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
-		
-		
-		
-		
-		
-		
-		
-		BodyDef mBallBodyDef = new BodyDef();
-		Body mBallBody = this.mPhysicsWorld.createBody(mBallBodyDef);
-
-		final float mCenter = 0f;
-		final float sqrt2 = 0.7071f; //(float) Math.sqrt(2.0) / 2;
-		final Vector2[] vertices = {
-		    new Vector2(mCenter - 0.0f,  mCenter + 1.0f),
-		    new Vector2(mCenter - sqrt2, mCenter + sqrt2),
-		    new Vector2(mCenter - 1.0f,  mCenter + 0.0f),
-		    new Vector2(mCenter - sqrt2, mCenter - sqrt2),
-		    new Vector2(mCenter + 0.0f,  mCenter - 1.0f),
-		    new Vector2(mCenter + sqrt2, mCenter - sqrt2),
-		    new Vector2(mCenter + 1.0f,  mCenter + 0.0f),
-		    new Vector2(mCenter + sqrt2, mCenter + sqrt2)
-		 };
-
-		PolygonShape ballPoly = new PolygonShape();
-		ballPoly.set(vertices);
-		FixtureDef mFixtureDef = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-		mFixtureDef.shape = ballPoly;
-		mBallBody.createFixture(mFixtureDef);
-		
-		body = PhysicsFactory.createPolygonBody(mPhysicsWorld, face, vertices, BodyType.DynamicBody, mFixtureDef);
-
-		
-		attachChild(face);
-		this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
-		face.setX(200);
-		face.setY(200);
-		
-		// ballPoly.dispose();
-		
-
-		engine.enableAccelerationSensor(activity, this);
-		
+	protected void applyCenterForce(Body body) {
+		// float bodyForce = 100 * (240 - (body.getPosition().y * 32));
+//		if(body.getPosition().y > 240f/32){
+//			bodyForce = -bodyForce;
+//		}
+		// body.applyForce(new Vector2(0, bodyForce), body.getPosition());
 	}
 
 	private void createBackground() {
@@ -166,6 +182,9 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	    final IMenuItem p2WinItem = new ScaleMenuItemDecorator(new SpriteMenuItem(P2_WIN, resourcesManager.gamePlayP2WinRegion, vbom), 1.2f, 1);
 	    
 	    // menuChildScene.addMenuItem(pauseItem);
+	    final Sprite overlay = new Sprite(0, 0, resourcesManager.gamePlayOverlayRegion, vbom);
+	    
+	    menuChildScene.attachChild(overlay);
 	    menuChildScene.addMenuItem(resumeItem);
 	    menuChildScene.addMenuItem(exitToMenuItem);
 	    
@@ -186,7 +205,7 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	
 	private void createPauseButton()
 	{
-		pauseButton = new Sprite(400, 320, resourcesManager.gamePlayPauseRegion, vbom){	
+		pauseButton = new Sprite(400, 160, resourcesManager.gamePlayPauseRegion, vbom){	
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				pauseGame();
 				return true;
@@ -284,9 +303,9 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onAccelerationChanged(AccelerationData pAccelerationData) {
-		final Vector2 gravity = Vector2Pool.obtain(pAccelerationData.getX(), pAccelerationData.getY());
-		this.mPhysicsWorld.setGravity(gravity);
-		Vector2Pool.recycle(gravity);
+//		final Vector2 gravity = Vector2Pool.obtain(pAccelerationData.getX(), pAccelerationData.getY());
+//		this.mPhysicsWorld.setGravity(gravity);
+//		Vector2Pool.recycle(gravity);
 	}
 //
 //	

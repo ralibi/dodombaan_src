@@ -7,6 +7,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import android.app.Activity;
 
+import com.ralibi.dodombaan.manager.GameDataManager;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -18,6 +19,7 @@ public abstract class BaseScene extends Scene {
     protected Engine engine;
     protected Activity activity;
     protected ResourcesManager resourcesManager;
+    protected GameDataManager gameDataManager;
     protected VertexBufferObjectManager vbom;
     protected Camera camera;
     
@@ -32,6 +34,7 @@ public abstract class BaseScene extends Scene {
         this.activity = resourcesManager.activity;
         this.vbom = resourcesManager.vbom;
         this.camera = resourcesManager.camera;
+        this.gameDataManager = GameDataManager.getInstance();
         this.setOnSceneTouchListener(ResourcesManager.getInstance().activity);
         createScene();
     }
@@ -49,4 +52,6 @@ public abstract class BaseScene extends Scene {
     public abstract SceneType getSceneType();
     
     public abstract void disposeScene();
+    
+    
 }

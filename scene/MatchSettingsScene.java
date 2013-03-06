@@ -97,6 +97,7 @@ public class MatchSettingsScene extends BaseScene implements IOnMenuItemClickLis
 			SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
 			return true;
 		case MENU_NEXT:
+			gameDataManager.arenaIndex = scrollEntityArena.getSelectedMenuIndex();
 			SceneManager.getInstance().loadGamePlayScene(engine);
 			return true;
 		default:

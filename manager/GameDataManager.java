@@ -8,6 +8,7 @@ public class GameDataManager {
 	
 	public int p1SheepIndex = 0;
 	public int p2SheepIndex = 0;
+	public int arenaIndex = 0;
     
     private static final GameDataManager INSTANCE = new GameDataManager();
     

@@ -14,7 +14,6 @@ import org.andengine.util.debug.Debug;
 import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.component.ScrollMenuEntity;
 import com.ralibi.dodombaan.component.ScrollPanel;
-import com.ralibi.dodombaan.manager.GameDataManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -124,8 +123,8 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 			SceneManager.getInstance().loadMenuSceneFromSheepSelection(engine);
 			return true;
 		case MENU_NEXT:
-			GameDataManager.getInstance().p1SheepIndex = scrollMenuSheepP1.getSelectedMenuIndex();
-			GameDataManager.getInstance().p2SheepIndex = scrollMenuSheepP2.getSelectedMenuIndex();
+			gameDataManager.p1SheepIndex = scrollMenuSheepP1.getSelectedMenuIndex();
+			gameDataManager.p2SheepIndex = scrollMenuSheepP2.getSelectedMenuIndex();
 			SceneManager.getInstance().loadMatchSettingsSceneFromSheepSelection(engine);
 			return true;
 		default:

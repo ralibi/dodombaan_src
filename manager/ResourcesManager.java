@@ -35,6 +35,12 @@ public class ResourcesManager {
     public VertexBufferObjectManager vbom;
     public float screenRatio;
     
+    
+    // GENERAL
+    private final int sheepCount = 6;
+    private final int arenaCount = 4;
+    
+    
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
     //---------------------------------------------
@@ -55,9 +61,7 @@ public class ResourcesManager {
 	public ITextureRegion sheepSelectionBackgroundRegion;
 	public ITextureRegion sheepSelectionNextRegion;
 	public ITextureRegion sheepSelectionBackRegion;
-	
 	public List<ITextureRegion> sheepSelectionSheepRegions = new ArrayList<ITextureRegion>();
-	
 	private BuildableBitmapTextureAtlas sheepSelectionTextureAtlas;
 
 	
@@ -65,18 +69,20 @@ public class ResourcesManager {
 	public ITextureRegion matchSettingsBackgroundRegion;
 	public ITextureRegion matchSettingsNextRegion;
 	public ITextureRegion matchSettingsBackRegion;
-	
 	public List<ITextureRegion> matchSettingsArenaRegions = new ArrayList<ITextureRegion>();
-	
 	private BuildableBitmapTextureAtlas matchSettingsTextureAtlas;
 
 	// GamePlayScene
 	public ITextureRegion gamePlayBackgroundRegion;
+	public ITextureRegion gamePlayOverlayRegion;
 	public ITextureRegion gamePlayP1WinRegion;
 	public ITextureRegion gamePlayP2WinRegion;
 	public ITextureRegion gamePlayPauseRegion;
 	public ITextureRegion gamePlayResumeRegion;
 	public ITextureRegion gamePlayExitToMenuRegion;
+	public List<ITextureRegion> gamePlaySheepSegmentRegions = new ArrayList<ITextureRegion>();
+	public List<ITextureRegion> gamePlayPlayingArenaRegions = new ArrayList<ITextureRegion>();
+	public ITextureRegion gamePlayNailRegion;
 	private BuildableBitmapTextureAtlas gamePlayTextureAtlas;
 	
 
@@ -98,11 +104,43 @@ public class ResourcesManager {
 	// Fonts
 	public Font font;
     
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
     //---------------------------------------------
     // CLASS LOGIC
     //---------------------------------------------
 
+
+    // SplashScreen Methods
+    
+    public void loadSplashScreen()
+    {
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/splash/");
+        splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 800, 480, TextureOptions.BILINEAR);
+        splashBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, activity, "splash_background.png", 0, 0);
+        splashTextureAtlas.load();
+    }
+    
+    public void unloadSplashScreen()
+    {
+    	splashTextureAtlas.unload();
+    	splashBackgroundRegion = null;
+    }
 	
+	
+    
+    
+    
+    
 	// MainMenu Methods
 	
     public void loadMenuResources()
@@ -121,15 +159,8 @@ public class ResourcesManager {
         multiplayerOverBluetoothRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_over_bluetooth.png");
         settingsRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/settings.png");
         exitRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "shared/exit.png");
-        try 
-        {
-            this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-            this.menuTextureAtlas.load();
-        } 
-        catch (final TextureAtlasBuilderException e)
-        {
-                Debug.e(e);
-        }
+
+        textureAtlasBuilderException(this.menuTextureAtlas);
     }
 	
 	private void loadMenuFonts()
@@ -156,91 +187,38 @@ public class ResourcesManager {
         menuTextureAtlas.unload();
     }
         
-
+	
     
-	// GamePlay Methods
+    // Settings Scene Methods
     
-    public void loadGamePlayResources()
+    public void loadSettingsResources()
     {
-        loadGamePlayGraphics();
-        loadGamePlayFonts();
-        loadGamePlayAudio();
-    }
-
-    private void loadGamePlayGraphics()
-    {
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game_play/");
-        gamePlayTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-        
-        gamePlayBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "game_play_background.png");
-        gamePlayP1WinRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "p1_win.png");
-        gamePlayP2WinRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "p2_win.png");
-        gamePlayPauseRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "pause.png");
-        gamePlayResumeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume.png");
-        gamePlayExitToMenuRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu.png");
-        
-        try 
-        {
-            this.gamePlayTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-            this.gamePlayTextureAtlas.load();
-        } 
-        catch (final TextureAtlasBuilderException e)
-        {
-                Debug.e(e);
-        }
+    	loadSettingsGraphics();
     }
     
-    private void loadGamePlayFonts()
-    {
-        
-    }
-    
-    private void loadGamePlayAudio()
-    {
-        
-    }
-
-	public void unloadGamePlayTextures() {
-		// TODO Auto-generated method stub
-		
-	}
-    
-    
-	// MatchSettings Methods
-    
-    public void loadMatchSettingsResources()
-    {
-    	loadMatchSettingsGraphics();
-    }
-    
-    private void loadMatchSettingsGraphics() {
+    private void loadSettingsGraphics() {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        matchSettingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
+        settingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
         
-        matchSettingsBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "match_settings/match_settings_background.png");
-        matchSettingsNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/next.png");
-        matchSettingsBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/back.png");
-
-        for (int i = 0; i < 4; i++) {
-        	matchSettingsArenaRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "match_settings/arenas/arena (" + (i + 1) + ").png"));
-		}
+        settingsBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/settings_background.png");
+        settingsOkRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "shared/ok.png");
+        settingsResetRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/reset.png");
         
-        try 
-        {
-            this.matchSettingsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-            this.matchSettingsTextureAtlas.load();
-        } 
-        catch (final TextureAtlasBuilderException e)
-        {
-                Debug.e(e);
-        }
+        textureAtlasBuilderException(this.settingsTextureAtlas);
 	}
 
-	public void unloadMatchSettingsTextures() {
+	public void unloadSettingsTextures() {
 		// TODO Auto-generated method stub
 	}
-    
-    
+
+	
+	
+	
+	
+	
+	
+	
+	
     // SheepSelection Methods
     
     public void loadSheepSelectionResources()
@@ -256,25 +234,111 @@ public class ResourcesManager {
         sheepSelectionNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/next.png");
         sheepSelectionBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/back.png");
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < sheepCount; i++) {
 			sheepSelectionSheepRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep (" + (i + 1) + ").png"));
 		}
         
-        try 
-        {
-            this.sheepSelectionTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-            this.sheepSelectionTextureAtlas.load();
-        } 
-        catch (final TextureAtlasBuilderException e)
-        {
-                Debug.e(e);
-        }
+        textureAtlasBuilderException(this.sheepSelectionTextureAtlas);
 	}
 
 	public void unloadSheepSelectionTextures() {
 		// TODO Auto-generated method stub
 	}
 
+    
+	
+	
+	
+	
+	
+	
+	
+	// MatchSettings Methods
+    
+    public void loadMatchSettingsResources()
+    {
+    	loadMatchSettingsGraphics();
+    }
+    
+    private void loadMatchSettingsGraphics() {
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        matchSettingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
+        
+        matchSettingsBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "match_settings/match_settings_background.png");
+        matchSettingsNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/next.png");
+        matchSettingsBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/back.png");
+
+        for (int i = 0; i < arenaCount; i++) {
+        	matchSettingsArenaRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "match_settings/arenas/arena (" + (i + 1) + ").png"));
+		}
+        
+        textureAtlasBuilderException(this.matchSettingsTextureAtlas);
+	}
+
+	public void unloadMatchSettingsTextures() {
+		// TODO Auto-generated method stub
+	}
+    
+
+
+    
+	// GamePlay Methods
+    
+    public void loadGamePlayResources()
+    {
+        loadGamePlayGraphics();
+        loadGamePlayFonts();
+        loadGamePlayAudio();
+    }
+
+    private void loadGamePlayGraphics()
+    {
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game_play/");
+        gamePlayTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
+        
+        gamePlayBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "game_play_background.png");
+        gamePlayP1WinRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "p1_win.png");
+        gamePlayP2WinRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "p2_win.png");
+        gamePlayPauseRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "pause.png");
+        gamePlayResumeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume.png");
+        gamePlayExitToMenuRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu.png");
+
+        gamePlayNailRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail.png");
+
+        for (int i = 0; i < sheepCount; i++) {
+			gamePlaySheepSegmentRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ").png"));
+		}
+
+        for (int i = 0; i < arenaCount; i++) {
+        	gamePlayPlayingArenaRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "playing_arena (" + (i + 1) + ").png"));
+		}
+        
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/shared/");
+        gamePlayOverlayRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "overlay_background.png");
+        
+        textureAtlasBuilderException(this.gamePlayTextureAtlas);
+    }
+    
+    private void loadGamePlayFonts()
+    {
+        
+    }
+    
+    private void loadGamePlayAudio()
+    {
+        
+    }
+
+	public void unloadGamePlayTextures() {
+		// TODO Auto-generated method stub
+	}
+
+	
+	
+	
+	
+	
+	
 	
     // MatchOver Methods
     
@@ -293,15 +357,7 @@ public class ResourcesManager {
         matchOverBackToMenuRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "back_to_menu.png");
         matchOverExitRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "exit.png");
         
-        try 
-        {
-            this.matchOverTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-            this.matchOverTextureAtlas.load();
-        } 
-        catch (final TextureAtlasBuilderException e)
-        {
-                Debug.e(e);
-        }
+        textureAtlasBuilderException(this.matchOverTextureAtlas);
 	}
 
 	public void unloadMatchOverTextures() {
@@ -309,51 +365,15 @@ public class ResourcesManager {
 	}
 
 	
-    // Settings Scene Methods
-    
-    public void loadSettingsResources()
-    {
-    	loadSettingsGraphics();
-    }
-    
-    private void loadSettingsGraphics() {
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        settingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-        
-        settingsBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/settings_background.png");
-        settingsOkRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "shared/ok.png");
-        settingsResetRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/reset.png");
-        
-        try 
-        {
-            this.settingsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-            this.settingsTextureAtlas.load();
-        } 
-        catch (final TextureAtlasBuilderException e)
-        {
-                Debug.e(e);
-        }
-	}
 
-	public void unloadSettingsTextures() {
-		// TODO Auto-generated method stub
-	}
-
-    // SplashScreen Methods
-    
-    public void loadSplashScreen()
-    {
-    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/splash/");
-        splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 800, 480, TextureOptions.BILINEAR);
-        splashBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, activity, "splash_background.png", 0, 0);
-        splashTextureAtlas.load();
-    }
-    
-    public void unloadSplashScreen()
-    {
-    	splashTextureAtlas.unload();
-    	splashBackgroundRegion = null;
-    }
+	
+	
+	
+	
+	
+	
+	
+	
     
     /**
      * @param engine
@@ -381,4 +401,20 @@ public class ResourcesManager {
     {
         return INSTANCE;
     }
+    
+    
+    // GENERAL METHODS
+
+
+	private void textureAtlasBuilderException(BuildableBitmapTextureAtlas buildableBitmapTextureAtlas) {
+        try 
+        {
+        	buildableBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+        	buildableBitmapTextureAtlas.load();
+        } 
+        catch (final TextureAtlasBuilderException e)
+        {
+                Debug.e(e);
+        }
+	}
 }

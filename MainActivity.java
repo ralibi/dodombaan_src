@@ -42,6 +42,7 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 		camera = new Camera(0, 0, 800, 480);
 	    EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(800, 480), this.camera);
 	    engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
+	    engineOptions.getTouchOptions().setNeedsMultiTouch(true);
 	    engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON);
 	    return engineOptions;
 	}
