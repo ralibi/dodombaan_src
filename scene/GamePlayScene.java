@@ -1,6 +1,8 @@
 package com.ralibi.dodombaan.scene;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -32,8 +34,12 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	private final int PAUSE = 0;
 	private final int RESUME = 1;
 	private final int EXIT_TO_MENU= 2;
-	private final int P1_WIN = 3;
-	private final int P2_WIN = 4;
+	private final int MAKE_P1_WIN = 3;
+	private final int MAKE_P2_WIN = 4;
+
+	private final int TIE = 0;
+	private final int P1_WIN = 1;
+	private final int P2_WIN = 2;
 	
 	
 	private PhysicsWorld mPhysicsWorld;
@@ -74,7 +80,43 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		createSheep();
 		createNail();
 		
+		
+		registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() {
+			@Override
+			public void onTimePassed(final TimerHandler pTimerHandler) {
+				if(sheepP1.isOut() && sheepP2.isOut()){
+					matchOver(TIE);
+				}
+				else if(sheepP1.isOut()){
+					matchOver(P2_WIN);
+				}
+				else if(sheepP2.isOut()){
+					matchOver(P1_WIN);
+				}
+				pTimerHandler.reset();
+			}                      
+		}));
+
+		
 		engine.enableAccelerationSensor(activity, this);
+	}
+
+	protected void matchOver(int winner) {
+		switch (winner) {
+		case TIE:
+			gameDataManager.winner = 0;
+			break;
+		case P1_WIN:	
+			gameDataManager.winner = 1;
+			break;
+		case P2_WIN:
+			gameDataManager.winner = 2;
+			break;
+		default:
+			break;
+		}
+		Debug.d("PLAYER " + gameDataManager.winner + " WON");
+		SceneManager.getInstance().loadMatchOverScene(engine);
 	}
 
 	private void createArena() {
@@ -112,21 +154,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 
 	private void createSheep() {
 		
-//		registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() {
-//			@Override
-//			public void onTimePassed(final TimerHandler pTimerHandler) {
-//				if (bodyAbdomain != null) {
-//					
-//					applyCenterForce(bodyAbdomain);
-//					applyCenterForce(bodyHorn);
-//					applyCenterForce(bodyTail);
-//				}              
-//				//Reset the timer
-//				pTimerHandler.reset();
-//			}                      
-//		}));
-
-
 		sheepP1 = new Sheep(180, 240, gameDataManager.p1SheepIndex, 1);
 		sheepP1.createAndAttachSheep(this, mPhysicsWorld, vbom);
 		
@@ -178,8 +205,8 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	    final IMenuItem resumeItem = new ScaleMenuItemDecorator(new SpriteMenuItem(RESUME, resourcesManager.gamePlayResumeRegion, vbom), 1.2f, 1);
 	    final IMenuItem exitToMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(EXIT_TO_MENU, resourcesManager.gamePlayExitToMenuRegion, vbom), 1.2f, 1);
 	    
-	    final IMenuItem p1WinItem = new ScaleMenuItemDecorator(new SpriteMenuItem(P1_WIN, resourcesManager.gamePlayP1WinRegion, vbom), 1.2f, 1);
-	    final IMenuItem p2WinItem = new ScaleMenuItemDecorator(new SpriteMenuItem(P2_WIN, resourcesManager.gamePlayP2WinRegion, vbom), 1.2f, 1);
+	    final IMenuItem p1WinItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MAKE_P1_WIN, resourcesManager.gamePlayP1WinRegion, vbom), 1.2f, 1);
+	    final IMenuItem p2WinItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MAKE_P2_WIN, resourcesManager.gamePlayP2WinRegion, vbom), 1.2f, 1);
 	    
 	    // menuChildScene.addMenuItem(pauseItem);
 	    final Sprite overlay = new Sprite(0, 0, resourcesManager.gamePlayOverlayRegion, vbom);
@@ -260,10 +287,10 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		case EXIT_TO_MENU:
 			SceneManager.getInstance().loadMenuSceneFromGamePlay(engine);
 			return true;
-		case P1_WIN:
+		case MAKE_P1_WIN:
 			SceneManager.getInstance().loadMatchOverScene(engine);
 			return true;
-		case P2_WIN:
+		case MAKE_P2_WIN:
 			SceneManager.getInstance().loadMatchOverScene(engine);
 			return true;
 		default:

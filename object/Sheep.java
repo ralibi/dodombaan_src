@@ -28,6 +28,9 @@ public class Sheep {
 	
 	private List<Body> bodySegments = new ArrayList<Body>();
 	private List<Sprite> spriteSegments = new ArrayList<Sprite>();
+	private int[] segmentOut;
+	
+	private boolean out = false;
 	
 	public float x = 0;
 	public float y = 0;
@@ -47,15 +50,30 @@ public class Sheep {
 	public void createAndAttachSheep(Scene pScene, PhysicsWorld mPhysicsWorld, VertexBufferObjectManager vbom) {
 		final Vector2[] vertices = getSegmentVertices();
 		
+		segmentOut = new int[SEGMENT_COUNT];
+		
 		for (int i = 0; i < SEGMENT_COUNT; i++) {
-			Sprite sprite = new Sprite(this.x, this.y, ResourcesManager.getInstance().gamePlaySheepSegmentRegions.get(sheepIndex), vbom);
+			final int itemI = i;
+			Sprite sprite = new Sprite(this.x, this.y, ResourcesManager.getInstance().gamePlaySheepSegmentRegions.get(sheepIndex), vbom){
+				@Override
+				protected void onManagedUpdate(final float pSecondsElapsed) {
+					if(this.mY < 240 - 12 || this.mY > 240 + 12){
+						segmentOut[itemI] = 1;
+					}
+					else{
+						segmentOut[itemI] = -1;
+					}
+					super.onManagedUpdate(pSecondsElapsed);
+				}
+			};
 			Body body = PhysicsFactory.createPolygonBody(mPhysicsWorld, sprite, vertices, BodyType.DynamicBody, FIXTURE_DEF);
-			body.setLinearDamping(LINEAR_DAMPING);
-			pScene.attachChild(sprite);			
+			body.setLinearDamping(LINEAR_DAMPING + 2*i);
+			pScene.attachChild(sprite);
 			mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(sprite, body, true, true));
 
 			spriteSegments.add(sprite);
 			bodySegments.add(body);
+			segmentOut[i] = -1;
 		}
 
 		for (int i = 0; i < SEGMENT_COUNT - 1; i++) {
@@ -91,6 +109,25 @@ public class Sheep {
 	}
 
 	public void moveForward() {
-		bodySegments.get(0).applyForce(new Vector2(FORCE * direction, 0), bodySegments.get(0).getPosition());
+		float dY = bodySegments.get(0).getPosition().y - 240/PX_TO_M_RATIO;
+		bodySegments.get(0).applyForce(new Vector2(FORCE * direction, -dY), new Vector2(bodySegments.get(0).getPosition().x + (1f), bodySegments.get(0).getPosition().y));
+	}
+
+	public void setOut(boolean out) {
+		this.out = out;
+	}
+
+	public boolean isOut() {
+		int sum = 0;
+		for (int i = 0; i < SEGMENT_COUNT; i++) {
+			sum += segmentOut[i];
+		}
+		if(sum > 0){
+			setOut(true);
+		}
+		else{
+			setOut(false);
+		}
+		return this.out;
 	}
 }
