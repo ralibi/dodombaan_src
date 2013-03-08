@@ -23,8 +23,13 @@ public class Sheep {
 	private final int SEGMENT_COUNT = 3;
 	private final float PX_TO_M_RATIO = PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
 	private final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-	private final int LINEAR_DAMPING = 2;
-	private final int FORCE = 75;
+	
+	private final int LINEAR_DAMPING = 10;
+	private final int ANGULAR_DAMPING = 10;
+	private final int FORCE = 100;
+	private final int ANGLE_LIMIT = 45;
+	private final int ARENA_CENTER_FORCE = 4;
+	private final int SHEEP_CENTER_FORCE = 10;
 	
 	private List<Body> bodySegments = new ArrayList<Body>();
 	private List<Sprite> spriteSegments = new ArrayList<Sprite>();
@@ -51,10 +56,10 @@ public class Sheep {
 		final Vector2[] vertices = getSegmentVertices();
 		
 		segmentOut = new int[SEGMENT_COUNT];
-		
+		// Segment 0 is the head
 		for (int i = 0; i < SEGMENT_COUNT; i++) {
 			final int itemI = i;
-			Sprite sprite = new Sprite(this.x, this.y, ResourcesManager.getInstance().gamePlaySheepSegmentRegions.get(sheepIndex), vbom){
+			Sprite sprite = new Sprite(this.x + (32*direction*i), 240, ResourcesManager.getInstance().gamePlaySheepSegmentRegions.get(sheepIndex), vbom){
 				@Override
 				protected void onManagedUpdate(final float pSecondsElapsed) {
 					if(this.mY < 240 - 12 || this.mY > 240 + 12){
@@ -63,11 +68,25 @@ public class Sheep {
 					else{
 						segmentOut[itemI] = -1;
 					}
+					if(bodySegments.size() == SEGMENT_COUNT){
+						if(itemI == 0){
+							Body body = bodySegments.get(itemI);
+							float dY = (body.getPosition().y - 240/PX_TO_M_RATIO + getDeltaHeadY()) * ARENA_CENTER_FORCE;
+							body.applyForce(  new Vector2(ARENA_CENTER_FORCE * direction, -dY)  , new Vector2(body.getPosition().x + direction/2, body.getPosition().y));
+							
+						}
+						else if(itemI == SEGMENT_COUNT - 1){
+							Body body = bodySegments.get(itemI);
+							float dY = (body.getPosition().y - 240/PX_TO_M_RATIO + getDeltaTailY()) * ARENA_CENTER_FORCE;
+							body.applyForce( new Vector2(-ARENA_CENTER_FORCE * direction, -dY)  , new Vector2(body.getPosition().x - direction/2, body.getPosition().y));
+						}
+					}
 					super.onManagedUpdate(pSecondsElapsed);
 				}
 			};
 			Body body = PhysicsFactory.createPolygonBody(mPhysicsWorld, sprite, vertices, BodyType.DynamicBody, FIXTURE_DEF);
-			body.setLinearDamping(LINEAR_DAMPING + 2*i);
+			body.setLinearDamping(LINEAR_DAMPING);
+			body.setAngularDamping(ANGULAR_DAMPING);
 			pScene.attachChild(sprite);
 			mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(sprite, body, true, true));
 
@@ -86,8 +105,8 @@ public class Sheep {
 			revoluteJointDef.localAnchorA.set(-halfWidth * direction, 0f);
 			revoluteJointDef.localAnchorB.set(halfWidth * direction, 0f);
 			revoluteJointDef.enableLimit = true;
-			revoluteJointDef.lowerAngle = MathUtils.degToRad(-45);
-			revoluteJointDef.upperAngle = MathUtils.degToRad(45);
+			revoluteJointDef.lowerAngle = MathUtils.degToRad(-ANGLE_LIMIT);
+			revoluteJointDef.upperAngle = MathUtils.degToRad(ANGLE_LIMIT);
 
 			mPhysicsWorld.createJoint(revoluteJointDef);
 		}
@@ -109,8 +128,15 @@ public class Sheep {
 	}
 
 	public void moveForward() {
-		float dY = bodySegments.get(0).getPosition().y - 240/PX_TO_M_RATIO;
-		bodySegments.get(0).applyForce(new Vector2(FORCE * direction, -dY), new Vector2(bodySegments.get(0).getPosition().x + (1f), bodySegments.get(0).getPosition().y));
+		float dY = (bodySegments.get(0).getPosition().y - 240/PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
+		bodySegments.get(0).applyForce(  bodySegments.get(0).getWorldVector(new Vector2(FORCE * direction, -dY))  , new Vector2(bodySegments.get(0).getPosition().x + direction/2, bodySegments.get(0).getPosition().y));
+	}
+	
+	private float getDeltaHeadY() {
+		return ((float)Math.sin((double) bodySegments.get(0).getAngle())) * 0.5f * direction;
+	}
+	private float getDeltaTailY() {
+		return ((float)Math.sin((double) bodySegments.get(SEGMENT_COUNT-1).getAngle())) * 0.5f;
 	}
 
 	public void setOut(boolean out) {

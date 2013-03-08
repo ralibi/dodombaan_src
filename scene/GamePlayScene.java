@@ -10,11 +10,10 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
-import org.andengine.input.sensor.acceleration.AccelerationData;
-import org.andengine.input.sensor.acceleration.IAccelerationListener;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.debug.Debug;
@@ -29,13 +28,14 @@ import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 import com.ralibi.dodombaan.object.Sheep;
 
-public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener, IAccelerationListener {
+public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener {
 
 	private final int PAUSE = 0;
 	private final int RESUME = 1;
 	private final int EXIT_TO_MENU= 2;
-	private final int MAKE_P1_WIN = 3;
-	private final int MAKE_P2_WIN = 4;
+	
+	private final int NEXT = 3;
+	private final int NEXT_ROUND = 4;
 
 	private final int TIE = 0;
 	private final int P1_WIN = 1;
@@ -53,7 +53,9 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	private Sprite nailP2;
 	
 	private Sprite pauseButton;
-	private MenuScene menuChildScene;
+	private MenuScene menuPauseScene;
+	private MenuScene menuRoundOverScene;
+	private Text winningAnnouncementText;
 	
 	
 	// private ScrollMenu gamePlayHUD;
@@ -67,7 +69,8 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		Debug.d("Player 2: " + gameDataManager.p2SheepIndex);
 		createBackground();
 		createPauseButton();
-		createMenuChildScene();
+		createMenuPauseScene();
+		createMenuRoundOverScene();
 		
 
 		setTouchAreaBindingOnActionDownEnabled(true);
@@ -97,8 +100,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 			}                      
 		}));
 
-		
-		engine.enableAccelerationSensor(activity, this);
 	}
 
 	protected void matchOver(int winner) {
@@ -116,7 +117,7 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 			break;
 		}
 		Debug.d("PLAYER " + gameDataManager.winner + " WON");
-		SceneManager.getInstance().loadMatchOverScene(engine);
+		showMenuRoundOverScene();
 	}
 
 	private void createArena() {
@@ -177,14 +178,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	}
 
 
-	protected void applyCenterForce(Body body) {
-		// float bodyForce = 100 * (240 - (body.getPosition().y * 32));
-//		if(body.getPosition().y > 240f/32){
-//			bodyForce = -bodyForce;
-//		}
-		// body.applyForce(new Vector2(0, bodyForce), body.getPosition());
-	}
-
 	private void createBackground() {
 		attachChild(new Sprite(400,  240, resourcesManager.gamePlayBackgroundRegion, vbom)
 		{
@@ -197,37 +190,51 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		});
 	}
 	
-	private void createMenuChildScene() {
-		menuChildScene = new MenuScene(camera);
-		menuChildScene.setPosition(400, 240);
+	private void createMenuPauseScene() {
+		menuPauseScene = new MenuScene(camera);
+		menuPauseScene.setPosition(400, 240);
 
-	    // final IMenuItem pauseItem = new ScaleMenuItemDecorator(new SpriteMenuItem(PAUSE, resourcesManager.gamePlayPauseRegion, vbom), 1.2f, 1);
+		final Sprite overlay = new Sprite(0, 0, resourcesManager.gamePlayOverlayRegion, vbom);
 	    final IMenuItem resumeItem = new ScaleMenuItemDecorator(new SpriteMenuItem(RESUME, resourcesManager.gamePlayResumeRegion, vbom), 1.2f, 1);
 	    final IMenuItem exitToMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(EXIT_TO_MENU, resourcesManager.gamePlayExitToMenuRegion, vbom), 1.2f, 1);
+	    	    
+	    menuPauseScene.attachChild(overlay);
+	    menuPauseScene.addMenuItem(resumeItem);
+	    menuPauseScene.addMenuItem(exitToMenuItem);
 	    
-	    final IMenuItem p1WinItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MAKE_P1_WIN, resourcesManager.gamePlayP1WinRegion, vbom), 1.2f, 1);
-	    final IMenuItem p2WinItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MAKE_P2_WIN, resourcesManager.gamePlayP2WinRegion, vbom), 1.2f, 1);
-	    
-	    // menuChildScene.addMenuItem(pauseItem);
-	    final Sprite overlay = new Sprite(0, 0, resourcesManager.gamePlayOverlayRegion, vbom);
-	    
-	    menuChildScene.attachChild(overlay);
-	    menuChildScene.addMenuItem(resumeItem);
-	    menuChildScene.addMenuItem(exitToMenuItem);
-	    
-	    menuChildScene.addMenuItem(p1WinItem);
-	    menuChildScene.addMenuItem(p2WinItem);
-	    
-	    menuChildScene.buildAnimations();
-	    menuChildScene.setBackgroundEnabled(false);
+	    menuPauseScene.buildAnimations();
+	    menuPauseScene.setBackgroundEnabled(false);
 
-	    // pauseItem.setPosition(0, 0);
 	    resumeItem.setPosition(0, -80);
 	    exitToMenuItem.setPosition(0, -160);
-	    p1WinItem.setPosition(-200, -200);
-	    p2WinItem.setPosition(200, -200);
 	    
-	    menuChildScene.setOnMenuItemClickListener(this);
+	    menuPauseScene.setOnMenuItemClickListener(this);
+	}
+	
+
+	private void createMenuRoundOverScene() {
+		menuRoundOverScene = new MenuScene(camera);
+		menuRoundOverScene.setPosition(CAMERA_WIDTH/2, CAMERA_HEIGHT/2);
+
+		final Sprite overlay = new Sprite(0, 0, resourcesManager.gamePlayOverlayRegion, vbom);
+	    final IMenuItem nextItem = new ScaleMenuItemDecorator(new SpriteMenuItem(NEXT, resourcesManager.gamePlayNextRegion, vbom), 1.2f, 1);
+	    final IMenuItem nextRoundItem = new ScaleMenuItemDecorator(new SpriteMenuItem(NEXT_ROUND, resourcesManager.gamePlayNextRoundRegion, vbom), 1.2f, 1);
+	    
+	    menuRoundOverScene.attachChild(overlay);
+	    menuRoundOverScene.addMenuItem(nextItem);
+	    menuRoundOverScene.addMenuItem(nextRoundItem);
+	    
+	    menuRoundOverScene.buildAnimations();
+	    menuRoundOverScene.setBackgroundEnabled(false);
+
+	    nextItem.setPosition(0, -80);
+	    nextRoundItem.setPosition(0, -160);
+	    
+
+		winningAnnouncementText = new Text(0, 80, resourcesManager.font, "Player " + gameDataManager.winner + " WON", vbom);
+		menuRoundOverScene.attachChild(winningAnnouncementText);
+		
+		menuRoundOverScene.setOnMenuItemClickListener(this);
 	}
 	
 	private void createPauseButton()
@@ -287,21 +294,41 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		case EXIT_TO_MENU:
 			SceneManager.getInstance().loadMenuSceneFromGamePlay(engine);
 			return true;
-		case MAKE_P1_WIN:
+		case NEXT:
 			SceneManager.getInstance().loadMatchOverScene(engine);
 			return true;
-		case MAKE_P2_WIN:
-			SceneManager.getInstance().loadMatchOverScene(engine);
+		case NEXT_ROUND:
+			playNextRound();
 			return true;
 		default:
 			return false;
 		}
 	}
 
+	private void showMenuRoundOverScene() {
+		if(!isPaused()){
+			engine.getScene().setIgnoreUpdate(true);
+		    setChildScene(menuRoundOverScene, false, true, true);
+		    pauseButton.setVisible(false);
+		    setPaused(true);
+		    winningAnnouncementText.setText("Player " + gameDataManager.winner + " WON");
+		}
+	}
+	
+	private void playNextRound() {
+		if(isPaused()){
+		    clearChildScene();
+			engine.getScene().setIgnoreUpdate(false);
+		    pauseButton.setVisible(true);
+		    setPaused(false);
+		}
+		SceneManager.getInstance().reloadGamePlay(engine);
+	}
+
 	protected void pauseGame() {
 		if(!isPaused()){
 			engine.getScene().setIgnoreUpdate(true);
-		    setChildScene(menuChildScene, false, true, true);
+		    setChildScene(menuPauseScene, false, true, true);
 		    pauseButton.setVisible(false);
 		    setPaused(true);
 		}
@@ -319,73 +346,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	@Override
 	public void unTouchScrollMenu() {
 		// TODO Auto-generated method stub
-		
 	}
 
-	@Override
-	public void onAccelerationAccuracyChanged(AccelerationData pAccelerationData) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onAccelerationChanged(AccelerationData pAccelerationData) {
-//		final Vector2 gravity = Vector2Pool.obtain(pAccelerationData.getX(), pAccelerationData.getY());
-//		this.mPhysicsWorld.setGravity(gravity);
-//		Vector2Pool.recycle(gravity);
-	}
-//
-//	
-//	public void createEllipse(){
-//		double a = 2.0, b = 1.0;
-//		int n = 4;
-//		double[] x = new double[n];
-//		double[] y = new double[n];
-//		x[0] = 0.0; y[0] = b;
-//		x[n-1] = a; y[n-1] = 0.0;
-//	
-//		double xratio;
-//		int j;
-//		for (j = 1; j <= n-2; j++)
-//		{
-//			x[j] = (double)j/(double)(n-1);
-//			xratio = x[j]/a;
-//			y[j] = b*Math.sqrt(1.0 - xratio*xratio);
-//		}
-//	
-//		int imax = 1024;
-//		for (int i = 0; i < imax; i++)
-//		{
-//			for (j = 1; j <= n-2; j++)
-//			{
-//				double xdiff = x[j+1] - x[j-1];
-//				double ydiff = y[j+1] - y[j-1];
-//				double xavr = 0.5*(x[j+1] + x[j-1]);
-//				double yavr = 0.5*(y[j+1] + y[j-1]);
-//				x[j] = xavr - (ydiff/xdiff)*(y[j] - yavr);
-//				xratio = x[j]/a;
-//				y[j] = b*Math.sqrt(1.0 - xratio*xratio);
-//			}
-//		}
-//	
-//		double maxLenDiff = 0.0;
-//		double dx = x[1] - x[0];
-//		double dy = y[1] - y[0];
-//		double length0 = Math.sqrt(dx*dx + dy*dy);
-//		for (j = 2; j <= n-1; j++)
-//		{
-//			dx = x[j] - x[j-1];
-//			dy = y[j] - y[j-1];
-//			double length1 = Math.sqrt(dx*dx + dy*dy);
-//			double lenDiff = Math.abs(length1 - length0);
-//			if (lenDiff > maxLenDiff)
-//			{
-//				maxLenDiff = lenDiff;
-//			}
-//			length0 = length1;
-//		}
-//	
-//		// maxLenDiff is nearly zero (about 1e-16)
-//	
-//	}
 }

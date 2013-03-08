@@ -80,6 +80,8 @@ public class ResourcesManager {
 	public ITextureRegion gamePlayPauseRegion;
 	public ITextureRegion gamePlayResumeRegion;
 	public ITextureRegion gamePlayExitToMenuRegion;
+	public ITextureRegion gamePlayNextRoundRegion;
+	public ITextureRegion gamePlayNextRegion;
 	public List<ITextureRegion> gamePlaySheepSegmentRegions = new ArrayList<ITextureRegion>();
 	public List<ITextureRegion> gamePlayPlayingArenaRegions = new ArrayList<ITextureRegion>();
 	public ITextureRegion gamePlayNailRegion;
@@ -302,6 +304,7 @@ public class ResourcesManager {
         gamePlayPauseRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "pause.png");
         gamePlayResumeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume.png");
         gamePlayExitToMenuRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu.png");
+        gamePlayNextRoundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "next_round.png");
 
         gamePlayNailRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail.png");
 
@@ -315,6 +318,7 @@ public class ResourcesManager {
         
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/shared/");
         gamePlayOverlayRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "overlay_background.png");
+        gamePlayNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "next.png");
         
         textureAtlasBuilderException(this.gamePlayTextureAtlas);
     }

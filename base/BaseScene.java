@@ -23,6 +23,9 @@ public abstract class BaseScene extends Scene {
     protected VertexBufferObjectManager vbom;
     protected Camera camera;
     
+    protected float CAMERA_WIDTH;
+    protected float CAMERA_HEIGHT;
+    
     //---------------------------------------------
     // CONSTRUCTOR
     //---------------------------------------------
@@ -36,6 +39,10 @@ public abstract class BaseScene extends Scene {
         this.camera = resourcesManager.camera;
         this.gameDataManager = GameDataManager.getInstance();
         this.setOnSceneTouchListener(ResourcesManager.getInstance().activity);
+
+        this.CAMERA_WIDTH = this.camera.getWidth();
+        this.CAMERA_HEIGHT = this.camera.getHeight();
+        
         createScene();
     }
     

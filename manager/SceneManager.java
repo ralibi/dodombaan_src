@@ -287,6 +287,23 @@ public class SceneManager {
             }
         }));
     }
+    
+    public void reloadGamePlay(final Engine mEngine)
+    {
+        setScene(loadingScene);
+        gamePlayScene.disposeScene();
+        ResourcesManager.getInstance().unloadGamePlayTextures();
+        mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() 
+        {
+            public void onTimePassed(final TimerHandler pTimerHandler) 
+            {
+                mEngine.unregisterUpdateHandler(pTimerHandler);
+                ResourcesManager.getInstance().loadGamePlayResources();
+        		gamePlayScene = new GamePlayScene();
+                setScene(gamePlayScene);
+            }
+        }));
+    }
 
     public void loadMatchOverScene(final Engine mEngine)
     {
