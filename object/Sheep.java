@@ -26,9 +26,9 @@ public class Sheep {
 	
 	private final int LINEAR_DAMPING = 10;
 	private final int ANGULAR_DAMPING = 10;
-	private final int FORCE = 100;
-	private final int ANGLE_LIMIT = 45;
-	private final int ARENA_CENTER_FORCE = 4;
+	private final int FORCE = 120;
+	private final int ANGLE_LIMIT = 30;
+	private final int ARENA_CENTER_FORCE = 3;
 	private final int SHEEP_CENTER_FORCE = 10;
 	
 	private List<Body> bodySegments = new ArrayList<Body>();
