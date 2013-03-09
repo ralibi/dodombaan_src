@@ -1,9 +1,15 @@
 package com.ralibi.dodombaan.scene;
 
+import java.io.IOException;
+
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.IOnAreaTouchListener;
+import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.ITouchArea;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
@@ -23,6 +29,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.ralibi.dodombaan.MainActivity;
+import com.ralibi.dodombaan.MainActivity.MoveSheepServerMessage;
 import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
@@ -100,6 +108,44 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 			}                      
 		}));
 
+		
+		
+		
+		
+		
+		
+		
+
+		/* We allow only the server to actively send around messages. */
+		if(activity.mSocketServer != null) {
+			this.setOnSceneTouchListener(new IOnSceneTouchListener() {
+				@Override
+				public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+					if(pSceneTouchEvent.isActionDown()) {
+						try {
+							final MoveSheepServerMessage moveSheepServerMessage = (MoveSheepServerMessage) activity.mMessagePool.obtainMessage(MainActivity.FLAG_MESSAGE_SERVER_MOVE_SHEEP);
+							
+							// moveSheepServerMessage.set(activity.mFaceIDCounter++, pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+
+							activity.mSocketServer.sendBroadcastServerMessage(moveSheepServerMessage);
+
+							// activity.mMessagePool.recycleMessage(moveSheepServerMessage);
+						} catch (final IOException e) {
+							Debug.e(e);
+						}
+						return true;
+					} else {
+						return true;
+					}
+				}
+			});
+
+			this.setTouchAreaBindingOnActionDownEnabled(true);
+		}
+		
+		
+		
+		
 	}
 
 	protected void matchOver(int winner) {

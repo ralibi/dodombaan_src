@@ -5,8 +5,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
-import android.app.Activity;
-
+import com.ralibi.dodombaan.MainActivity;
 import com.ralibi.dodombaan.manager.GameDataManager;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
@@ -17,7 +16,7 @@ public abstract class BaseScene extends Scene {
     //---------------------------------------------
     
     protected Engine engine;
-    protected Activity activity;
+    protected MainActivity activity;
     protected ResourcesManager resourcesManager;
     protected GameDataManager gameDataManager;
     protected VertexBufferObjectManager vbom;
