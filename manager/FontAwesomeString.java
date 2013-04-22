@@ -1,0 +1,276 @@
+package com.ralibi.dodombaan.manager;
+
+public class FontAwesomeString {
+	
+	// References:  
+	//		http://fortawesome.github.io/Font-Awesome/
+	//		http://fortawesome.github.io/Font-Awesome/design.html
+	
+	public static final String GLASS                = String.valueOf('\uf000');
+	public static final String MUSIC                = String.valueOf('\uf001');
+	public static final String SEARCH               = String.valueOf('\uf002');
+	public static final String ENVELOPE             = String.valueOf('\uf003');
+	public static final String HEART                = String.valueOf('\uf004');
+	public static final String STAR                 = String.valueOf('\uf005');
+	public static final String STAR_EMPTY           = String.valueOf('\uf006');
+	public static final String USER                 = String.valueOf('\uf007');
+	public static final String FILM                 = String.valueOf('\uf008');
+	public static final String TH_LARGE             = String.valueOf('\uf009');
+	public static final String TH                   = String.valueOf('\uf00a');
+	public static final String TH_LIST              = String.valueOf('\uf00b');
+	public static final String OK                   = String.valueOf('\uf00c');
+	public static final String REMOVE               = String.valueOf('\uf00d');
+	public static final String ZOOM_IN              = String.valueOf('\uf00e');
+
+	public static final String ZOOM_OUT             = String.valueOf('\uf010');
+	public static final String OFF                  = String.valueOf('\uf011');
+	public static final String SIGNAL               = String.valueOf('\uf012');
+	public static final String COG                  = String.valueOf('\uf013');
+	public static final String TRASH                = String.valueOf('\uf014');
+	public static final String HOME                 = String.valueOf('\uf015');
+	public static final String FILE                 = String.valueOf('\uf016');
+	public static final String TIME                 = String.valueOf('\uf017');
+	public static final String ROAD                 = String.valueOf('\uf018');
+	public static final String DOWNLOAD_ALT         = String.valueOf('\uf019');
+	public static final String DOWNLOAD             = String.valueOf('\uf01a');
+	public static final String UPLOAD               = String.valueOf('\uf01b');
+	public static final String INBOX                = String.valueOf('\uf01c');
+	public static final String PLAY_CIRCLE          = String.valueOf('\uf01d');
+	public static final String REPEAT               = String.valueOf('\uf01e');
+
+	public static final String REFRESH              = String.valueOf('\uf021');
+	public static final String LIST_ALT             = String.valueOf('\uf022');
+	public static final String LOCK                 = String.valueOf('\uf023');
+	public static final String FLAG                 = String.valueOf('\uf024');
+	public static final String HEADPHONES           = String.valueOf('\uf025');
+	public static final String VOLUME_OFF           = String.valueOf('\uf026');
+	public static final String VOLUME_DOWN          = String.valueOf('\uf027');
+	public static final String VOLUME_UP            = String.valueOf('\uf028');
+	public static final String QRCODE               = String.valueOf('\uf029');
+	public static final String BARCODE              = String.valueOf('\uf02a');
+	public static final String TAG                  = String.valueOf('\uf02b');
+	public static final String TAGS                 = String.valueOf('\uf02c');
+	public static final String BOOK                 = String.valueOf('\uf02d');
+	public static final String BOOKMARK             = String.valueOf('\uf02e');
+	public static final String PRINT                = String.valueOf('\uf02f');
+
+	public static final String CAMERA               = String.valueOf('\uf030');
+	public static final String FONT                 = String.valueOf('\uf031');
+	public static final String BOLD                 = String.valueOf('\uf032');
+	public static final String ITALIC               = String.valueOf('\uf033');
+	public static final String TEXT_HEIGHT          = String.valueOf('\uf034');
+	public static final String TEXT_WIDTH           = String.valueOf('\uf035');
+	public static final String ALIGN_LEFT           = String.valueOf('\uf036');
+	public static final String ALIGN_CENTER         = String.valueOf('\uf037');
+	public static final String ALIGN_RIGHT          = String.valueOf('\uf038');
+	public static final String ALIGN_JUSTIFY        = String.valueOf('\uf039');
+	public static final String LIST                 = String.valueOf('\uf03a');
+	public static final String INDENT_LEFT          = String.valueOf('\uf03b');
+	public static final String INDENT_RIGHT         = String.valueOf('\uf03c');
+	public static final String FACETIME_VIDEO       = String.valueOf('\uf03d');
+	public static final String PICTURE              = String.valueOf('\uf03e');
+
+	public static final String PENCIL               = String.valueOf('\uf040');
+	public static final String MAP_MARKER           = String.valueOf('\uf041');
+	public static final String ADJUST               = String.valueOf('\uf042');
+	public static final String TINT                 = String.valueOf('\uf043');
+	public static final String EDIT                 = String.valueOf('\uf044');
+	public static final String SHARE                = String.valueOf('\uf045');
+	public static final String CHECK                = String.valueOf('\uf046');
+	public static final String MOVE                 = String.valueOf('\uf047');
+	public static final String STEP_BACKWARD        = String.valueOf('\uf048');
+	public static final String FAST_BACKWARD        = String.valueOf('\uf049');
+	public static final String BACKWARD             = String.valueOf('\uf04a');
+	public static final String PLAY                 = String.valueOf('\uf04b');
+	public static final String PAUSE                = String.valueOf('\uf04c');
+	public static final String STOP                 = String.valueOf('\uf04d');
+	public static final String FORWARD              = String.valueOf('\uf04e');
+
+	public static final String FAST_FORWARD         = String.valueOf('\uf050');
+	public static final String STEP_FORWARD         = String.valueOf('\uf051');
+	public static final String EJECT                = String.valueOf('\uf052');
+	public static final String CHEVRON_LEFT         = String.valueOf('\uf053');
+	public static final String CHEVRON_RIGHT        = String.valueOf('\uf054');
+	public static final String PLUS_SIGN            = String.valueOf('\uf055');
+	public static final String MINUS_SIGN           = String.valueOf('\uf056');
+	public static final String REMOVE_SIGN          = String.valueOf('\uf057');
+	public static final String OK_SIGN              = String.valueOf('\uf058');
+	public static final String QUESTION_SIGN        = String.valueOf('\uf059');
+	public static final String INFO_SIGN            = String.valueOf('\uf05a');
+	public static final String SCREENSHOT           = String.valueOf('\uf05b');
+	public static final String REMOVE_CIRCLE        = String.valueOf('\uf05c');
+	public static final String OK_CIRCLE            = String.valueOf('\uf05d');
+	public static final String BAN_CIRCLE           = String.valueOf('\uf05e');
+
+	public static final String ARROW_LEFT           = String.valueOf('\uf060');
+	public static final String ARROW_RIGHT          = String.valueOf('\uf061');
+	public static final String ARROW_UP             = String.valueOf('\uf062');
+	public static final String ARROW_DOWN           = String.valueOf('\uf063');
+	public static final String SHARE_ALT            = String.valueOf('\uf064');
+	public static final String RESIZE_FULL          = String.valueOf('\uf065');
+	public static final String RESIZE_SMALL         = String.valueOf('\uf066');
+	public static final String PLUS                 = String.valueOf('\uf067');
+	public static final String MINUS                = String.valueOf('\uf068');
+	public static final String ASTERISK             = String.valueOf('\uf069');
+	public static final String EXCLAMATION_SIGN     = String.valueOf('\uf06a');
+	public static final String GIFT                 = String.valueOf('\uf06b');
+	public static final String LEAF                 = String.valueOf('\uf06c');
+	public static final String FIRE                 = String.valueOf('\uf06d');
+	public static final String EYE_OPEN             = String.valueOf('\uf06e');
+
+	public static final String EYE_CLOSE            = String.valueOf('\uf070');
+	public static final String WARNING_SIGN         = String.valueOf('\uf071');
+	public static final String PLANE                = String.valueOf('\uf072');
+	public static final String CALENDAR             = String.valueOf('\uf073');
+	public static final String RANDOM               = String.valueOf('\uf074');
+	public static final String COMMENT              = String.valueOf('\uf075');
+	public static final String MAGNET               = String.valueOf('\uf076');
+	public static final String CHEVRON_UP           = String.valueOf('\uf077');
+	public static final String CHEVRON_DOWN         = String.valueOf('\uf078');
+	public static final String RETWEET              = String.valueOf('\uf079');
+	public static final String SHOPPING_CART        = String.valueOf('\uf07a');
+	public static final String FOLDER_CLOSE         = String.valueOf('\uf07b');
+	public static final String FOLDER_OPEN          = String.valueOf('\uf07c');
+	public static final String RESIZE_VERTICAL      = String.valueOf('\uf07d');
+	public static final String RESIZE_HORIZONTAL    = String.valueOf('\uf07e');
+
+	public static final String BAR_CHART            = String.valueOf('\uf080');
+	public static final String TWITTER_SIGN         = String.valueOf('\uf081');
+	public static final String FACEBOOK_SIGN        = String.valueOf('\uf082');
+	public static final String CAMERA_RETRO         = String.valueOf('\uf083');
+	public static final String KEY                  = String.valueOf('\uf084');
+	public static final String COGS                 = String.valueOf('\uf085');
+	public static final String COMMENTS             = String.valueOf('\uf086');
+	public static final String THUMBS_UP            = String.valueOf('\uf087');
+	public static final String THUMBS_DOWN          = String.valueOf('\uf088');
+	public static final String STAR_HALF            = String.valueOf('\uf089');
+	public static final String HEART_EMPTY          = String.valueOf('\uf08a');
+	public static final String SIGNOUT              = String.valueOf('\uf08b');
+	public static final String LINKEDIN_SIGN        = String.valueOf('\uf08c');
+	public static final String PUSHPIN              = String.valueOf('\uf08d');
+	public static final String EXTERNAL_LINK        = String.valueOf('\uf08e');
+
+	public static final String SIGNIN               = String.valueOf('\uf090');
+	public static final String TROPHY               = String.valueOf('\uf091');
+	public static final String GITHUB_SIGN          = String.valueOf('\uf092');
+	public static final String UPLOAD_ALT           = String.valueOf('\uf093');
+	public static final String LEMON                = String.valueOf('\uf094');
+	public static final String PHONE                = String.valueOf('\uf095');
+	public static final String CHECK_EMPTY          = String.valueOf('\uf096');
+	public static final String BOOKMARK_EMPTY       = String.valueOf('\uf097');
+	public static final String PHONE_SIGN           = String.valueOf('\uf098');
+	public static final String TWITTER              = String.valueOf('\uf099');
+	public static final String FACEBOOK             = String.valueOf('\uf09a');
+	public static final String GITHUB               = String.valueOf('\uf09b');
+	public static final String UNLOCK               = String.valueOf('\uf09c');
+	public static final String CREDIT_CARD          = String.valueOf('\uf09d');
+	public static final String RSS                  = String.valueOf('\uf09e');
+
+	public static final String HDD                  = String.valueOf('\uf0a0');
+	public static final String BULLHORN             = String.valueOf('\uf0a1');
+	public static final String BELL                 = String.valueOf('\uf0a2');
+	public static final String CERTIFICATE          = String.valueOf('\uf0a3');
+	public static final String HAND_RIGHT           = String.valueOf('\uf0a4');
+	public static final String HAND_LEFT            = String.valueOf('\uf0a5');
+	public static final String HAND_UP              = String.valueOf('\uf0a6');
+	public static final String HAND_DOWN            = String.valueOf('\uf0a7');
+	public static final String CIRCLE_ARROW_LEFT    = String.valueOf('\uf0a8');
+	public static final String CIRCLE_ARROW_RIGHT   = String.valueOf('\uf0a9');
+	public static final String CIRCLE_ARROW_UP      = String.valueOf('\uf0aa');
+	public static final String CIRCLE_ARROW_DOWN    = String.valueOf('\uf0ab');
+	public static final String GLOBE                = String.valueOf('\uf0ac');
+	public static final String WRENCH               = String.valueOf('\uf0ad');
+	public static final String TASKS                = String.valueOf('\uf0ae');
+
+	public static final String FILTER               = String.valueOf('\uf0b0');
+	public static final String BRIEFCASE            = String.valueOf('\uf0b1');
+	public static final String FULLSCREEN           = String.valueOf('\uf0b2');
+
+	public static final String GROUP                = String.valueOf('\uf0c0');
+	public static final String LINK                 = String.valueOf('\uf0c1');
+	public static final String CLOUD                = String.valueOf('\uf0c2');
+	public static final String BEAKER               = String.valueOf('\uf0c3');
+	public static final String CUT                  = String.valueOf('\uf0c4');
+	public static final String COPY                 = String.valueOf('\uf0c5');
+	public static final String PAPER_CLIP           = String.valueOf('\uf0c6');
+	public static final String SAVE                 = String.valueOf('\uf0c7');
+	public static final String SIGN_BLANK           = String.valueOf('\uf0c8');
+	public static final String REORDER              = String.valueOf('\uf0c9');
+	public static final String LIST_UL              = String.valueOf('\uf0ca');
+	public static final String LIST_OL              = String.valueOf('\uf0cb');
+	public static final String STRIKETHROUGH        = String.valueOf('\uf0cc');
+	public static final String UNDERLINE            = String.valueOf('\uf0cd');
+	public static final String TABLE                = String.valueOf('\uf0ce');
+
+	public static final String MAGIC                = String.valueOf('\uf0d0');
+	public static final String TRUCK                = String.valueOf('\uf0d1');
+	public static final String PINTEREST            = String.valueOf('\uf0d2');
+	public static final String PINTEREST_SIGN       = String.valueOf('\uf0d3');
+	public static final String GOOGLE_PLUS_SIGN     = String.valueOf('\uf0d4');
+	public static final String GOOGLE_PLUS          = String.valueOf('\uf0d5');
+	public static final String MONEY                = String.valueOf('\uf0d6');
+	public static final String CARET_DOWN           = String.valueOf('\uf0d7');
+	public static final String CARET_UP             = String.valueOf('\uf0d8');
+	public static final String CARET_LEFT           = String.valueOf('\uf0d9');
+	public static final String CARET_RIGHT          = String.valueOf('\uf0da');
+	public static final String COLUMNS              = String.valueOf('\uf0db');
+	public static final String SORT                 = String.valueOf('\uf0dc');
+	public static final String SORT_DOWN            = String.valueOf('\uf0dd');
+	public static final String SORT_UP              = String.valueOf('\uf0de');
+
+	public static final String ENVELOPE_ALT         = String.valueOf('\uf0e0');
+	public static final String LINKEDIN             = String.valueOf('\uf0e1');
+	public static final String UNDO                 = String.valueOf('\uf0e2');
+	public static final String LEGAL                = String.valueOf('\uf0e3');
+	public static final String DASHBOARD            = String.valueOf('\uf0e4');
+	public static final String COMMENT_ALT          = String.valueOf('\uf0e5');
+	public static final String COMMENTS_ALT         = String.valueOf('\uf0e6');
+	public static final String BOLT                 = String.valueOf('\uf0e7');
+	public static final String SITEMAP              = String.valueOf('\uf0e8');
+	public static final String UMBRELLA             = String.valueOf('\uf0e9');
+	public static final String PASTE                = String.valueOf('\uf0ea');
+	public static final String LIGHTBULB            = String.valueOf('\uf0eb');
+	public static final String EXCHANGE             = String.valueOf('\uf0ec');
+	public static final String CLOUD_DOWNLOAD       = String.valueOf('\uf0ed');
+	public static final String CLOUD_UPLOAD         = String.valueOf('\uf0ee');
+
+	public static final String USER_MD              = String.valueOf('\uf0f0');
+	public static final String STETHOSCOPE          = String.valueOf('\uf0f1');
+	public static final String SUITCASE             = String.valueOf('\uf0f2');
+	public static final String BELL_ALT             = String.valueOf('\uf0f3');
+	public static final String COFFEE               = String.valueOf('\uf0f4');
+	public static final String FOOD                 = String.valueOf('\uf0f5');
+	public static final String FILE_ALT             = String.valueOf('\uf0f6');
+	public static final String BUILDING             = String.valueOf('\uf0f7');
+	public static final String HOSPITAL             = String.valueOf('\uf0f8');
+	public static final String AMBULANCE            = String.valueOf('\uf0f9');
+	public static final String MEDKIT               = String.valueOf('\uf0fa');
+	public static final String FIGHTER_JET          = String.valueOf('\uf0fb');
+	public static final String BEER                 = String.valueOf('\uf0fc');
+	public static final String H_SIGN               = String.valueOf('\uf0fd');
+	public static final String PLUS_SIGN_ALT        = String.valueOf('\uf0fe');
+
+	public static final String DOUBLE_ANGLE_LEFT    = String.valueOf('\uf100');
+	public static final String DOUBLE_ANGLE_RIGHT   = String.valueOf('\uf101');
+	public static final String DOUBLE_ANGLE_UP      = String.valueOf('\uf102');
+	public static final String DOUBLE_ANGLE_DOWN    = String.valueOf('\uf103');
+	public static final String ANGLE_LEFT           = String.valueOf('\uf104');
+	public static final String ANGLE_RIGHT          = String.valueOf('\uf105');
+	public static final String ANGLE_UP             = String.valueOf('\uf106');
+	public static final String ANGLE_DOWN           = String.valueOf('\uf107');
+	public static final String DESKTOP              = String.valueOf('\uf108');
+	public static final String LAPTOP               = String.valueOf('\uf109');
+	public static final String TABLET               = String.valueOf('\uf10a');
+	public static final String MOBILE_PHONE         = String.valueOf('\uf10b');
+	public static final String CIRCLE_BLANK         = String.valueOf('\uf10c');
+	public static final String QUOTE_LEFT           = String.valueOf('\uf10d');
+	public static final String QUOTE_RIGHT          = String.valueOf('\uf10e');
+
+	public static final String SPINNER              = String.valueOf('\uf110');
+	public static final String CIRCLE               = String.valueOf('\uf111');
+	public static final String REPLY                = String.valueOf('\uf112');
+	public static final String GITHUB_ALT           = String.valueOf('\uf113');
+	public static final String FOLDER_CLOSE_ALT     = String.valueOf('\uf114');
+	public static final String FOLDER_OPEN_ALT      = String.valueOf('\uf115');
+
+}

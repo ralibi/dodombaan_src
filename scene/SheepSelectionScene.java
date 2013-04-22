@@ -8,7 +8,9 @@ import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.debug.Debug;
@@ -16,6 +18,7 @@ import org.andengine.util.debug.Debug;
 
 import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.component.ScrollMenuEntity;
+import com.ralibi.dodombaan.component.ScrollMenuEntity.DeselectListener;
 import com.ralibi.dodombaan.component.ScrollPanel;
 import com.ralibi.dodombaan.manager.GameConfigurationManager;
 import com.ralibi.dodombaan.manager.SceneManager;
@@ -37,6 +40,9 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 	private ScrollMenuEntity scrollMenuSheepP2;
 
 	
+	ButtonSprite nextButton;
+	
+	
 	
 	@Override
 	public void createScene() {
@@ -46,23 +52,45 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 	}
 
 	private void createScrollMenuSheep() {
-
-		ScrollPanel sheepSelectP1 = new ScrollPanel();
-		scrollMenuSheepP1 = new ScrollMenuEntity(200, 300, 250, 300, sheepSelectP1);
+		scrollMenuSheepP1 = new ScrollMenuEntity(200, 300, 250, 300, new DeselectListener() {
+			@Override
+			public void onSelect() {
+				if(scrollMenuSheepP2.getSelectedMenuIndex() >= 0){
+					nextButton.setEnabled(true);
+				}
+				resourcesManager.majorSound.play();
+			}
+			
+			@Override
+			public void onDeselect() {
+				nextButton.setEnabled(false);
+			}
+		});
 		scrollMenuSheepP1.buildSprite(100, 200, 200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
-		scrollMenuSheepP1.attachChild(sheepSelectP1);
 		registerTouchArea(scrollMenuSheepP1);
 		registerTouchArea(scrollMenuSheepP1.getScrollPanel().getChildByIndex(0));
 		attachChild(scrollMenuSheepP1);
+		// attachChild(scrollMenuSheepP1.getSelectButton());
 		
 		buildSheepCharacteristicMenu(scrollMenuSheepP1);
 		
 		
 
-		ScrollPanel sheepSelectP2 = new ScrollPanel();
-		scrollMenuSheepP2 = new ScrollMenuEntity(600, 300, 250, 300, sheepSelectP2);
+		scrollMenuSheepP2 = new ScrollMenuEntity(600, 300, 250, 300, new DeselectListener() {
+			@Override
+			public void onSelect() {
+				if(scrollMenuSheepP1.getSelectedMenuIndex() >= 0){
+					nextButton.setEnabled(true);
+				}
+				resourcesManager.minorSound.play();
+			}
+			
+			@Override
+			public void onDeselect() {
+				nextButton.setEnabled(false);
+			}
+		});
 		scrollMenuSheepP2.buildSprite(100, 200, 200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
-		scrollMenuSheepP2.attachChild(sheepSelectP2);
 		registerTouchArea(scrollMenuSheepP2);
 		registerTouchArea(scrollMenuSheepP2.getScrollPanel().getChildByIndex(0));
 		attachChild(scrollMenuSheepP2);
@@ -84,8 +112,7 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 			Text strenghtText = new Text(0, 88, resourcesManager.fontSmall, "Strength", vbom);
 			strenghtText.setPosition(anchorX + strenghtText.getWidth()/2f, 192);
 			strengthGroup.attachChild(strenghtText);
-			Debug.d("i: " + i);
-			strengthGroup.attachChild(getCharacteristicMeter(anchorX, 168, GameConfigurationManager.getInstance().strength[i]));
+			strengthGroup.attachChild(getCharacteristicMeter(anchorX, 168, GameConfigurationManager.STRENGTH[i]));
 			characteristicGroup.attachChild(strengthGroup);
 
 			
@@ -94,14 +121,14 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 			Text speedText = new Text(0, 88, resourcesManager.fontSmall, "Speed", vbom);
 			speedText.setPosition(anchorX + speedText.getWidth()/2f, 128);
 			speedGroup.attachChild(speedText);
-			speedGroup.attachChild(getCharacteristicMeter(anchorX, 104, GameConfigurationManager.getInstance().speed[i]));
+			speedGroup.attachChild(getCharacteristicMeter(anchorX, 104, GameConfigurationManager.SPEED[i]));
 			characteristicGroup.attachChild(speedGroup);
 
 			final Entity agilityGroup = new Entity(0, 0);
 			Text agilityText = new Text(0, 88, resourcesManager.fontSmall, "Agility", vbom);
 			agilityText.setPosition(anchorX + agilityText.getWidth()/2f, 64);
 			agilityGroup.attachChild(agilityText);
-			agilityGroup.attachChild(getCharacteristicMeter(anchorX, 44, GameConfigurationManager.getInstance().agility[i]));
+			agilityGroup.attachChild(getCharacteristicMeter(anchorX, 44, GameConfigurationManager.getInstance().AGILITY[i]));
 			characteristicGroup.attachChild(agilityGroup);
 			
 			scrollMenuSheep.getScrollPanel().attachChild(characteristicGroup);
@@ -149,16 +176,24 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 		menuChildScene.setPosition(400, 240);
 
 	    final IMenuItem backItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_BACK, resourcesManager.sheepSelectionBackRegion, vbom), 1.2f, 1);
-	    final IMenuItem nextItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_NEXT, resourcesManager.sheepSelectionNextRegion, vbom), 1.2f, 1);
+	    nextButton = new ButtonSprite(600, 40, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {	
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,	float pTouchAreaLocalY) {
+				gameDataManager.p1SheepIndex = scrollMenuSheepP1.getSelectedMenuIndex();
+				gameDataManager.p2SheepIndex = scrollMenuSheepP2.getSelectedMenuIndex();
+				SceneManager.getInstance().loadMatchSettingsSceneFromSheepSelection(engine);
+			}
+		});
+	    
+	    registerTouchArea(nextButton);
+	    attachChild(nextButton);
 	    
 	    menuChildScene.addMenuItem(backItem);
-	    menuChildScene.addMenuItem(nextItem);
 	    
 	    menuChildScene.buildAnimations();
 	    menuChildScene.setBackgroundEnabled(false);
 
 	    backItem.setPosition(-200, -200);
-	    nextItem.setPosition(200, -200);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
 	    
@@ -178,8 +213,10 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
-		
+		scrollMenuSheepP1.detachChildren();
+		scrollMenuSheepP2.detachChildren();
+		detachChild(scrollMenuSheepP1);
+		detachChild(scrollMenuSheepP2);
 	}
 
 	@Override

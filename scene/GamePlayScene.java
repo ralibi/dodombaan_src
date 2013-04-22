@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.Entity;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -13,7 +14,10 @@ import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.ButtonSprite.State;
+import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
@@ -60,8 +64,9 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	private Sheep sheepP1;
 	private Sheep sheepP2;
 	private Sprite arena;
-	private Sprite nailP1;
-	private Sprite nailP2;
+	
+	private Entity nailP1;
+	private Entity nailP2;
 	
 	private Sprite pauseButton;
 	private MenuScene menuPauseScene;
@@ -69,7 +74,8 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	private Text winningAnnouncementText;
 	
 
-	private GestureDetector mDetector;
+	private GestureDetector gDetectorP1;
+	private GestureDetector gDetectorP2;
 	// private ScrollMenu gamePlayHUD;
 	
 	
@@ -176,35 +182,79 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	}
 
 	private void createNail() {
-		nailP1 = new Sprite(80, 240, resourcesManager.gamePlayNailRegion, vbom){
-			@Override	
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				sheepP1.moveForward(getOrientationType(this, pTouchAreaLocalX, pTouchAreaLocalY));
-				resourcesManager.vibrator.vibrate(50);
-				mDetector.onTouchEvent(pSceneTouchEvent.getMotionEvent());
-				return false;
-			}
-		};
-		nailP2 = new Sprite(720, 240, resourcesManager.gamePlayNailRegion, vbom){
-			@Override	
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				sheepP2.moveForward(getOrientationType(this, pTouchAreaLocalX, pTouchAreaLocalY));
-				resourcesManager.vibrator.vibrate(50);
-				return false;
-			}
-		};
+		nailP1 = new Entity();
+		nailP2 = new Entity();
+		
+		for (int i = 0; i < resourcesManager.nailNormalRegions.size(); i++) {
+			final int _i = i;
+			TiledSprite nail_part_1 = new TiledSprite(80, 240 - ((i - 2) * 20), resourcesManager.nailNormalRegions.get(i), vbom){
+				@Override	
+				public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+					sheepP1.moveForward(2 - _i);
+					resourcesManager.vibrator.vibrate(50);
+					gDetectorP1.onTouchEvent(pSceneTouchEvent.getMotionEvent());
+					
+					if (pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove()) {
+						
+						for (int j = 0; j < nailP1.getChildCount(); j++) {
+							((TiledSprite) nailP1.getChildByIndex(j)).setCurrentTileIndex(0);
+						}
+						
+						this.setCurrentTileIndex(1);
+					} else {
+						this.setCurrentTileIndex(0);
+					}
+					
+					return false;
+				}
+			};
+			
+			nailP1.attachChild(nail_part_1);
+			registerTouchArea(nail_part_1);
+			
 
+			TiledSprite nail_part_2 = new TiledSprite(720, 240 - ((i - 2) * 20), resourcesManager.nailNormalRegions.get(i), vbom){
+				@Override	
+				public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+					sheepP2.moveForward(2 - _i);
+					resourcesManager.vibrator.vibrate(50);
+					gDetectorP2.onTouchEvent(pSceneTouchEvent.getMotionEvent());
+					
+					if (pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove()) {
+						
+						for (int j = 0; j < nailP2.getChildCount(); j++) {
+							((TiledSprite) nailP2.getChildByIndex(j)).setCurrentTileIndex(0);
+						}
+						
+						this.setCurrentTileIndex(1);
+					} else {
+						this.setCurrentTileIndex(0);
+					}
+					
+					return false;
+				}
+			};
+			
+			nailP2.attachChild(nail_part_2);
+			registerTouchArea(nail_part_2);
+			
+			FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+			Body bodyNailP1 = PhysicsFactory.createCircleBody(mPhysicsWorld, nail_part_1, BodyType.StaticBody, FIXTURE_DEF);
+			Body bodyNailP2 = PhysicsFactory.createCircleBody(mPhysicsWorld, nail_part_2, BodyType.StaticBody, FIXTURE_DEF);
+			mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nail_part_1, bodyNailP1, true, true));
+			mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nail_part_2, bodyNailP2, true, true));
+		}
+		
 		createNewThread();
 		
-		
-		FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-		Body bodyNailP1 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP1, BodyType.StaticBody, FIXTURE_DEF);
-		Body bodyNailP2 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP2, BodyType.StaticBody, FIXTURE_DEF);
-		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP1, bodyNailP1, true, true));
-		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP2, bodyNailP2, true, true));
-
-		registerTouchArea(nailP1);
-		registerTouchArea(nailP2);
+//		FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+//		Body bodyNailP1 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP1, BodyType.StaticBody, FIXTURE_DEF);
+//		Body bodyNailP2 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP2, BodyType.StaticBody, FIXTURE_DEF);
+//		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP1, bodyNailP1, true, true));
+//		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP2, bodyNailP2, true, true));
+//
+//		registerTouchArea(nailP1);
+//		registerTouchArea(nailP2);
 		
 		attachChild(nailP1);
 		attachChild(nailP2);
@@ -217,10 +267,18 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		ResourcesManager.getInstance().activity.runOnUiThread(new Runnable() {
 
 			public void run() {
-				mDetector = new GestureDetector(ResourcesManager.getInstance().activity, new SimpleOnGestureListener(){
+				gDetectorP1 = new GestureDetector(ResourcesManager.getInstance().activity, new SimpleOnGestureListener(){
 					public boolean onDoubleTap(MotionEvent e)
 					{     
 						sheepP1.jumpBackward();
+						return true;
+					}
+				});
+
+				gDetectorP2 = new GestureDetector(ResourcesManager.getInstance().activity, new SimpleOnGestureListener(){
+					public boolean onDoubleTap(MotionEvent e)
+					{     
+						sheepP2.jumpBackward();
 						return true;
 					}
 				});

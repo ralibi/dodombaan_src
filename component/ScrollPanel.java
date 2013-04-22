@@ -21,11 +21,22 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 	private int itemCount = 0;
 	private int itemWidth = 0;
 	private int itemHeight = 0;
-	private int selectedIndex = 0;
+	private int currentIndex = 0;
+	private int selectedIndex = -1;
 
 	//---------------------------------------------
     // CONSTRUCTOR
     //---------------------------------------------
+
+	public int getSelectedIndex() {
+		return selectedIndex;
+	}
+
+	public void setSelectedIndex(int selectedIndex) {
+		this.selectedIndex = selectedIndex;
+	}
+
+
 
 	public ScrollPanel() {
 		super();
@@ -90,12 +101,12 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 		this.itemHeight = itemHeight;
 	}
 	
-	public int getSelectedIndex() {
-		return selectedIndex;
+	public int getCurrentIndex() {
+		return currentIndex;
 	}
 
-	public void setSelectedIndex(int selectedIndex) {
-		this.selectedIndex = selectedIndex;
+	public void setCurrentIndex(int currentIndex) {
+		this.currentIndex = currentIndex;
 	}
 	
 	public void navigate(int direction){
@@ -138,15 +149,15 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 			
 			float posMinX = paddingLeft;
 			float posMaxX = ((1-itemCount) * itemWidth) + paddingLeft;
-			float posSnapX = (-selectedIndex * itemWidth) + paddingLeft;
+			float posSnapX = (-currentIndex * itemWidth) + paddingLeft;
 			
 
 			if(this.mPhysicsHandler.getVelocityX() == 0){
 				if(this.getX() > posSnapX){
-					if(this.getX() - posSnapX > itemWidth/2 && selectedIndex > 0){
+					if(this.getX() - posSnapX > itemWidth/2 && currentIndex > 0){
 						setMovingRight(true);
 						this.mPhysicsHandler.setVelocityX(itemWidth * 2);
-						selectedIndex -= 1;
+						currentIndex -= 1;
 					}
 					else{
 						setMovingRight(false);
@@ -154,10 +165,10 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 					}
 					
 				}else if(this.getX() < posSnapX){
-					if(posSnapX - this.getX() > itemWidth/2 && selectedIndex < itemCount - 1){
+					if(posSnapX - this.getX() > itemWidth/2 && currentIndex < itemCount - 1){
 						setMovingRight(false);
 						this.mPhysicsHandler.setVelocityX(-itemWidth * 2);
-						selectedIndex += 1;
+						currentIndex += 1;
 					}
 					else{
 						setMovingRight(true);
@@ -179,11 +190,11 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 			
 			if(this.getX() > posMinX){
 				this.setX(posMinX);
-				selectedIndex = 0;
+				currentIndex = 0;
 			}
 			else if(this.getX() < posMaxX){
 				this.setX(posMaxX);
-				selectedIndex = itemCount - 1;
+				currentIndex = itemCount - 1;
 			}
 			
 		}

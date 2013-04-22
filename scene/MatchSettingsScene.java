@@ -32,10 +32,8 @@ public class MatchSettingsScene extends BaseScene implements IOnMenuItemClickLis
 	}
 
 	private void createArenaScrollMenu() {
-		ScrollPanel arenaPanel = new ScrollPanel();
-		scrollEntityArena = new ScrollMenuEntity(400, 240, 720, 240, arenaPanel);
+		scrollEntityArena = new ScrollMenuEntity(400, 240, 720, 240);
 		scrollEntityArena.buildSprite(300, 120, 600, 240, resourcesManager.matchSettingsArenaRegions, this, vbom);
-		scrollEntityArena.attachChild(arenaPanel);
 		registerTouchArea(scrollEntityArena);
 		attachChild(scrollEntityArena);
 	}

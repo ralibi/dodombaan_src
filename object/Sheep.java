@@ -17,19 +17,24 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.ralibi.dodombaan.manager.GameConfigurationManager;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 
 public class Sheep {
 	private final int SEGMENT_COUNT = 3;
 	private final float PX_TO_M_RATIO = PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
-	private final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+	private FixtureDef fixtureDef;
 	
 	private final int LINEAR_DAMPING = 10;
 	private final int ANGULAR_DAMPING = 10;
-	private final int FORCE = 120;
+	private float force = 120;
 	private final int ANGLE_LIMIT = 30;
 	private final int ARENA_CENTER_FORCE = 3;
 	private final int SHEEP_CENTER_FORCE = 10;
+	private final int BACKWARD_FORCE = -50;
+
+	private final int ARENA_WIDTH = 32;
+	
 	
 	private List<Body> bodySegments = new ArrayList<Body>();
 	private List<Sprite> spriteSegments = new ArrayList<Sprite>();
@@ -62,7 +67,7 @@ public class Sheep {
 			Sprite sprite = new Sprite(this.x + (32*direction*i), 240, ResourcesManager.getInstance().gamePlaySheepSegmentRegions.get(sheepIndex), vbom){
 				@Override
 				protected void onManagedUpdate(final float pSecondsElapsed) {
-					if(this.mY < 240 - 12 || this.mY > 240 + 12){
+					if(this.mY < 240 - ARENA_WIDTH/2 || this.mY > 240 + ARENA_WIDTH/2){
 						segmentOut[itemI] = 1;
 					}
 					else{
@@ -84,11 +89,14 @@ public class Sheep {
 					super.onManagedUpdate(pSecondsElapsed);
 				}
 			};
-			Body body = PhysicsFactory.createPolygonBody(mPhysicsWorld, sprite, vertices, BodyType.DynamicBody, FIXTURE_DEF);
+			fixtureDef = PhysicsFactory.createFixtureDef(GameConfigurationManager.DENSITY[GameConfigurationManager.STRENGTH[sheepIndex]], 0.5f, 0.5f);
+			Body body = PhysicsFactory.createPolygonBody(mPhysicsWorld, sprite, vertices, BodyType.DynamicBody, fixtureDef);
 			body.setLinearDamping(LINEAR_DAMPING);
 			body.setAngularDamping(ANGULAR_DAMPING);
 			pScene.attachChild(sprite);
 			mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(sprite, body, true, true));
+			
+			force = GameConfigurationManager.DENSITY[GameConfigurationManager.STRENGTH[sheepIndex]] * 3/5 * GameConfigurationManager.FORCE[GameConfigurationManager.SPEED[sheepIndex]];
 
 			spriteSegments.add(sprite);
 			bodySegments.add(body);
@@ -131,15 +139,15 @@ public class Sheep {
 		//float dY = (bodySegments.get(0).getPosition().y - 240/PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
 		// Debug.d("dy: " + dY);
 		
-		float dY = orientation_type * 5f;
+		float dY = orientation_type * (float) Math.sqrt((double) force);
 		
-		bodySegments.get(0).applyForce(  bodySegments.get(0).getWorldVector(new Vector2(FORCE * direction, -dY))  , new Vector2(bodySegments.get(0).getPosition().x + direction/2, bodySegments.get(0).getPosition().y));
+		bodySegments.get(0).applyForce(  bodySegments.get(0).getWorldVector(new Vector2(force * direction, -dY))  , new Vector2(bodySegments.get(0).getPosition().x + direction/2, bodySegments.get(0).getPosition().y));
 	}
 	
 	public void jumpBackward() {
 		int segment_idx = SEGMENT_COUNT - 1;
 		float dY = (bodySegments.get(segment_idx).getPosition().y - 240/PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
-		bodySegments.get(segment_idx).applyForce(  bodySegments.get(segment_idx).getWorldVector(new Vector2(FORCE * -50 * direction, -dY))  , new Vector2(bodySegments.get(segment_idx).getPosition().x + direction/2, bodySegments.get(segment_idx).getPosition().y));
+		bodySegments.get(segment_idx).applyForce(  bodySegments.get(segment_idx).getWorldVector(new Vector2(force * BACKWARD_FORCE * direction, -dY))  , new Vector2(bodySegments.get(segment_idx).getPosition().x + direction/2, bodySegments.get(segment_idx).getPosition().y));
 	}
 	
 	private float getDeltaHeadY() {

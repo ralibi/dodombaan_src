@@ -1,8 +1,11 @@
 package com.ralibi.dodombaan.manager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.opengl.font.Font;
@@ -16,6 +19,8 @@ import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSourc
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.ITiledTextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 import org.andengine.util.debug.Debug;
@@ -110,17 +115,32 @@ public class ResourcesManager {
 	private BuildableBitmapTextureAtlas settingsTextureAtlas;
 	
 	
-	// shared resource
+	// SHARED RESOURCE
 	public ITextureRegion navLeftRegion;
 	public ITextureRegion navRightRegion;
+
+	public ITextureRegion selectNormalRegion;
+	public ITextureRegion selectPressedRegion;
+	public ITextureRegion selectDisabledRegion;
+
+	public ITextureRegion nextNormalRegion;
+	public ITextureRegion nextPressedRegion;
+	public ITextureRegion nextDisabledRegion;
+	
+
+	public List<TiledTextureRegion> nailNormalRegions = new ArrayList<TiledTextureRegion>();
+
+	private BuildableBitmapTextureAtlas sharedTextureAtlas;
+
 	
 	// Fonts
 	public Font font;
+	public Font fontIcon;
 	public Font fontSmall;
-    
-	
 	
 
+	public Sound majorSound;
+	public Sound minorSound;
 	
 	
 	
@@ -184,11 +204,40 @@ public class ResourcesManager {
 
 	    font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), fontName, (float)50, true, Color.WHITE.getABGRPackedInt(), 2, Color.BLACK.getABGRPackedInt());
 	    font.load();
+
+	    final ITexture mainFontIconTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+	    fontIcon = FontFactory.createFromAsset(activity.getFontManager(), mainFontIconTexture, activity.getAssets(), fontIconName, (float)50, true, Color.GREEN.getABGRPackedInt());
+	    fontIcon.load();
+	    
+	    
+	    
+
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        sharedTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
+       
+        navLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/nav_left.png");
+        navRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/nav_right.png");
+        
+        selectNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_normal.png");
+        selectPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_pressed.png");
+        selectDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_disabled.png");
+        
+        nextNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_normal.png");
+        nextPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_pressed.png");
+        nextDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_disabled.png");
+
+        textureAtlasBuilderException(this.sharedTextureAtlas);
 	}
     
     private void loadMenuAudio()
     {
-    	// TODO Auto-generated method stub
+		SoundFactory.setAssetBasePath("mfx/");
+		try {
+			this.majorSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "angklung_01.ogg");
+			this.minorSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "angklung_02.ogg");
+		} catch (final IOException e) {
+			Debug.e(e);
+		}
     }
     
     public void loadMenuTextures()
@@ -333,14 +382,27 @@ public class ResourcesManager {
         gamePlayNextRoundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "next_round.png");
 
         gamePlayNailRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail.png");
+        
+        
+        
+        
 
+        gamePlaySheepSegmentRegions.clear();
         for (int i = 0; i < sheepCount; i++) {
 			gamePlaySheepSegmentRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ").png"));
 		}
 
+        gamePlayPlayingArenaRegions.clear();
         for (int i = 0; i < arenaCount; i++) {
         	gamePlayPlayingArenaRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "playing_arena (" + (i + 1) + ").png"));
 		}
+        
+        nailNormalRegions.clear();
+        for (int i = 0; i < 5; i++) {
+        	ITextureRegion normalTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail/nail_normal_" + (i + 1) + ".png");
+        	ITextureRegion pressedTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail/nail_pressed_" + (i + 1) + ".png");
+        	nailNormalRegions.add(new TiledTextureRegion(normalTextureRegion.getTexture(), normalTextureRegion, pressedTextureRegion));
+        }
         
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/shared/");
         gamePlayOverlayRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "overlay_background.png");
