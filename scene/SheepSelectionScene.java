@@ -1,12 +1,15 @@
 package com.ralibi.dodombaan.scene;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.Entity;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.debug.Debug;
 
@@ -14,6 +17,7 @@ import org.andengine.util.debug.Debug;
 import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.component.ScrollMenuEntity;
 import com.ralibi.dodombaan.component.ScrollPanel;
+import com.ralibi.dodombaan.manager.GameConfigurationManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -44,22 +48,85 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 	private void createScrollMenuSheep() {
 
 		ScrollPanel sheepSelectP1 = new ScrollPanel();
-		scrollMenuSheepP1 = new ScrollMenuEntity(200, 240, 250, 200, sheepSelectP1);
-		scrollMenuSheepP1.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
+		scrollMenuSheepP1 = new ScrollMenuEntity(200, 300, 250, 300, sheepSelectP1);
+		scrollMenuSheepP1.buildSprite(100, 200, 200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
 		scrollMenuSheepP1.attachChild(sheepSelectP1);
 		registerTouchArea(scrollMenuSheepP1);
 		registerTouchArea(scrollMenuSheepP1.getScrollPanel().getChildByIndex(0));
 		attachChild(scrollMenuSheepP1);
 		
+		buildSheepCharacteristicMenu(scrollMenuSheepP1);
+		
+		
 
 		ScrollPanel sheepSelectP2 = new ScrollPanel();
-		scrollMenuSheepP2 = new ScrollMenuEntity(600, 240, 250, 200, sheepSelectP2);
-		scrollMenuSheepP2.buildSprite(200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
+		scrollMenuSheepP2 = new ScrollMenuEntity(600, 300, 250, 300, sheepSelectP2);
+		scrollMenuSheepP2.buildSprite(100, 200, 200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
 		scrollMenuSheepP2.attachChild(sheepSelectP2);
 		registerTouchArea(scrollMenuSheepP2);
 		registerTouchArea(scrollMenuSheepP2.getScrollPanel().getChildByIndex(0));
 		attachChild(scrollMenuSheepP2);
+
+		buildSheepCharacteristicMenu(scrollMenuSheepP2);
 	}
+
+	private void buildSheepCharacteristicMenu(ScrollMenuEntity scrollMenuSheep) {
+		// TODO Auto-generated method stub
+		
+		
+		for (int i = 0; i < scrollMenuSheep.getScrollPanel().getItemCount(); i++) {
+
+			final Entity characteristicGroup = new Entity(0, 0);
+			int anchorX = 10 + i * 200;
+
+			// Strength
+			final Entity strengthGroup = new Entity(0, 0);
+			Text strenghtText = new Text(0, 88, resourcesManager.fontSmall, "Strength", vbom);
+			strenghtText.setPosition(anchorX + strenghtText.getWidth()/2f, 192);
+			strengthGroup.attachChild(strenghtText);
+			Debug.d("i: " + i);
+			strengthGroup.attachChild(getCharacteristicMeter(anchorX, 168, GameConfigurationManager.getInstance().strength[i]));
+			characteristicGroup.attachChild(strengthGroup);
+
+			
+			// Speed
+			final Entity speedGroup = new Entity(0, 0);
+			Text speedText = new Text(0, 88, resourcesManager.fontSmall, "Speed", vbom);
+			speedText.setPosition(anchorX + speedText.getWidth()/2f, 128);
+			speedGroup.attachChild(speedText);
+			speedGroup.attachChild(getCharacteristicMeter(anchorX, 104, GameConfigurationManager.getInstance().speed[i]));
+			characteristicGroup.attachChild(speedGroup);
+
+			final Entity agilityGroup = new Entity(0, 0);
+			Text agilityText = new Text(0, 88, resourcesManager.fontSmall, "Agility", vbom);
+			agilityText.setPosition(anchorX + agilityText.getWidth()/2f, 64);
+			agilityGroup.attachChild(agilityText);
+			agilityGroup.attachChild(getCharacteristicMeter(anchorX, 44, GameConfigurationManager.getInstance().agility[i]));
+			characteristicGroup.attachChild(agilityGroup);
+			
+			scrollMenuSheep.getScrollPanel().attachChild(characteristicGroup);
+		}
+	}
+	
+	private Entity getCharacteristicMeter(int posX, int posY, int nRect){
+
+		/* Create the rectangles. */
+		final Entity strengthRectangleGroup = new Entity(0, 0);
+		for (int i = 0; i < nRect; i++) {
+			final Rectangle rect = this.makeColoredRectangle(posX + 16 + i * 30, posY, .5f, .2f, .1f);
+			strengthRectangleGroup.attachChild(rect);
+		}
+		return strengthRectangleGroup;
+	}
+	
+
+	private Rectangle makeColoredRectangle(final float pX, final float pY, final float pRed, final float pGreen, final float pBlue) {
+		final Rectangle coloredRect = new Rectangle(pX, pY, 24, 24, vbom);
+		coloredRect.setColor(pRed, pGreen, pBlue);
+		return coloredRect;
+	}
+	
+	
 
 	protected void itemClick(int i) {
 		Debug.d("Clicking: " + i);

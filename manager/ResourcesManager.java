@@ -20,6 +20,9 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 import org.andengine.util.debug.Debug;
 
+import android.content.Context;
+import android.os.Vibrator;
+
 import com.ralibi.dodombaan.MainActivity;
 
 public class ResourcesManager {
@@ -34,7 +37,10 @@ public class ResourcesManager {
     public Camera camera;
     public VertexBufferObjectManager vbom;
     public float screenRatio;
-    
+	public Vibrator vibrator;
+
+	public String fontName = "OpenSans-Regular.ttf";
+	public String fontIconName = "fontawesome-webfont.ttf";
     
     // GENERAL
     private final int sheepCount = 6;
@@ -103,18 +109,24 @@ public class ResourcesManager {
 	public ITextureRegion settingsResetRegion;
 	private BuildableBitmapTextureAtlas settingsTextureAtlas;
 	
+	
+	// shared resource
+	public ITextureRegion navLeftRegion;
+	public ITextureRegion navRightRegion;
+	
 	// Fonts
 	public Font font;
+	public Font fontSmall;
     
 	
 	
+
 	
 	
 	
 	
 	
-	
-	
+
 	
 	
     //---------------------------------------------
@@ -170,7 +182,7 @@ public class ResourcesManager {
 	    FontFactory.setAssetBasePath("font/");
 	    final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 
-	    font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "Droid.ttf", (float)50, true, Color.WHITE.getABGRPackedInt(), 2, Color.BLACK.getABGRPackedInt());
+	    font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), fontName, (float)50, true, Color.WHITE.getABGRPackedInt(), 2, Color.BLACK.getABGRPackedInt());
 	    font.load();
 	}
     
@@ -236,9 +248,22 @@ public class ResourcesManager {
         sheepSelectionNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/next.png");
         sheepSelectionBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/back.png");
 
+        sheepSelectionSheepRegions.clear();
         for (int i = 0; i < sheepCount; i++) {
 			sheepSelectionSheepRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "sheep_selection/sheeps/sheep (" + (i + 1) + ").png"));
 		}
+        
+        // load font
+	    FontFactory.setAssetBasePath("font/");
+	    final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+
+	    fontSmall = FontFactory.createFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), fontName, (float)16, true, Color.BLACK.getABGRPackedInt());
+	    fontSmall.load();
+	    
+	    // load nav
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+        navLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/nav_left.png");
+        navRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sheepSelectionTextureAtlas, activity, "shared/nav_right.png");
         
         textureAtlasBuilderException(this.sheepSelectionTextureAtlas);
 	}
@@ -270,6 +295,7 @@ public class ResourcesManager {
         matchSettingsNextRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/next.png");
         matchSettingsBackRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "shared/back.png");
 
+        matchSettingsArenaRegions.clear();
         for (int i = 0; i < arenaCount; i++) {
         	matchSettingsArenaRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchSettingsTextureAtlas, activity, "match_settings/arenas/arena (" + (i + 1) + ").png"));
 		}
@@ -394,6 +420,7 @@ public class ResourcesManager {
         getInstance().activity = activity;
         getInstance().camera = camera;
         getInstance().vbom = vbom;
+        getInstance().vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);;
         getInstance().screenRatio = getInstance().camera.getSurfaceWidth() / getInstance().camera.getWidth();     
     }
     

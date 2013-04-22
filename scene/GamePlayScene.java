@@ -6,9 +6,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Rectangle;
-import org.andengine.entity.scene.IOnAreaTouchListener;
 import org.andengine.entity.scene.IOnSceneTouchListener;
-import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -25,13 +23,18 @@ import org.andengine.opengl.util.GLState;
 import org.andengine.util.debug.Debug;
 
 
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.GestureDetector.SimpleOnGestureListener;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.ralibi.dodombaan.MainActivity;
-import com.ralibi.dodombaan.MainActivity.MoveSheepServerMessage;
+//import com.ralibi.dodombaan.MainActivity.MoveSheepServerMessage;
 import com.ralibi.dodombaan.base.BaseScene;
+import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 import com.ralibi.dodombaan.object.Sheep;
@@ -65,7 +68,8 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 	private MenuScene menuRoundOverScene;
 	private Text winningAnnouncementText;
 	
-	
+
+	private GestureDetector mDetector;
 	// private ScrollMenu gamePlayHUD;
 	
 	
@@ -117,31 +121,31 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		
 
 		/* We allow only the server to actively send around messages. */
-		if(activity.mSocketServer != null) {
-			this.setOnSceneTouchListener(new IOnSceneTouchListener() {
-				@Override
-				public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
-					if(pSceneTouchEvent.isActionDown()) {
-						try {
-							final MoveSheepServerMessage moveSheepServerMessage = (MoveSheepServerMessage) activity.mMessagePool.obtainMessage(MainActivity.FLAG_MESSAGE_SERVER_MOVE_SHEEP);
-							
-							// moveSheepServerMessage.set(activity.mFaceIDCounter++, pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
-
-							activity.mSocketServer.sendBroadcastServerMessage(moveSheepServerMessage);
-
-							// activity.mMessagePool.recycleMessage(moveSheepServerMessage);
-						} catch (final IOException e) {
-							Debug.e(e);
-						}
-						return true;
-					} else {
-						return true;
-					}
-				}
-			});
-
-			this.setTouchAreaBindingOnActionDownEnabled(true);
-		}
+//		if(activity.mSocketServer != null) {
+//			this.setOnSceneTouchListener(new IOnSceneTouchListener() {
+//				@Override
+//				public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+//					if(pSceneTouchEvent.isActionDown()) {
+//						try {
+//							final MoveSheepServerMessage moveSheepServerMessage = (MoveSheepServerMessage) activity.mMessagePool.obtainMessage(MainActivity.FLAG_MESSAGE_SERVER_MOVE_SHEEP);
+//							
+//							// moveSheepServerMessage.set(activity.mFaceIDCounter++, pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+//
+//							activity.mSocketServer.sendBroadcastServerMessage(moveSheepServerMessage);
+//
+//							// activity.mMessagePool.recycleMessage(moveSheepServerMessage);
+//						} catch (final IOException e) {
+//							Debug.e(e);
+//						}
+//						return true;
+//					} else {
+//						return true;
+//					}
+//				}
+//			});
+//
+//			this.setTouchAreaBindingOnActionDownEnabled(true);
+//		}
 		
 		
 		
@@ -175,17 +179,24 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		nailP1 = new Sprite(80, 240, resourcesManager.gamePlayNailRegion, vbom){
 			@Override	
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				sheepP1.moveForward();
+				sheepP1.moveForward(getOrientationType(this, pTouchAreaLocalX, pTouchAreaLocalY));
+				resourcesManager.vibrator.vibrate(50);
+				mDetector.onTouchEvent(pSceneTouchEvent.getMotionEvent());
 				return false;
 			}
 		};
 		nailP2 = new Sprite(720, 240, resourcesManager.gamePlayNailRegion, vbom){
 			@Override	
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				sheepP2.moveForward();
+				sheepP2.moveForward(getOrientationType(this, pTouchAreaLocalX, pTouchAreaLocalY));
+				resourcesManager.vibrator.vibrate(50);
 				return false;
 			}
 		};
+
+		createNewThread();
+		
+		
 		FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 		Body bodyNailP1 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP1, BodyType.StaticBody, FIXTURE_DEF);
 		Body bodyNailP2 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP2, BodyType.StaticBody, FIXTURE_DEF);
@@ -197,6 +208,32 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		
 		attachChild(nailP1);
 		attachChild(nailP2);
+	}
+	
+	
+
+	private void createNewThread() {
+
+		ResourcesManager.getInstance().activity.runOnUiThread(new Runnable() {
+
+			public void run() {
+				mDetector = new GestureDetector(ResourcesManager.getInstance().activity, new SimpleOnGestureListener(){
+					public boolean onDoubleTap(MotionEvent e)
+					{     
+						sheepP1.jumpBackward();
+						return true;
+					}
+				});
+			}
+		});
+		
+	}
+	
+
+	protected int getOrientationType(Sprite sprite, float pTouchAreaLocalX,
+			float pTouchAreaLocalY) {
+		int result = (int) Math.floor((double) (pTouchAreaLocalY * 5f / sprite.getHeight()) );
+		return result - 2;
 	}
 
 	private void createSheep() {
@@ -296,7 +333,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		registerTouchArea(pauseButton);
 	}
 	
-
 	
 	public boolean isPaused() {
 		return paused;

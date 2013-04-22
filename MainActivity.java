@@ -14,11 +14,8 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.WakeLockOptions;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.scene.IOnAreaTouchListener;
 import org.andengine.entity.scene.IOnSceneTouchListener;
-import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.multiplayer.protocol.adt.message.IMessage;
 import org.andengine.extension.multiplayer.protocol.adt.message.server.IServerMessage;
 import org.andengine.extension.multiplayer.protocol.adt.message.server.ServerMessage;
@@ -51,30 +48,31 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
     //---------------------------------------------
 	
 
-	private static final String LOCALHOST_IP = "127.0.0.1";
-	private static final int SERVER_PORT = 4444;
-	
-	public static final short FLAG_MESSAGE_SERVER_MOVE_SHEEP = 1;
-	
-	
-
-	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_CLOSE = Short.MIN_VALUE;
-	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_ESTABLISH = FLAG_MESSAGE_CLIENT_CONNECTION_CLOSE + 1;
-	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_PING = FLAG_MESSAGE_CLIENT_CONNECTION_ESTABLISH + 1;
-	
-	public static final short FLAG_MESSAGE_SERVER_CONNECTION_CLOSE = Short.MIN_VALUE;
-	public static final short FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED = FLAG_MESSAGE_SERVER_CONNECTION_CLOSE + 1;
-	public static final short FLAG_MESSAGE_SERVER_CONNECTION_REJECTED_PROTOCOL_MISSMATCH = FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED + 1;
-	public static final short FLAG_MESSAGE_SERVER_CONNECTION_PONG = FLAG_MESSAGE_SERVER_CONNECTION_REJECTED_PROTOCOL_MISSMATCH + 1;
-	
-	
-	
-	public String mServerIP = LOCALHOST_IP;
-	public SocketServer<SocketConnectionClientConnector> mSocketServer;
-	public ServerConnector<SocketConnection> mServerConnector;
-
-	public final MessagePool<IMessage> mMessagePool = new MessagePool<IMessage>();
-	
+//	private static final String EXAMPLE_UUID = "6c7067e0-88aa-11e2-9e96-0800200c9a66";
+//	private static final String LOCALHOST_IP = "127.0.0.1";
+//	private static final int SERVER_PORT = 4444;
+//	
+//	public static final short FLAG_MESSAGE_SERVER_MOVE_SHEEP = 1;
+//	
+//	
+//
+//	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_CLOSE = Short.MIN_VALUE;
+//	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_ESTABLISH = FLAG_MESSAGE_CLIENT_CONNECTION_CLOSE + 1;
+//	public static final short FLAG_MESSAGE_CLIENT_CONNECTION_PING = FLAG_MESSAGE_CLIENT_CONNECTION_ESTABLISH + 1;
+//	
+//	public static final short FLAG_MESSAGE_SERVER_CONNECTION_CLOSE = Short.MIN_VALUE;
+//	public static final short FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED = FLAG_MESSAGE_SERVER_CONNECTION_CLOSE + 1;
+//	public static final short FLAG_MESSAGE_SERVER_CONNECTION_REJECTED_PROTOCOL_MISSMATCH = FLAG_MESSAGE_SERVER_CONNECTION_ESTABLISHED + 1;
+//	public static final short FLAG_MESSAGE_SERVER_CONNECTION_PONG = FLAG_MESSAGE_SERVER_CONNECTION_REJECTED_PROTOCOL_MISSMATCH + 1;
+//	
+//	
+//	
+//	public String mServerIP = LOCALHOST_IP;
+//	public SocketServer<SocketConnectionClientConnector> mSocketServer;
+//	public ServerConnector<SocketConnection> mServerConnector;
+//
+//	public final MessagePool<IMessage> mMessagePool = new MessagePool<IMessage>();
+//	
 	
 	
 	
@@ -83,7 +81,7 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 	
 
 	private void initMessagePool() {
-		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOVE_SHEEP, MoveSheepServerMessage.class);
+//		this.mMessagePool.registerMessage(FLAG_MESSAGE_SERVER_MOVE_SHEEP, MoveSheepServerMessage.class);
 	}
 	
 	@Override
@@ -145,18 +143,18 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 	@Override
 	protected void onDestroy()
 	{
-		if(this.mSocketServer != null) {
-			try {
-				this.mSocketServer.sendBroadcastServerMessage(new ConnectionCloseServerMessage());
-			} catch (final IOException e) {
-				Debug.e(e);
-			}
-			this.mSocketServer.terminate();
-		}
-
-		if(this.mServerConnector != null) {
-			this.mServerConnector.terminate();
-		}
+//		if(this.mSocketServer != null) {
+//			try {
+//				this.mSocketServer.sendBroadcastServerMessage(new ConnectionCloseServerMessage());
+//			} catch (final IOException e) {
+//				Debug.e(e);
+//			}
+//			this.mSocketServer.terminate();
+//		}
+//
+//		if(this.mServerConnector != null) {
+//			this.mServerConnector.terminate();
+//		}
 
 		super.onDestroy();
 	    
@@ -200,7 +198,7 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 	
 
 	private void initServerAndClient() {
-		this.initServer();
+//		this.initServer();
 
 		/* Wait some time after the server has been started, so it actually can start up. */
 		try {
@@ -209,46 +207,46 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 			Debug.e(t);
 		}
 
-		this.initClient();
+//		this.initClient();
 	}
 
-	private void initServer() {
-		this.mSocketServer = new SocketServer<SocketConnectionClientConnector>(SERVER_PORT, new ExampleClientConnectorListener(), new ExampleServerStateListener()) {
-			@Override
-			protected SocketConnectionClientConnector newClientConnector(final SocketConnection pSocketConnection) throws IOException {
-				return new SocketConnectionClientConnector(pSocketConnection);
-			}
-		};
-
-		this.mSocketServer.start();
-	}
-
-	private void initClient() {
-		try {
-			this.mServerConnector = new SocketConnectionServerConnector(new SocketConnection(new Socket(this.mServerIP, SERVER_PORT)), new ExampleServerConnectorListener());
-
-			this.mServerConnector.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_CLOSE, ConnectionCloseServerMessage.class, new IServerMessageHandler<SocketConnection>() {
-				@Override
-				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					MainActivity.this.finish();
-				}
-			});
-
-			this.mServerConnector.registerServerMessage(FLAG_MESSAGE_SERVER_MOVE_SHEEP, MoveSheepServerMessage.class, new IServerMessageHandler<SocketConnection>() {
-				@Override
-				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
-					final MoveSheepServerMessage moveSheepServerMessage = (MoveSheepServerMessage)pServerMessage;
-					MainActivity.this.addFace(moveSheepServerMessage.mID, moveSheepServerMessage.mX, moveSheepServerMessage.mY);
-				}
-			});
-
-
-			this.mServerConnector.getConnection().start();
-		} catch (final Throwable t) {
-			Debug.e(t);
-		}
-	}
-	
+//	private void initServer() {
+//		this.mSocketServer = new SocketServer<SocketConnectionClientConnector>(SERVER_PORT, new ExampleClientConnectorListener(), new ExampleServerStateListener()) {
+//			@Override
+//			protected SocketConnectionClientConnector newClientConnector(final SocketConnection pSocketConnection) throws IOException {
+//				return new SocketConnectionClientConnector(pSocketConnection);
+//			}
+//		};
+//
+//		this.mSocketServer.start();
+//	}
+//
+//	private void initClient() {
+//		try {
+//			this.mServerConnector = new SocketConnectionServerConnector(new SocketConnection(new Socket(this.mServerIP, SERVER_PORT)), new ExampleServerConnectorListener());
+//
+//			this.mServerConnector.registerServerMessage(FLAG_MESSAGE_SERVER_CONNECTION_CLOSE, ConnectionCloseServerMessage.class, new IServerMessageHandler<SocketConnection>() {
+//				@Override
+//				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+//					MainActivity.this.finish();
+//				}
+//			});
+//
+//			this.mServerConnector.registerServerMessage(FLAG_MESSAGE_SERVER_MOVE_SHEEP, MoveSheepServerMessage.class, new IServerMessageHandler<SocketConnection>() {
+//				@Override
+//				public void onHandleMessage(final ServerConnector<SocketConnection> pServerConnector, final IServerMessage pServerMessage) throws IOException {
+//					final MoveSheepServerMessage moveSheepServerMessage = (MoveSheepServerMessage)pServerMessage;
+//					MainActivity.this.addFace(moveSheepServerMessage.mID, moveSheepServerMessage.mX, moveSheepServerMessage.mY);
+//				}
+//			});
+//
+//
+//			this.mServerConnector.getConnection().start();
+//		} catch (final Throwable t) {
+//			Debug.e(t);
+//		}
+//	}
+//	
 
 
 	private void log(final String pMessage) {
@@ -277,88 +275,88 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
-
-	public static class MoveSheepServerMessage extends ServerMessage {
-		private int mID;
-		private float mX;
-		private float mY;
-
-		public MoveSheepServerMessage() {
-
-		}
-
-		public MoveSheepServerMessage(final int pID, final float pX, final float pY) {
-			this.mID = pID;
-			this.mX = pX;
-			this.mY = pY;
-		}
-
-		public void set(final int pID, final float pX, final float pY) {
-			this.mID = pID;
-			this.mX = pX;
-			this.mY = pY;
-		}
-
-		@Override
-		public short getFlag() {
-			return FLAG_MESSAGE_SERVER_MOVE_SHEEP;
-		}
-
-		@Override
-		protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
-			this.mID = pDataInputStream.readInt();
-			this.mX = pDataInputStream.readFloat();
-			this.mY = pDataInputStream.readFloat();
-		}
-
-		@Override
-		protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
-			pDataOutputStream.writeInt(this.mID);
-			pDataOutputStream.writeFloat(this.mX);
-			pDataOutputStream.writeFloat(this.mY);
-		}
-	}
-	
-	private class ExampleServerConnectorListener implements ISocketConnectionServerConnectorListener {
-		@Override
-		public void onStarted(final ServerConnector<SocketConnection> pConnector) {
-			MainActivity.this.toast("CLIENT: Connected to server.");
-		}
-
-		@Override
-		public void onTerminated(final ServerConnector<SocketConnection> pConnector) {
-			MainActivity.this.toast("CLIENT: Disconnected from Server...");
-			MainActivity.this.finish();
-		}
-	}
-
-	private class ExampleServerStateListener implements ISocketServerListener<SocketConnectionClientConnector> {
-		@Override
-		public void onStarted(final SocketServer<SocketConnectionClientConnector> pSocketServer) {
-			MainActivity.this.toast("SERVER: Started.");
-		}
-
-		@Override
-		public void onTerminated(final SocketServer<SocketConnectionClientConnector> pSocketServer) {
-			MainActivity.this.toast("SERVER: Terminated.");
-		}
-
-		@Override
-		public void onException(final SocketServer<SocketConnectionClientConnector> pSocketServer, final Throwable pThrowable) {
-			Debug.e(pThrowable);
-			MainActivity.this.toast("SERVER: Exception: " + pThrowable);
-		}
-	}
-	
-	private class ExampleClientConnectorListener implements ISocketConnectionClientConnectorListener {
-		@Override
-		public void onStarted(final ClientConnector<SocketConnection> pConnector) {
-			MainActivity.this.toast("SERVER: Client connected: " + pConnector.getConnection().getSocket().getInetAddress().getHostAddress());
-		}
-
-		@Override
-		public void onTerminated(final ClientConnector<SocketConnection> pConnector) {
-			MainActivity.this.toast("SERVER: Client disconnected: " + pConnector.getConnection().getSocket().getInetAddress().getHostAddress());
-		}
-	}
+//
+//	public static class MoveSheepServerMessage extends ServerMessage {
+//		private int mID;
+//		private float mX;
+//		private float mY;
+//
+//		public MoveSheepServerMessage() {
+//
+//		}
+//
+//		public MoveSheepServerMessage(final int pID, final float pX, final float pY) {
+//			this.mID = pID;
+//			this.mX = pX;
+//			this.mY = pY;
+//		}
+//
+//		public void set(final int pID, final float pX, final float pY) {
+//			this.mID = pID;
+//			this.mX = pX;
+//			this.mY = pY;
+//		}
+//
+//		@Override
+//		public short getFlag() {
+//			return FLAG_MESSAGE_SERVER_MOVE_SHEEP;
+//		}
+//
+//		@Override
+//		protected void onReadTransmissionData(final DataInputStream pDataInputStream) throws IOException {
+//			this.mID = pDataInputStream.readInt();
+//			this.mX = pDataInputStream.readFloat();
+//			this.mY = pDataInputStream.readFloat();
+//		}
+//
+//		@Override
+//		protected void onWriteTransmissionData(final DataOutputStream pDataOutputStream) throws IOException {
+//			pDataOutputStream.writeInt(this.mID);
+//			pDataOutputStream.writeFloat(this.mX);
+//			pDataOutputStream.writeFloat(this.mY);
+//		}
+//	}
+//	
+//	private class ExampleServerConnectorListener implements ISocketConnectionServerConnectorListener {
+//		@Override
+//		public void onStarted(final ServerConnector<SocketConnection> pConnector) {
+//			MainActivity.this.toast("CLIENT: Connected to server.");
+//		}
+//
+//		@Override
+//		public void onTerminated(final ServerConnector<SocketConnection> pConnector) {
+//			MainActivity.this.toast("CLIENT: Disconnected from Server...");
+//			MainActivity.this.finish();
+//		}
+//	}
+//
+//	private class ExampleServerStateListener implements ISocketServerListener<SocketConnectionClientConnector> {
+//		@Override
+//		public void onStarted(final SocketServer<SocketConnectionClientConnector> pSocketServer) {
+//			MainActivity.this.toast("SERVER: Started.");
+//		}
+//
+//		@Override
+//		public void onTerminated(final SocketServer<SocketConnectionClientConnector> pSocketServer) {
+//			MainActivity.this.toast("SERVER: Terminated.");
+//		}
+//
+//		@Override
+//		public void onException(final SocketServer<SocketConnectionClientConnector> pSocketServer, final Throwable pThrowable) {
+//			Debug.e(pThrowable);
+//			MainActivity.this.toast("SERVER: Exception: " + pThrowable);
+//		}
+//	}
+//	
+//	private class ExampleClientConnectorListener implements ISocketConnectionClientConnectorListener {
+//		@Override
+//		public void onStarted(final ClientConnector<SocketConnection> pConnector) {
+//			MainActivity.this.toast("SERVER: Client connected: " + pConnector.getConnection().getSocket().getInetAddress().getHostAddress());
+//		}
+//
+//		@Override
+//		public void onTerminated(final ClientConnector<SocketConnection> pConnector) {
+//			MainActivity.this.toast("SERVER: Client disconnected: " + pConnector.getConnection().getSocket().getInetAddress().getHostAddress());
+//		}
+//	}
 }

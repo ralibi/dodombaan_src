@@ -5,6 +5,7 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
+import org.andengine.util.debug.Debug;
 
 
 public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
@@ -20,6 +21,7 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 	private int itemCount = 0;
 	private int itemWidth = 0;
 	private int itemHeight = 0;
+	private int selectedIndex = 0;
 
 	//---------------------------------------------
     // CONSTRUCTOR
@@ -87,6 +89,28 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 	public void setItemHeight(int itemHeight) {
 		this.itemHeight = itemHeight;
 	}
+	
+	public int getSelectedIndex() {
+		return selectedIndex;
+	}
+
+	public void setSelectedIndex(int selectedIndex) {
+		this.selectedIndex = selectedIndex;
+	}
+	
+	public void navigate(int direction){
+		switch (direction) {
+		case -1:
+			
+			break;
+
+		case 1:
+			
+			break;
+		default:
+			break;
+		}
+	}
 
 
 	//---------------------------------------------
@@ -112,37 +136,56 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 		if(!this.touching){
 			float paddingLeft = (getParent().getWidth()-itemWidth)/2;
 			
-			if(movingRight && this.mPhysicsHandler.getVelocityX() < 0){
-				this.mPhysicsHandler.setAccelerationX(0);
-				this.mPhysicsHandler.setVelocityX(0);
-			}
-			else if(!movingRight && this.mPhysicsHandler.getVelocityX() > 0){
-				this.mPhysicsHandler.setAccelerationX(0);
-				this.mPhysicsHandler.setVelocityX(0);
-			}
+			float posMinX = paddingLeft;
+			float posMaxX = ((1-itemCount) * itemWidth) + paddingLeft;
+			float posSnapX = (-selectedIndex * itemWidth) + paddingLeft;
 			
-			if(this.mPhysicsHandler.getVelocityX() > -1 && this.mPhysicsHandler.getVelocityX() < 1){
-				this.mPhysicsHandler.setAccelerationX(0);
-				this.mPhysicsHandler.setVelocityX(0);
-				
-				int the_mod = (int)(this.getX() - itemWidth/2) % itemWidth;
-				if(the_mod != 0){
-					if(the_mod < -itemWidth/2){
-						// Floor
-						this.setX((int)Math.floor((this.getX() - itemWidth/2) / itemWidth) * itemWidth + itemWidth/2 + paddingLeft);
+
+			if(this.mPhysicsHandler.getVelocityX() == 0){
+				if(this.getX() > posSnapX){
+					if(this.getX() - posSnapX > itemWidth/2 && selectedIndex > 0){
+						setMovingRight(true);
+						this.mPhysicsHandler.setVelocityX(itemWidth * 2);
+						selectedIndex -= 1;
 					}
 					else{
-						this.setX((int)Math.ceil((this.getX() - itemWidth/2) / itemWidth) * itemWidth + itemWidth/2 + paddingLeft);
+						setMovingRight(false);
+						this.mPhysicsHandler.setVelocityX(-itemWidth * 2);
+					}
+					
+				}else if(this.getX() < posSnapX){
+					if(posSnapX - this.getX() > itemWidth/2 && selectedIndex < itemCount - 1){
+						setMovingRight(false);
+						this.mPhysicsHandler.setVelocityX(-itemWidth * 2);
+						selectedIndex += 1;
+					}
+					else{
+						setMovingRight(true);
+						this.mPhysicsHandler.setVelocityX(itemWidth * 2);
+					}
+				}
+			}
+			else{
+				if(movingRight){
+					if(this.getX() > posSnapX){
+						this.setX(posSnapX);
+					}
+				}else{
+					if(this.getX() < posSnapX){
+						this.setX(posSnapX);
 					}
 				}
 			}
 			
-			if(this.getX() > 0 + itemWidth/2 + paddingLeft){
-				this.setX(0 + itemWidth/2 + paddingLeft);
+			if(this.getX() > posMinX){
+				this.setX(posMinX);
+				selectedIndex = 0;
 			}
-			else if(this.getX() < (-itemWidth * (itemCount-1)) + itemWidth/2 + paddingLeft){
-				this.setX((-itemWidth * (itemCount-1)) + itemWidth/2 + paddingLeft);
+			else if(this.getX() < posMaxX){
+				this.setX(posMaxX);
+				selectedIndex = itemCount - 1;
 			}
+			
 		}
 	}
 

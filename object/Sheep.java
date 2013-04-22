@@ -127,9 +127,19 @@ public class Sheep {
 		return vertices;
 	}
 
-	public void moveForward() {
-		float dY = (bodySegments.get(0).getPosition().y - 240/PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
+	public void moveForward(int orientation_type) {
+		//float dY = (bodySegments.get(0).getPosition().y - 240/PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
+		// Debug.d("dy: " + dY);
+		
+		float dY = orientation_type * 5f;
+		
 		bodySegments.get(0).applyForce(  bodySegments.get(0).getWorldVector(new Vector2(FORCE * direction, -dY))  , new Vector2(bodySegments.get(0).getPosition().x + direction/2, bodySegments.get(0).getPosition().y));
+	}
+	
+	public void jumpBackward() {
+		int segment_idx = SEGMENT_COUNT - 1;
+		float dY = (bodySegments.get(segment_idx).getPosition().y - 240/PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
+		bodySegments.get(segment_idx).applyForce(  bodySegments.get(segment_idx).getWorldVector(new Vector2(FORCE * -50 * direction, -dY))  , new Vector2(bodySegments.get(segment_idx).getPosition().x + direction/2, bodySegments.get(segment_idx).getPosition().y));
 	}
 	
 	private float getDeltaHeadY() {

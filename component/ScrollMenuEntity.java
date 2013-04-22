@@ -26,10 +26,9 @@ public class ScrollMenuEntity extends ClippingEntity {
 	protected float ratio = ResourcesManager.getInstance().camera.getSurfaceHeight() / ResourcesManager.getInstance().camera.getHeight();
 	private float mTouchX = 0, mTouchOffsetX = 0;
 	// private float mTouchY = 0, mTouchOffsetY = 0;
-	
+
 	private GestureDetector mDetector;
 	private ScrollPanel scrollPanel;
-	
 
 	//---------------------------------------------
     // CONSTRUCTOR
@@ -56,10 +55,9 @@ public class ScrollMenuEntity extends ClippingEntity {
 	}
 	
 	public int getSelectedMenuIndex() {
-		return -1 * Math.round((getScrollPanel().getX() - getWidth() / 2) / scrollPanel.getItemWidth());
+		return this.scrollPanel.getSelectedIndex();
 	}
-	
-	
+
 	
 	//---------------------------------------------
     // METHODS
@@ -90,8 +88,8 @@ public class ScrollMenuEntity extends ClippingEntity {
 			// float y = contentEntity.getY() + mTouchOffsetY;
 			float paddingLeft = (getWidth() - scrollPanel.getItemWidth()) / 2;
 			
-			if(x > 0 + scrollPanel.getItemWidth() + paddingLeft){
-				x = 0 + scrollPanel.getItemWidth() + paddingLeft;
+			if(x > paddingLeft){
+				x = paddingLeft;
 			}
 			else if(x < -scrollPanel.getItemWidth() * (scrollPanel.getItemCount()-1) + paddingLeft){
 				x = -scrollPanel.getItemWidth() * (scrollPanel.getItemCount()-1) + paddingLeft;
@@ -111,6 +109,7 @@ public class ScrollMenuEntity extends ClippingEntity {
 		}
 		case TouchEvent.ACTION_UP:{
 			scrollPanel.setTouching(false);
+			Debug.d("UUUPPPPP");
 			return true; 
 		}
 		default:{
@@ -122,20 +121,24 @@ public class ScrollMenuEntity extends ClippingEntity {
 
 
 
-	public void buildSprite(int textureWidth, int textureHeight, List<ITextureRegion> textureRegions, Scene pScene, VertexBufferObjectManager vbom) {
+	public void buildSprite(int textureX, int textureY, int textureWidth, int textureHeight, List<ITextureRegion> textureRegions, Scene pScene, VertexBufferObjectManager vbom) {
 		scrollPanel.setItemCount(textureRegions.size());
 		scrollPanel.setItemWidth(textureWidth);
 		scrollPanel.setItemHeight(textureHeight);
+		
+		// Iteration for menu item
 		for (int i = 0; i < scrollPanel.getItemCount(); i++) {
-			Sprite sprite = new Sprite(0 + i * scrollPanel.getItemWidth(), scrollPanel.getItemHeight() / 2, textureRegions.get(i), vbom){		
+			Sprite sprite = new Sprite(textureX + i * scrollPanel.getItemWidth(), textureY, textureRegions.get(i), vbom){		
 				public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-					Debug.d("button menu TOUCHED");
+					// Debug.d("button menu TOUCHED");
 					return false;
 				}
 			};
 			scrollPanel.attachChild(sprite);
 			pScene.registerTouchArea(sprite);
 		}
+		
+		// creating new thread for gesture listener
 		createNewThread();
 	}
 
@@ -145,9 +148,8 @@ public class ScrollMenuEntity extends ClippingEntity {
 
 		ResourcesManager.getInstance().activity.runOnUiThread(new Runnable() {
 
-			@SuppressWarnings("deprecation")
 			public void run() {
-				mDetector = new GestureDetector(new SimpleOnGestureListener(){
+				mDetector = new GestureDetector(ResourcesManager.getInstance().activity, new SimpleOnGestureListener(){
 					public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
 					{     
 						float newVelocityX = 0;
@@ -155,13 +157,26 @@ public class ScrollMenuEntity extends ClippingEntity {
 						if(velocityX > vValue) newVelocityX = vValue;
 						if(velocityX < -vValue) newVelocityX = -vValue;
 						scrollPanel.getmPhysicsHandler().setVelocityX(newVelocityX / ratio);
+						
+						
+						float velo = scrollPanel.getItemWidth() * 2;
 						if(velocityX > 0){
+							// moving right means index decreasing 
+							
 							scrollPanel.setMovingRight(true);
-							scrollPanel.getmPhysicsHandler().setAccelerationX(-vValue);
+							//scrollPanel.getmPhysicsHandler().setAccelerationX(-vValue);
+
+							scrollPanel.getmPhysicsHandler().setAccelerationX(0);
+							scrollPanel.getmPhysicsHandler().setVelocityX(velo);
+							scrollPanel.setSelectedIndex(scrollPanel.getSelectedIndex() - 1);
 						}
 						else{
 							scrollPanel.setMovingRight(false);
-							scrollPanel.getmPhysicsHandler().setAccelerationX(vValue);
+							//scrollPanel.getmPhysicsHandler().setAccelerationX(vValue);
+
+							scrollPanel.getmPhysicsHandler().setAccelerationX(0);
+							scrollPanel.getmPhysicsHandler().setVelocityX(-velo);
+							scrollPanel.setSelectedIndex(scrollPanel.getSelectedIndex() + 1);
 						}
 						// Debug.d("fliiiing");
 						return true;
