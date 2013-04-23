@@ -172,7 +172,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		default:
 			break;
 		}
-		Debug.d("PLAYER " + gameDataManager.winner + " WON");
 		showMenuRoundOverScene();
 	}
 
@@ -190,6 +189,7 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 			TiledSprite nail_part_1 = new TiledSprite(80, 240 - ((i - 2) * 20), resourcesManager.nailNormalRegions.get(i), vbom){
 				@Override	
 				public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+					
 					sheepP1.moveForward(2 - _i);
 					resourcesManager.vibrator.vibrate(50);
 					gDetectorP1.onTouchEvent(pSceneTouchEvent.getMotionEvent());
@@ -246,15 +246,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		
 		createNewThread();
-		
-//		FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-//		Body bodyNailP1 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP1, BodyType.StaticBody, FIXTURE_DEF);
-//		Body bodyNailP2 = PhysicsFactory.createCircleBody(mPhysicsWorld, nailP2, BodyType.StaticBody, FIXTURE_DEF);
-//		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP1, bodyNailP1, true, true));
-//		mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nailP2, bodyNailP2, true, true));
-//
-//		registerTouchArea(nailP1);
-//		registerTouchArea(nailP2);
 		
 		attachChild(nailP1);
 		attachChild(nailP2);

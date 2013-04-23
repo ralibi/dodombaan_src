@@ -95,6 +95,9 @@ public class ResourcesManager {
 	public ITextureRegion gamePlayNextRegion;
 	public List<ITextureRegion> gamePlaySheepSegmentRegions = new ArrayList<ITextureRegion>();
 	public List<ITextureRegion> gamePlayPlayingArenaRegions = new ArrayList<ITextureRegion>();
+	public List<TiledTextureRegion> nailNormalRegions = new ArrayList<TiledTextureRegion>();
+	public ITextureRegion gamePlayIndicatorRegion;
+	public ITextureRegion gamePlayIndicatorBackgroundRegion;
 	public ITextureRegion gamePlayNailRegion;
 	private BuildableBitmapTextureAtlas gamePlayTextureAtlas;
 	
@@ -128,7 +131,6 @@ public class ResourcesManager {
 	public ITextureRegion nextDisabledRegion;
 	
 
-	public List<TiledTextureRegion> nailNormalRegions = new ArrayList<TiledTextureRegion>();
 
 	private BuildableBitmapTextureAtlas sharedTextureAtlas;
 
@@ -380,6 +382,9 @@ public class ResourcesManager {
         gamePlayResumeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume.png");
         gamePlayExitToMenuRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu.png");
         gamePlayNextRoundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "next_round.png");
+
+        gamePlayIndicatorRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "indicator.png");
+        gamePlayIndicatorBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "indicator_background.png");
 
         gamePlayNailRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail.png");
         
