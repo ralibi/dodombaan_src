@@ -19,7 +19,6 @@ import org.andengine.util.debug.Debug;
 import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.component.ScrollMenuEntity;
 import com.ralibi.dodombaan.component.ScrollMenuEntity.DeselectListener;
-import com.ralibi.dodombaan.component.ScrollPanel;
 import com.ralibi.dodombaan.manager.GameConfigurationManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
@@ -128,7 +127,7 @@ public class SheepSelectionScene extends BaseScene implements IOnMenuItemClickLi
 			Text agilityText = new Text(0, 88, resourcesManager.fontSmall, "Agility", vbom);
 			agilityText.setPosition(anchorX + agilityText.getWidth()/2f, 64);
 			agilityGroup.attachChild(agilityText);
-			agilityGroup.attachChild(getCharacteristicMeter(anchorX, 44, GameConfigurationManager.getInstance().AGILITY[i]));
+			agilityGroup.attachChild(getCharacteristicMeter(anchorX, 44, GameConfigurationManager.AGILITY[i]));
 			characteristicGroup.attachChild(agilityGroup);
 			
 			scrollMenuSheep.getScrollPanel().attachChild(characteristicGroup);

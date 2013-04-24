@@ -11,7 +11,6 @@ import org.andengine.opengl.util.GLState;
 
 import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.component.ScrollMenuEntity;
-import com.ralibi.dodombaan.component.ScrollPanel;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 

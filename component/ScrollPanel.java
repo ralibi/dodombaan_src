@@ -5,7 +5,6 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
-import org.andengine.util.debug.Debug;
 
 
 public class ScrollPanel extends Entity implements IOnMenuItemClickListener {

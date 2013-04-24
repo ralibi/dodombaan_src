@@ -10,7 +10,6 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.debug.Debug;
 
 import com.ralibi.dodombaan.manager.FontAwesomeString;
 import com.ralibi.dodombaan.manager.ResourcesManager;
