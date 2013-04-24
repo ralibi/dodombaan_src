@@ -157,8 +157,10 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 //		}
 
 		super.onDestroy();
-	    
-	    System.exit(0);
+		if (this.isGameLoaded())
+		{
+			System.exit(0);	
+		}	
 	}
 	
 	@Override
