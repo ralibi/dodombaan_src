@@ -1,110 +1,102 @@
 package com.ralibi.dodombaan.scene;
 
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.scene.menu.MenuScene;
-import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
-import org.andengine.entity.scene.menu.item.IMenuItem;
-import org.andengine.entity.scene.menu.item.SpriteMenuItem;
-import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.opengl.util.GLState;
 
 import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.component.ScrollMenuEntity;
+import com.ralibi.dodombaan.component.ScrollMenuEntity.DeselectListener;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
-public class MatchSettingsScene extends BaseScene implements IOnMenuItemClickListener {
+public class MatchSettingsScene extends BaseScene {
 
-	private final int MENU_BACK = 0;
-	private final int MENU_NEXT = 1;
-	
-	private MenuScene menuChildScene;
+  private ScrollMenuEntity scrollEntityArena;
+  
+  ButtonSprite nextButton;
+  ButtonSprite backButton;
 
-	private ScrollMenuEntity scrollEntityArena;
-	
-	@Override
-	public void createScene() {
-		createBackground();
-		createMenuChildScene();
-		createArenaScrollMenu();
-	}
+  @Override
+  public void createScene() {
+    createBackground();
+    createMenuChildScene();
+    createArenaScrollMenu();
+  }
 
-	private void createArenaScrollMenu() {
-		scrollEntityArena = new ScrollMenuEntity(400, 240, 720, 240);
-		scrollEntityArena.buildSprite(300, 120, 600, 240, resourcesManager.matchSettingsArenaRegions, this, vbom);
-		registerTouchArea(scrollEntityArena);
-		attachChild(scrollEntityArena);
-	}
+  private void createArenaScrollMenu() {
+    scrollEntityArena = new ScrollMenuEntity(400, 240, 720, 240, new DeselectListener() {
+      @Override
+      public void onSelect() {
+        nextButton.setEnabled(true);
+        resourcesManager.minorSound.play();
+      }
 
-	private void createBackground() {
-		attachChild(new Sprite(400,  240, resourcesManager.matchSettingsBackgroundRegion, vbom)
-		{
-			@Override
-		    protected void preDraw(GLState pGLState, Camera pCamera) 
-		    {
-		       super.preDraw(pGLState, pCamera);
-		       pGLState.enableDither();
-		    }
-		});
-	}
-	
-	private void createMenuChildScene() {
-		menuChildScene = new MenuScene(camera);
-		menuChildScene.setPosition(400, 240);
+      @Override
+      public void onDeselect() {
+        nextButton.setEnabled(false);
+      }
+    });
+    scrollEntityArena.buildSprite(300, 120, 600, 240, resourcesManager.matchSettingsArenaRegions, this, vbom);
+    registerTouchArea(scrollEntityArena);
+    attachChild(scrollEntityArena);
+    scrollEntityArena.selectMenu(0);
+  }
 
-	    final IMenuItem backItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_BACK, resourcesManager.matchSettingsBackRegion, vbom), 1.2f, 1);
-	    final IMenuItem nextItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_NEXT, resourcesManager.matchSettingsNextRegion, vbom), 1.2f, 1);
-	    
-	    menuChildScene.addMenuItem(backItem);
-	    menuChildScene.addMenuItem(nextItem);
-	    
-	    menuChildScene.buildAnimations();
-	    menuChildScene.setBackgroundEnabled(false);
+  private void createBackground() {
+    attachChild(new Sprite(400, 240, resourcesManager.matchSettingsBackgroundRegion, vbom) {
+      @Override
+      protected void preDraw(GLState pGLState, Camera pCamera) {
+        super.preDraw(pGLState, pCamera);
+        pGLState.enableDither();
+      }
+    });
+  }
 
-	    backItem.setPosition(-200, -200);
-	    nextItem.setPosition(200, -200);
-	    
-	    menuChildScene.setOnMenuItemClickListener(this);
-	    
-	    setChildScene(menuChildScene);
-	}
+  private void createMenuChildScene() {
+    nextButton = new ButtonSprite(600, 40, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
+      @Override
+      public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+        gameDataManager.arenaIndex = scrollEntityArena.getSelectedMenuIndex();
+        SceneManager.getInstance().loadGamePlayScene(engine);
+      }
+    });
+    registerTouchArea(nextButton);
+    attachChild(nextButton);
+    
+    backButton = new ButtonSprite(200, 40, resourcesManager.backNormalRegion, resourcesManager.backPressedRegion, resourcesManager.backDisabledRegion, vbom, new OnClickListener() {
+      @Override
+      public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+        SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
+      }
+    });
+    registerTouchArea(backButton);
+    attachChild(backButton);
+    
+  }
 
-	@Override
-	public void onBackKeyPressed() {
-		SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
-	}
+  @Override
+  public void onBackKeyPressed() {
+    SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
+  }
 
-	@Override
-	public SceneType getSceneType() {
-		return SceneType.SCENE_MATCH_SETTINGS;
-	}
+  @Override
+  public SceneType getSceneType() {
+    return SceneType.SCENE_MATCH_SETTINGS;
+  }
 
-	@Override
-	public void disposeScene() {
-		// TODO Auto-generated method stub
-		
-	}
+  @Override
+  public void disposeScene() {
+    // TODO Auto-generated method stub
 
-	@Override
-	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
-			float pMenuItemLocalX, float pMenuItemLocalY) {
-		switch (pMenuItem.getID()) {
-		case MENU_BACK:
-			SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
-			return true;
-		case MENU_NEXT:
-			gameDataManager.arenaIndex = scrollEntityArena.getSelectedMenuIndex();
-			SceneManager.getInstance().loadGamePlayScene(engine);
-			return true;
-		default:
-			return false;
-		}
-	}
+  }
 
-	@Override
-	public void unTouchScrollMenu() {
-		this.scrollEntityArena.getScrollPanel().setTouching(false);
-	}
+
+  @Override
+  public void unTouchScrollMenu() {
+    this.scrollEntityArena.getScrollPanel().setTouching(false);
+  }
 
 }

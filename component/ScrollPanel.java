@@ -22,27 +22,24 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 	private int itemHeight = 0;
 	private int currentIndex = 0;
 	private int selectedIndex = -1;
+	
+	private int parentWidth = 0;
+	float paddingLeft;
 
 	//---------------------------------------------
     // CONSTRUCTOR
     //---------------------------------------------
 
-	public int getSelectedIndex() {
-		return selectedIndex;
-	}
-
-	public void setSelectedIndex(int selectedIndex) {
-		this.selectedIndex = selectedIndex;
-	}
 
 
 
-	public ScrollPanel() {
+	public ScrollPanel(int width, int height) {
 		super();
 		
 		this.mPhysicsHandler = new PhysicsHandler(this);
+		parentWidth = width;
+		paddingLeft = (parentWidth-itemWidth)/2;
 		this.registerUpdateHandler(this.mPhysicsHandler);
-		this.mPhysicsHandler.setVelocity(10, 0);
 	}
 	
 	
@@ -50,7 +47,19 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 	//---------------------------------------------
     // GETTERS SETTERS
     //---------------------------------------------
-	
+
+  public int getSelectedIndex() {
+    return selectedIndex;
+  }
+
+  public void setSelectedIndex(int selectedIndex) {
+    this.selectedIndex = selectedIndex;
+    if(selectedIndex >= 0){
+      this.currentIndex = selectedIndex;
+      this.setX(getSnapX(selectedIndex));
+    }
+  }
+  
 	public PhysicsHandler getmPhysicsHandler() {
 		return mPhysicsHandler;
 	}
@@ -90,6 +99,7 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 
 	public void setItemWidth(int itemWidth) {
 		this.itemWidth = itemWidth;
+    paddingLeft = (parentWidth-itemWidth)/2;
 	}
 
 	public int getItemHeight() {
@@ -144,11 +154,9 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 		super.onManagedUpdate(pSecondsElapsed);
 		
 		if(!this.touching){
-			float paddingLeft = (getParent().getWidth()-itemWidth)/2;
-			
 			float posMinX = paddingLeft;
 			float posMaxX = ((1-itemCount) * itemWidth) + paddingLeft;
-			float posSnapX = (-currentIndex * itemWidth) + paddingLeft;
+			float posSnapX = getSnapX(currentIndex);
 			
 
 			if(this.mPhysicsHandler.getVelocityX() == 0){
@@ -199,6 +207,9 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 		}
 	}
 
+	private float getSnapX(int index){
+	  return (-index * itemWidth) + paddingLeft;
+	}
 
 
 	@Override

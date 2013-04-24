@@ -10,6 +10,8 @@ public class GameConfigurationManager {
 	public static final float[] FORCE 	= {20, 30, 50, 80, 180, 300}; // depend on speed
 	public static final float[] ANGLE 	= {8, 18, 30, 46, 62, 80}; // depend on speed
 
+  public static final int[] DAMPING   = {10, 3, 20}; // depend on speed
+
 	public static final int VIBRATE_STRENGTH = 25;
     
     private static final GameConfigurationManager INSTANCE = new GameConfigurationManager();

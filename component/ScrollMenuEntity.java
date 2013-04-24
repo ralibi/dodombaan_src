@@ -44,7 +44,7 @@ public class ScrollMenuEntity extends ClippingEntity {
 
 	public ScrollMenuEntity(float x, float y, int width, int height) {
 		super(x, y, width, height);
-		scrollPanel = new ScrollPanel();
+		scrollPanel = new ScrollPanel(width, height);
 		attachChild(scrollPanel);
 		this.deselectListener = new DeselectListener() {
 			
@@ -64,7 +64,7 @@ public class ScrollMenuEntity extends ClippingEntity {
 	
 	public ScrollMenuEntity(float x, float y, int width, int height, DeselectListener deselectListener) {
 		super(x, y, width, height);
-		scrollPanel = new ScrollPanel();
+		scrollPanel = new ScrollPanel(width, height);
 		attachChild(scrollPanel);
 		this.deselectListener = deselectListener;
 		//this.mDetector = new GestureDetector(new SimpleOnGestureListener());
@@ -164,8 +164,8 @@ public class ScrollMenuEntity extends ClippingEntity {
 		deselectListener.onDeselect();
 	}
 	
-	private void selectMenu() {
-		scrollPanel.setSelectedIndex(scrollPanel.getCurrentIndex());
+	public void selectMenu(int index) {
+		scrollPanel.setSelectedIndex(index);
 		selectedIconText.setVisible(true);
 		selectButton.setEnabled(false);
 		deselectListener.onSelect();
@@ -198,7 +198,7 @@ public class ScrollMenuEntity extends ClippingEntity {
 			
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				selectMenu();
+				selectMenu(scrollPanel.getCurrentIndex());
 			}
 		});
 
@@ -255,7 +255,11 @@ public class ScrollMenuEntity extends ClippingEntity {
 					}
 					
 					public boolean onSingleTapUp(MotionEvent e){
-						selectMenu();
+					  if(scrollPanel.getCurrentIndex() != scrollPanel.getSelectedIndex()){
+					    selectMenu(scrollPanel.getCurrentIndex());
+					  } else {
+					    deselectMenu();
+					  }
 						return false;
 					}
 				});
