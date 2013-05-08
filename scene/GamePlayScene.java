@@ -134,8 +134,8 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 
   private void createScoreBoard() {
     scoreBoard = new Entity(400, 480-40);
-    scoreTextP1 = new Text(40, 0, resourcesManager.fontScore, "0", vbom);
-    scoreTextP2 = new Text(-40, 0, resourcesManager.fontScore, "0", vbom);
+    scoreTextP1 = new Text(-40, 0, resourcesManager.fontScore, "0", vbom);
+    scoreTextP2 = new Text(40, 0, resourcesManager.fontScore, "0", vbom);
     scoreBoard.attachChild(scoreTextP1);
     scoreBoard.attachChild(scoreTextP2);
     attachChild(scoreBoard);

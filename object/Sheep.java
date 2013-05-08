@@ -11,6 +11,7 @@ import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
 import org.andengine.util.math.MathUtils;
@@ -113,9 +114,14 @@ public class Sheep {
     angular_damping = linear_damping;
 
     // Segment 0 is the head
+    List<ITextureRegion> sheepSegmentRegion = new ArrayList<ITextureRegion>(); 
+    sheepSegmentRegion.add(ResourcesManager.getInstance().gamePlaySheepSegment1Regions.get(sheepIndex));
+    sheepSegmentRegion.add(ResourcesManager.getInstance().gamePlaySheepSegment2Regions.get(sheepIndex));
+    sheepSegmentRegion.add(ResourcesManager.getInstance().gamePlaySheepSegment3Regions.get(sheepIndex));
+    
     for (int i = 0; i < SEGMENT_COUNT; i++) {
       final int itemI = i;
-      Sprite sprite = new Sprite(this.x + (32 * direction * i), 240 - 60 * direction, ResourcesManager.getInstance().gamePlaySheepSegmentRegions.get(sheepIndex), vbom) {
+      Sprite sprite = new Sprite(this.x + (32 * direction * i), 240 - 60 * direction, sheepSegmentRegion.get(i), vbom) {
         @Override
         protected void onManagedUpdate(final float pSecondsElapsed) {
           if (!matchOver) {
@@ -154,6 +160,11 @@ public class Sheep {
           super.onManagedUpdate(pSecondsElapsed);
         }
       };
+      
+      if(direction < 0) {
+        sprite.setFlippedHorizontal(true);
+      }
+      
       fixtureDef = PhysicsFactory.createFixtureDef(density, 0.5f, 0.5f);
       Body body = PhysicsFactory.createPolygonBody(mPhysicsWorld, sprite, vertices, BodyType.DynamicBody, fixtureDef);
       body.setLinearDamping(linear_damping);

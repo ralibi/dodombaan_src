@@ -61,10 +61,19 @@ public class ResourcesManager {
 
   // Menu Scene
   public ITextureRegion menuBackgroundRegion;
-  public ITextureRegion multiplayerSingleDeviceRegion;
+  
+  public ITextureRegion start2PlayerNormalRegion;
+  public ITextureRegion start2PlayerPressedRegion;
+  public ITextureRegion start2PlayerDisabledRegion;
+  
   public ITextureRegion multiplayerOverBluetoothRegion;
-  public ITextureRegion settingsRegion;
+  
+  public ITextureRegion settingsNormalRegion;
+  public ITextureRegion settingsPressedRegion;
+  public ITextureRegion settingsDisabledRegion;
+  
   public ITextureRegion exitRegion;
+  
   private BuildableBitmapTextureAtlas menuTextureAtlas;
 
   // SheepSelectionScene
@@ -91,7 +100,10 @@ public class ResourcesManager {
   public ITextureRegion gamePlayExitToMenuRegion;
   public ITextureRegion gamePlayNextRoundRegion;
   public ITextureRegion gamePlayNextRegion;
-  public List<ITextureRegion> gamePlaySheepSegmentRegions = new ArrayList<ITextureRegion>();
+  public List<ITextureRegion> gamePlaySheepSegment1Regions = new ArrayList<ITextureRegion>();
+  public List<ITextureRegion> gamePlaySheepSegment2Regions = new ArrayList<ITextureRegion>();
+  public List<ITextureRegion> gamePlaySheepSegment3Regions = new ArrayList<ITextureRegion>();
+  
   public List<ITextureRegion> gamePlayPlayingArenaRegions = new ArrayList<ITextureRegion>();
   public List<TiledTextureRegion> nailNormalRegions = new ArrayList<TiledTextureRegion>();
   public ITextureRegion gamePlayIndicatorRegion;
@@ -172,9 +184,17 @@ public class ResourcesManager {
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
     menuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
     menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/menu_background.png");
-    multiplayerSingleDeviceRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_single_device.png");
+    
+    start2PlayerNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_single_device_normal.png");
+    start2PlayerPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_single_device_pressed.png");
+    start2PlayerDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_single_device_disabled.png");
+    
     multiplayerOverBluetoothRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/multiplayer_over_bluetooth.png");
-    settingsRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/settings.png");
+
+    settingsNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/settings_normal.png");
+    settingsPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/settings_pressed.png");
+    settingsDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu/settings_disabled.png");
+    
     exitRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "shared/exit.png");
 
     textureAtlasBuilderException(this.menuTextureAtlas);
@@ -342,9 +362,15 @@ public class ResourcesManager {
 
     gamePlayNailRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail.png");
 
-    gamePlaySheepSegmentRegions.clear();
+    // gamePlaySheepSegmentRegions.clear();
+    gamePlaySheepSegment1Regions.clear();
+    gamePlaySheepSegment2Regions.clear();
+    gamePlaySheepSegment3Regions.clear();
     for (int i = 0; i < sheepCount; i++) {
-      gamePlaySheepSegmentRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ").png"));
+      // gamePlaySheepSegmentRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ").png"));
+      gamePlaySheepSegment1Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ") (1).png"));
+      gamePlaySheepSegment2Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ") (2).png"));
+      gamePlaySheepSegment3Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ") (3).png"));
     }
 
     gamePlayPlayingArenaRegions.clear();
