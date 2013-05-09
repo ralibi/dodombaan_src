@@ -2,12 +2,9 @@ package com.ralibi.dodombaan.component;
 
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.Entity;
-import org.andengine.entity.scene.menu.MenuScene;
-import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
-import org.andengine.entity.scene.menu.item.IMenuItem;
 
 
-public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
+public class ScrollPanel extends Entity {
 
 	//---------------------------------------------
     // VARIABLES
@@ -209,13 +206,5 @@ public class ScrollPanel extends Entity implements IOnMenuItemClickListener {
 
 	private float getSnapX(int index){
 	  return (-index * itemWidth) + paddingLeft;
-	}
-
-
-	@Override
-	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
-			float pMenuItemLocalX, float pMenuItemLocalY) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

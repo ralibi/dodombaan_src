@@ -43,9 +43,11 @@ public class ResourcesManager {
   public float screenRatio;
   public Vibrator vibrator;
 
-  public String fontName = "OpenSans-Regular.ttf";
+  // public String fontName = "OpenSans-Regular.ttf";
+  public String fontName = "AlfaSlabOne-Regular-OTF.otf";
   public String fontIconName = "fontawesome-webfont.ttf";
-  public String fontScoreName = "OpenSans-Regular.ttf";
+  // public String fontScoreName = "OpenSans-Regular.ttf";
+  public String fontScoreName = "AlfaSlabOne-Regular-OTF.otf";
 
   // GENERAL
   private final int sheepCount = 6;
@@ -93,12 +95,19 @@ public class ResourcesManager {
   // GamePlayScene
   public ITextureRegion gamePlayBackgroundRegion;
   public ITextureRegion gamePlayOverlayRegion;
-  public ITextureRegion gamePlayP1WinRegion;
-  public ITextureRegion gamePlayP2WinRegion;
-  public ITextureRegion gamePlayPauseRegion;
-  public ITextureRegion gamePlayResumeRegion;
-  public ITextureRegion gamePlayExitToMenuRegion;
-  public ITextureRegion gamePlayNextRoundRegion;
+
+  public ITextureRegion gamePlayPauseNormalRegion;
+  public ITextureRegion gamePlayPausePressedRegion;
+  public ITextureRegion gamePlayPauseDisabledRegion;
+  public ITextureRegion gamePlayResumeNormalRegion;
+  public ITextureRegion gamePlayResumePressedRegion;
+  public ITextureRegion gamePlayResumeDisabledRegion;
+  public ITextureRegion gamePlayExitToMenuNormalRegion;
+  public ITextureRegion gamePlayExitToMenuPressedRegion;
+  public ITextureRegion gamePlayExitToMenuDisabledRegion;
+  
+  // public ITextureRegion gamePlayNextRoundRegion;
+  
   public ITextureRegion gamePlayNextRegion;
   public List<ITextureRegion> gamePlaySheepSegment1Regions = new ArrayList<ITextureRegion>();
   public List<ITextureRegion> gamePlaySheepSegment2Regions = new ArrayList<ITextureRegion>();
@@ -113,19 +122,35 @@ public class ResourcesManager {
 
   // MatchOverScene
   public ITextureRegion matchOverBackgroundRegion;
-  public ITextureRegion matchOverRematchRegion;
-  public ITextureRegion matchOverChangeSheepRegion;
-  public ITextureRegion matchOverBackToMenuRegion;
-  public ITextureRegion matchOverExitRegion;
+
+  public ITextureRegion matchOverRematchNormalRegion;
+  public ITextureRegion matchOverRematchPressedRegion;
+  public ITextureRegion matchOverRematchDisabledRegion;
+  public ITextureRegion matchOverChangeSheepNormalRegion;
+  public ITextureRegion matchOverChangeSheepPressedRegion;
+  public ITextureRegion matchOverChangeSheepDisabledRegion;
+  public ITextureRegion matchOverBackToMenuNormalRegion;
+  public ITextureRegion matchOverBackToMenuPressedRegion;
+  public ITextureRegion matchOverBackToMenuDisabledRegion;
+  public ITextureRegion matchOverExitNormalRegion;
+  public ITextureRegion matchOverExitPressedRegion;
+  public ITextureRegion matchOverExitDisabledRegion;
+  
   private BuildableBitmapTextureAtlas matchOverTextureAtlas;
 
   // SettingsScene
   public ITextureRegion settingsBackgroundRegion;
-  public ITextureRegion settingsOkRegion;
-  public ITextureRegion settingsResetRegion;
+  public ITextureRegion settingsOkNormalRegion;
+  public ITextureRegion settingsOkPressedRegion;
+  public ITextureRegion settingsOkDisabledRegion;
+  public ITextureRegion settingsResetNormalRegion;
+  public ITextureRegion settingsResetPressedRegion;
+  public ITextureRegion settingsResetDisabledRegion;
   private BuildableBitmapTextureAtlas settingsTextureAtlas;
 
   // SHARED RESOURCE
+  public ITextureRegion baseBackgroundRegion;
+  
   public ITextureRegion navLeftRegion;
   public ITextureRegion navRightRegion;
 
@@ -178,6 +203,8 @@ public class ResourcesManager {
     loadMenuGraphics();
     loadMenuFonts();
     loadMenuAudio();
+    
+    loadSharedResources();
   }
 
   private void loadMenuGraphics() {
@@ -209,26 +236,6 @@ public class ResourcesManager {
     final ITexture mainFontIconTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     fontIcon = FontFactory.createFromAsset(activity.getFontManager(), mainFontIconTexture, activity.getAssets(), fontIconName, (float) 50, true, Color.GREEN.getABGRPackedInt());
     fontIcon.load();
-
-    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-    sharedTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-
-    navLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/nav_left.png");
-    navRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/nav_right.png");
-
-    selectNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_normal.png");
-    selectPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_pressed.png");
-    selectDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_disabled.png");
-
-    nextNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_normal.png");
-    nextPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_pressed.png");
-    nextDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_disabled.png");
-
-    backNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/back_normal.png");
-    backPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/back_pressed.png");
-    backDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/back_disabled.png");
-
-    textureAtlasBuilderException(this.sharedTextureAtlas);
   }
 
   private void loadMenuAudio() {
@@ -248,9 +255,40 @@ public class ResourcesManager {
   public void unloadMenuTextures() {
     menuTextureAtlas.unload();
   }
+  
+  
+  // Shared Resources
+  // ###########################################
+  public void loadSharedResources() {
+    BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+    sharedTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
+
+    navLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/nav_left.png");
+    navRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/nav_right.png");
+
+    selectNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_normal.png");
+    selectPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_pressed.png");
+    selectDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/select_disabled.png");
+
+    nextNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_normal.png");
+    nextPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_pressed.png");
+    nextDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/next_disabled.png");
+
+    backNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/back_normal.png");
+    backPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/back_pressed.png");
+    backDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/back_disabled.png");
+
+    baseBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "shared/base_background.png");
+    
+    textureAtlasBuilderException(this.sharedTextureAtlas);
+  }
+  
+  
+  
 
   // Settings Scene Methods
-
+  // ###########################################
+  
   public void loadSettingsResources() {
     loadSettingsGraphics();
   }
@@ -260,8 +298,14 @@ public class ResourcesManager {
     settingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 
     settingsBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/settings_background.png");
-    settingsOkRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "shared/ok.png");
-    settingsResetRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/reset.png");
+
+    settingsOkNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "shared/ok_normal.png");
+    settingsOkPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "shared/ok_pressed.png");
+    settingsOkDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "shared/ok_disabled.png");
+    
+    settingsResetNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/reset_normal.png");
+    settingsResetPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/reset_pressed.png");
+    settingsResetDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "settings/reset_disabled.png");
 
     textureAtlasBuilderException(this.settingsTextureAtlas);
   }
@@ -269,6 +313,7 @@ public class ResourcesManager {
   public void unloadSettingsTextures() {
     // TODO Auto-generated method stub
   }
+  
 
   // SheepSelection Methods
   // ###########################################
@@ -350,12 +395,18 @@ public class ResourcesManager {
     gamePlayTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
 
     gamePlayBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "game_play_background.png");
-    gamePlayP1WinRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "p1_win.png");
-    gamePlayP2WinRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "p2_win.png");
-    gamePlayPauseRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "pause.png");
-    gamePlayResumeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume.png");
-    gamePlayExitToMenuRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu.png");
-    gamePlayNextRoundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "next_round.png");
+
+    gamePlayPauseNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "pause_normal.png");
+    gamePlayPausePressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "pause_pressed.png");
+    gamePlayPauseDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "pause_disabled.png");
+    gamePlayResumeNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume_normal.png");
+    gamePlayResumePressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume_pressed.png");
+    gamePlayResumeDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "resume_disabled.png");
+    gamePlayExitToMenuNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu_normal.png");
+    gamePlayExitToMenuPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu_pressed.png");
+    gamePlayExitToMenuDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "exit_to_menu_disabled.png");
+    
+    // gamePlayNextRoundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "next_round.png");
 
     gamePlayIndicatorRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "indicator.png");
     gamePlayIndicatorBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "indicator_background.png");
@@ -367,10 +418,10 @@ public class ResourcesManager {
     gamePlaySheepSegment2Regions.clear();
     gamePlaySheepSegment3Regions.clear();
     for (int i = 0; i < sheepCount; i++) {
-      // gamePlaySheepSegmentRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ").png"));
-      gamePlaySheepSegment1Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ") (1).png"));
-      gamePlaySheepSegment2Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ") (2).png"));
-      gamePlaySheepSegment3Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segment (" + (i + 1) + ") (3).png"));
+      // gamePlaySheepSegmentRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segments/segment (" + (i + 1) + ").png"));
+      gamePlaySheepSegment1Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segments/segment (" + (i + 1) + ") (1).png"));
+      gamePlaySheepSegment2Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segments/segment (" + (i + 1) + ") (2).png"));
+      gamePlaySheepSegment3Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segments/segment (" + (i + 1) + ") (3).png"));
     }
 
     gamePlayPlayingArenaRegions.clear();
@@ -420,11 +471,20 @@ public class ResourcesManager {
     matchOverTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 
     matchOverBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "match_over_background.png");
-    matchOverRematchRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "rematch.png");
-    matchOverChangeSheepRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "change_sheep.png");
-    matchOverBackToMenuRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "back_to_menu.png");
-    matchOverExitRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "exit.png");
 
+    matchOverRematchNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "rematch_normal.png");
+    matchOverRematchPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "rematch_pressed.png");
+    matchOverRematchDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "rematch_disabled.png");
+    matchOverChangeSheepNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "change_sheep_normal.png");
+    matchOverChangeSheepPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "change_sheep_pressed.png");
+    matchOverChangeSheepDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "change_sheep_disabled.png");
+    matchOverBackToMenuNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "back_to_menu_normal.png");
+    matchOverBackToMenuPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "back_to_menu_pressed.png");
+    matchOverBackToMenuDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "back_to_menu_disabled.png");
+    matchOverExitNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "exit_normal.png");
+    matchOverExitPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "exit_pressed.png");
+    matchOverExitDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(matchOverTextureAtlas, activity, "exit_disabled.png");
+    
     textureAtlasBuilderException(this.matchOverTextureAtlas);
   }
 

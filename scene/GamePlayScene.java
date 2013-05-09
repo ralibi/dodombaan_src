@@ -4,11 +4,8 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.Entity;
-import org.andengine.entity.scene.menu.MenuScene;
-import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
-import org.andengine.entity.scene.menu.item.IMenuItem;
-import org.andengine.entity.scene.menu.item.SpriteMenuItem;
-import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.ButtonSprite;
+import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.text.Text;
@@ -35,14 +32,12 @@ import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 import com.ralibi.dodombaan.object.Sheep;
 
-public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener {
-
-  private final int PAUSE = 0;
-  private final int RESUME = 1;
-  private final int EXIT_TO_MENU = 2;
-
-  private final int NEXT = 3;
-  private final int NEXT_ROUND = 4;
+public class GamePlayScene extends BaseScene {
+  
+  Sprite overlay;
+  ButtonSprite pauseButton;
+  ButtonSprite resumeButton;
+  ButtonSprite exitButton;
 
   private final int P1_WIN = 1;
   private final int P2_WIN = 2;
@@ -66,8 +61,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
   private Sheep sheepP2;
 
   // PAUSE SCENE
-  private Sprite pauseButton;
-  private MenuScene menuPauseScene;
   private Text winningAnnouncementText;
 
   private Sprite endRoundOverlay;
@@ -84,7 +77,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
   public void createScene() {
     resetGameData();
     createBackground();
-    createPauseButton();
     createMenuPauseScene();
     createMenuRoundOverScene();
 
@@ -229,24 +221,37 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
   }
 
   private void createMenuPauseScene() {
-    menuPauseScene = new MenuScene(camera);
-    menuPauseScene.setPosition(400, 240);
+    overlay = new Sprite(400, 240, resourcesManager.gamePlayOverlayRegion, vbom);
+    attachChild(overlay);
 
-    final Sprite overlay = new Sprite(0, 0, resourcesManager.gamePlayOverlayRegion, vbom);
-    final IMenuItem resumeItem = new ScaleMenuItemDecorator(new SpriteMenuItem(RESUME, resourcesManager.gamePlayResumeRegion, vbom), 1.2f, 1);
-    final IMenuItem exitToMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(EXIT_TO_MENU, resourcesManager.gamePlayExitToMenuRegion, vbom), 1.2f, 1);
+    pauseButton = new ButtonSprite(400, 240 - 80, resourcesManager.gamePlayPauseNormalRegion, resourcesManager.gamePlayPausePressedRegion, resourcesManager.gamePlayPauseDisabledRegion, vbom, new OnClickListener() {
+      @Override
+      public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+        pauseGame();
+      }
+    });
+    registerTouchArea(pauseButton);
+    attachChild(pauseButton);
 
-    menuPauseScene.attachChild(overlay);
-    menuPauseScene.addMenuItem(resumeItem);
-    menuPauseScene.addMenuItem(exitToMenuItem);
-
-    menuPauseScene.buildAnimations();
-    menuPauseScene.setBackgroundEnabled(false);
-
-    resumeItem.setPosition(0, -80);
-    exitToMenuItem.setPosition(0, -160);
-
-    menuPauseScene.setOnMenuItemClickListener(this);
+    resumeButton = new ButtonSprite(400, 240 - 80, resourcesManager.gamePlayResumeNormalRegion, resourcesManager.gamePlayResumePressedRegion, resourcesManager.gamePlayResumeDisabledRegion, vbom, new OnClickListener() {
+      @Override
+      public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+        resumeGame();
+      }
+    });
+    registerTouchArea(resumeButton);
+    overlay.attachChild(resumeButton);
+    
+    exitButton = new ButtonSprite(400, 240 - 160, resourcesManager.gamePlayExitToMenuNormalRegion, resourcesManager.gamePlayExitToMenuPressedRegion, resourcesManager.gamePlayExitToMenuDisabledRegion, vbom, new OnClickListener() {
+      @Override
+      public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+        SceneManager.getInstance().loadMenuSceneFromGamePlay(engine);
+      }
+    });
+    registerTouchArea(exitButton);
+    overlay.attachChild(exitButton);
+    
+    overlay.setVisible(false);
   }
 
   private void createMenuRoundOverScene() {
@@ -259,17 +264,7 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
     endRoundOverlay.attachChild(winningAnnouncementText);
   }
 
-  private void createPauseButton() {
-    pauseButton = new Sprite(400, 160, resourcesManager.gamePlayPauseRegion, vbom) {
-      public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-        pauseGame();
-        return true;
-      }
-    };
 
-    attachChild(pauseButton);
-    registerTouchArea(pauseButton);
-  }
 
   // EVENT
   // ###########################################
@@ -322,7 +317,7 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
   protected void pauseGame() {
     if (!isPaused()) {
       engine.getScene().setIgnoreUpdate(true);
-      setChildScene(menuPauseScene, false, true, true);
+      overlay.setVisible(true);
       pauseButton.setVisible(false);
       setPaused(true);
     }
@@ -330,7 +325,7 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
 
   private void resumeGame() {
     if (isPaused()) {
-      clearChildScene();
+      overlay.setVisible(false);
       engine.getScene().setIgnoreUpdate(false);
       pauseButton.setVisible(true);
       setPaused(false);
@@ -439,29 +434,6 @@ public class GamePlayScene extends BaseScene implements IOnMenuItemClickListener
   @Override
   public void disposeScene() {
     camera.setHUD(null);
-  }
-
-  @Override
-  public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
-    switch (pMenuItem.getID()) {
-    case PAUSE:
-      // SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
-      return true;
-    case RESUME:
-      resumeGame();
-      return true;
-    case EXIT_TO_MENU:
-      SceneManager.getInstance().loadMenuSceneFromGamePlay(engine);
-      return true;
-    case NEXT:
-      SceneManager.getInstance().loadMatchOverScene(engine);
-      return true;
-    case NEXT_ROUND:
-      restartSheepPosition();
-      return true;
-    default:
-      return false;
-    }
   }
 
   @Override
