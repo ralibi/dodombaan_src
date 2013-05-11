@@ -77,8 +77,6 @@ public class GamePlayScene extends BaseScene {
   public void createScene() {
     resetGameData();
     createBackground();
-    createMenuPauseScene();
-    createMenuRoundOverScene();
 
     setTouchAreaBindingOnActionDownEnabled(true);
 
@@ -88,6 +86,9 @@ public class GamePlayScene extends BaseScene {
     createArena();
     createSheep();
     createScoreBoard();
+    
+    createMenuPauseScene();
+    createMenuRoundOverScene();
 
     setPaused(true);
     
@@ -126,8 +127,16 @@ public class GamePlayScene extends BaseScene {
 
   private void createScoreBoard() {
     scoreBoard = new Entity(400, 480-40);
-    scoreTextP1 = new Text(-40, 0, resourcesManager.fontScore, "0", vbom);
-    scoreTextP2 = new Text(40, 0, resourcesManager.fontScore, "0", vbom);
+    
+    int dfc = 80; // distance_from_center
+    
+    scoreBoard.attachChild(new Sprite(0, 0, resourcesManager.scoreboardRegionRegion, vbom));
+    scoreBoard.attachChild(new Sprite(-dfc, 0, resourcesManager.scoreBackgroundRegionRegion, vbom));
+    scoreBoard.attachChild(new Sprite(dfc, 0, resourcesManager.scoreBackgroundRegionRegion, vbom));
+    
+    scoreTextP1 = new Text(-dfc, 0, resourcesManager.fontScore, "0", vbom);
+    scoreTextP2 = new Text(dfc, 0, resourcesManager.fontScore, "0", vbom);
+    
     scoreBoard.attachChild(scoreTextP1);
     scoreBoard.attachChild(scoreTextP2);
     attachChild(scoreBoard);
@@ -221,10 +230,10 @@ public class GamePlayScene extends BaseScene {
   }
 
   private void createMenuPauseScene() {
-    overlay = new Sprite(400, 240, resourcesManager.gamePlayOverlayRegion, vbom);
+    overlay = new Sprite(400, 240, resourcesManager.overlayRegion, vbom);
     attachChild(overlay);
 
-    pauseButton = new ButtonSprite(400, 240 - 80, resourcesManager.gamePlayPauseNormalRegion, resourcesManager.gamePlayPausePressedRegion, resourcesManager.gamePlayPauseDisabledRegion, vbom, new OnClickListener() {
+    pauseButton = new ButtonSprite(400, 480 - 40, resourcesManager.gamePlayPauseNormalRegion, resourcesManager.gamePlayPausePressedRegion, resourcesManager.gamePlayPauseDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         pauseGame();
@@ -255,7 +264,7 @@ public class GamePlayScene extends BaseScene {
   }
 
   private void createMenuRoundOverScene() {
-    endRoundOverlay = new Sprite(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2, resourcesManager.gamePlayOverlayRegion, vbom) {
+    endRoundOverlay = new Sprite(CAMERA_WIDTH / 2, CAMERA_HEIGHT / 2, resourcesManager.overlayRegion, vbom) {
       public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         return true;
       }

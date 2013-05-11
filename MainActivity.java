@@ -177,7 +177,7 @@ public class MainActivity extends BaseGameActivity implements IOnSceneTouchListe
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 		switch(pSceneTouchEvent.getAction()) {
 		case TouchEvent.ACTION_DOWN:
-			Debug.d("Activity DOWN");
+			// Debug.d("Activity DOWN");
 			return true;
 		case TouchEvent.ACTION_MOVE:
 			SceneManager.getInstance().getCurrentScene().unTouchScrollMenu();

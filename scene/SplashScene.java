@@ -1,7 +1,6 @@
 package com.ralibi.dodombaan.scene;
 
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.util.GLState;
 
@@ -9,23 +8,31 @@ import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
 public class SplashScene extends BaseScene {
-
-	private Sprite splash;
 	
 	@Override
 	public void createScene() {
-		setBackground(new Background(0.5f,0.5f,0.5f,0.5f));
-		splash = new Sprite(0,  0, resourcesManager.splashBackgroundRegion, vbom)
-		{
-			@Override
-		    protected void preDraw(GLState pGLState, Camera pCamera) 
-		    {
-		       super.preDraw(pGLState, pCamera);
-		       pGLState.enableDither();
-		    }
-		};
-		splash.setPosition(400, 240);
-		attachChild(splash);
+    attachChild(new Sprite(400,  240, resourcesManager.baseBackgroundRegion, vbom)
+    {
+      @Override
+        protected void preDraw(GLState pGLState, Camera pCamera) 
+        {
+           super.preDraw(pGLState, pCamera);
+           pGLState.enableDither();
+        }
+    });
+
+    // Sprite grass = new Sprite(400,  0, resourcesManager.grassRegion, vbom);
+    Sprite logoImage = new Sprite(400,  300, resourcesManager.logoImageRegion, vbom);
+    Sprite logoText = new Sprite(400,  150, resourcesManager.logoTextRegion, vbom);
+    logoText.setScale(0.8f);
+    Sprite leftLeaf = new Sprite(80,  -20, resourcesManager.leftLeafRegion, vbom);
+    Sprite rightLeaf = new Sprite(800 - 144,  40, resourcesManager.rightLeafRegion, vbom);
+    
+    // attachChild(grass);
+    attachChild(leftLeaf);
+    attachChild(rightLeaf);
+    attachChild(logoImage);
+    attachChild(logoText);
 	}
 
 	@Override
@@ -42,10 +49,7 @@ public class SplashScene extends BaseScene {
 
 	@Override
 	public void disposeScene() {
-		splash.detachSelf();
-		splash.dispose();
-		this.detachSelf();
-		this.dispose();
+    // TODO Auto-generated method stub
 	}
 
 	@Override

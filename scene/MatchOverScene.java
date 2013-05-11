@@ -28,7 +28,7 @@ public class MatchOverScene extends BaseScene {
   }
 
   private void createBackground() {
-    attachChild(new Sprite(400, 240, resourcesManager.matchOverBackgroundRegion, vbom) {
+    attachChild(new Sprite(400, 240, resourcesManager.baseBackgroundRegion, vbom) {
       @Override
       protected void preDraw(GLState pGLState, Camera pCamera) {
         super.preDraw(pGLState, pCamera);

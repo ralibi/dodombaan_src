@@ -2,7 +2,6 @@ package com.ralibi.dodombaan.scene;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
@@ -36,7 +35,7 @@ public class SheepSelectionScene extends BaseScene {
   }
 
   private void createScrollMenuSheep() {
-    scrollMenuSheepP1 = new ScrollMenuEntity(200, 300, 250, 300, new DeselectListener() {
+    scrollMenuSheepP1 = new ScrollMenuEntity(200, 265, 280, 380, new Sprite(0, 0, resourcesManager.sheepScrollBackgroundRegion, vbom), this, new DeselectListener() {
       @Override
       public void onSelect() {
         if (scrollMenuSheepP2.getSelectedMenuIndex() >= 0) {
@@ -50,7 +49,7 @@ public class SheepSelectionScene extends BaseScene {
         nextButton.setEnabled(false);
       }
     });
-    scrollMenuSheepP1.buildSprite(100, 200, 200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
+    scrollMenuSheepP1.buildSprite(130, 190, 260, 380, resourcesManager.sheepSelectionSheepRegions, this, vbom);
     registerTouchArea(scrollMenuSheepP1);
     registerTouchArea(scrollMenuSheepP1.getScrollPanel().getChildByIndex(0));
     attachChild(scrollMenuSheepP1);
@@ -58,7 +57,7 @@ public class SheepSelectionScene extends BaseScene {
 
     buildSheepCharacteristicMenu(scrollMenuSheepP1);
 
-    scrollMenuSheepP2 = new ScrollMenuEntity(600, 300, 250, 300, new DeselectListener() {
+    scrollMenuSheepP2 = new ScrollMenuEntity(600, 265, 280, 380, new Sprite(0, 0, resourcesManager.sheepScrollBackgroundRegion, vbom), this, new DeselectListener() {
       @Override
       public void onSelect() {
         if (scrollMenuSheepP1.getSelectedMenuIndex() >= 0) {
@@ -72,14 +71,14 @@ public class SheepSelectionScene extends BaseScene {
         nextButton.setEnabled(false);
       }
     });
-    scrollMenuSheepP2.buildSprite(100, 200, 200, 200, resourcesManager.sheepSelectionSheepRegions, this, vbom);
+    scrollMenuSheepP2.buildSprite(130, 190, 260, 380, resourcesManager.sheepSelectionSheepRegions, this, vbom);
     registerTouchArea(scrollMenuSheepP2);
     registerTouchArea(scrollMenuSheepP2.getScrollPanel().getChildByIndex(0));
     attachChild(scrollMenuSheepP2);
 
     buildSheepCharacteristicMenu(scrollMenuSheepP2);
 
-    scrollMenuSheepP1.selectMenu(0);
+    scrollMenuSheepP1.selectMenu(1);
     scrollMenuSheepP2.selectMenu(2);
   }
 
@@ -89,29 +88,38 @@ public class SheepSelectionScene extends BaseScene {
     for (int i = 0; i < scrollMenuSheep.getScrollPanel().getItemCount(); i++) {
 
       final Entity characteristicGroup = new Entity(0, 0);
-      int anchorX = 10 + i * 200;
+      int anchorX = 52 + i * 260;
+      int anchorY = 170;
+      int rightPadding = 26;
 
       // Strength
       final Entity strengthGroup = new Entity(0, 0);
-      Text strenghtText = new Text(0, 88, resourcesManager.fontSmall, "Strength", vbom);
-      strenghtText.setPosition(anchorX + strenghtText.getWidth() / 2f, 192);
+      Text strenghtText = new Text(0, 0, resourcesManager.fontSmall, "Strength", vbom);
+      strenghtText.setPosition(anchorX + rightPadding + strenghtText.getWidth() / 2f, anchorY + 10);
+      strengthGroup.attachChild(new Sprite(anchorX, anchorY, resourcesManager.strengthThumbRegion, vbom));
       strengthGroup.attachChild(strenghtText);
-      strengthGroup.attachChild(getCharacteristicMeter(anchorX, 168, GameConfigurationManager.STRENGTH[i]));
+      strengthGroup.attachChild(getCharacteristicMeter(anchorX + rightPadding, anchorY - 10, GameConfigurationManager.STRENGTH[i]));
       characteristicGroup.attachChild(strengthGroup);
+
+      anchorY -= 46;
 
       // Speed
       final Entity speedGroup = new Entity(0, 0);
-      Text speedText = new Text(0, 88, resourcesManager.fontSmall, "Speed", vbom);
-      speedText.setPosition(anchorX + speedText.getWidth() / 2f, 128);
+      Text speedText = new Text(0, 0, resourcesManager.fontSmall, "Speed", vbom);
+      speedText.setPosition(anchorX + rightPadding + speedText.getWidth() / 2f, anchorY + 10);
+      speedGroup.attachChild(new Sprite(anchorX, anchorY, resourcesManager.speedThumbRegion, vbom));
       speedGroup.attachChild(speedText);
-      speedGroup.attachChild(getCharacteristicMeter(anchorX, 104, GameConfigurationManager.SPEED[i]));
+      speedGroup.attachChild(getCharacteristicMeter(anchorX + rightPadding, anchorY - 10, GameConfigurationManager.SPEED[i]));
       characteristicGroup.attachChild(speedGroup);
 
+      anchorY -= 46;
+
       final Entity agilityGroup = new Entity(0, 0);
-      Text agilityText = new Text(0, 88, resourcesManager.fontSmall, "Agility", vbom);
-      agilityText.setPosition(anchorX + agilityText.getWidth() / 2f, 64);
+      Text agilityText = new Text(0, 0, resourcesManager.fontSmall, "Agility", vbom);
+      agilityText.setPosition(anchorX + rightPadding + agilityText.getWidth() / 2f, anchorY + 10);
+      agilityGroup.attachChild(new Sprite(anchorX, anchorY, resourcesManager.agilityThumbRegion, vbom));
       agilityGroup.attachChild(agilityText);
-      agilityGroup.attachChild(getCharacteristicMeter(anchorX, 44, GameConfigurationManager.AGILITY[i]));
+      agilityGroup.attachChild(getCharacteristicMeter(anchorX + rightPadding, anchorY - 10, GameConfigurationManager.AGILITY[i]));
       characteristicGroup.attachChild(agilityGroup);
 
       scrollMenuSheep.getScrollPanel().attachChild(characteristicGroup);
@@ -123,16 +131,12 @@ public class SheepSelectionScene extends BaseScene {
     /* Create the rectangles. */
     final Entity strengthRectangleGroup = new Entity(0, 0);
     for (int i = 0; i < nRect; i++) {
-      final Rectangle rect = this.makeColoredRectangle(posX + 16 + i * 30, posY, .5f, .2f, .1f);
-      strengthRectangleGroup.attachChild(rect);
+      strengthRectangleGroup.attachChild(new Sprite(posX + 16 + i * 38, posY, resourcesManager.powerFilledRegion, vbom));
+    }
+    for (int i = nRect; i < 4; i++) {
+      strengthRectangleGroup.attachChild(new Sprite(posX + 16 + i * 38, posY, resourcesManager.powerBlankRegion, vbom));
     }
     return strengthRectangleGroup;
-  }
-
-  private Rectangle makeColoredRectangle(final float pX, final float pY, final float pRed, final float pGreen, final float pBlue) {
-    final Rectangle coloredRect = new Rectangle(pX, pY, 24, 24, vbom);
-    coloredRect.setColor(pRed, pGreen, pBlue);
-    return coloredRect;
   }
 
   protected void itemClick(int i) {
@@ -140,7 +144,7 @@ public class SheepSelectionScene extends BaseScene {
   }
 
   private void createBackground() {
-    attachChild(new Sprite(400, 240, resourcesManager.sheepSelectionBackgroundRegion, vbom) {
+    attachChild(new Sprite(400, 240, resourcesManager.baseBackgroundRegion, vbom) {
       @Override
       protected void preDraw(GLState pGLState, Camera pCamera) {
         super.preDraw(pGLState, pCamera);
@@ -151,7 +155,7 @@ public class SheepSelectionScene extends BaseScene {
 
   private void createMenuChildScene() {
 
-    nextButton = new ButtonSprite(600, 40, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
+    nextButton = new ButtonSprite(700, 30, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         gameDataManager.p1SheepIndex = scrollMenuSheepP1.getSelectedMenuIndex();
@@ -162,7 +166,7 @@ public class SheepSelectionScene extends BaseScene {
     registerTouchArea(nextButton);
     attachChild(nextButton);
 
-    backButton = new ButtonSprite(200, 40, resourcesManager.backNormalRegion, resourcesManager.backPressedRegion, resourcesManager.backDisabledRegion, vbom, new OnClickListener() {
+    backButton = new ButtonSprite(100, 30, resourcesManager.backNormalRegion, resourcesManager.backPressedRegion, resourcesManager.backDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadMenuSceneFromSheepSelection(engine);

@@ -32,13 +32,23 @@ public class MainMenuScene extends BaseScene {
   }
 
   private void createBackground() {
-    attachChild(new Sprite(400, 240, resourcesManager.menuBackgroundRegion, vbom) {
+    attachChild(new Sprite(400, 240, resourcesManager.baseBackgroundRegion, vbom) {
       @Override
       protected void preDraw(GLState pGLState, Camera pCamera) {
         super.preDraw(pGLState, pCamera);
         pGLState.enableDither();
       }
     });
+
+    Sprite grass = new Sprite(400,  0, resourcesManager.grassRegion, vbom);
+    Sprite logoText = new Sprite(400,  360, resourcesManager.logoTextRegion, vbom);
+    Sprite leftLeaf = new Sprite(80,  90, resourcesManager.leftLeafRegion, vbom);
+    Sprite rightLeaf = new Sprite(800 - 90,  140, resourcesManager.rightLeafRegion, vbom);
+
+    attachChild(grass);
+    attachChild(leftLeaf);
+    attachChild(rightLeaf);
+    attachChild(logoText);
   }
 
   @Override

@@ -15,7 +15,7 @@ import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 public class MatchSettingsScene extends BaseScene {
 
   private ScrollMenuEntity scrollEntityArena;
-  
+
   ButtonSprite nextButton;
   ButtonSprite backButton;
 
@@ -27,7 +27,7 @@ public class MatchSettingsScene extends BaseScene {
   }
 
   private void createArenaScrollMenu() {
-    scrollEntityArena = new ScrollMenuEntity(400, 240, 720, 240, new DeselectListener() {
+    scrollEntityArena = new ScrollMenuEntity(400, 265, 666, 380, new Sprite(0, 0, resourcesManager.arenaScrollBackgroundRegion, vbom), this, new DeselectListener() {
       @Override
       public void onSelect() {
         nextButton.setEnabled(true);
@@ -46,7 +46,7 @@ public class MatchSettingsScene extends BaseScene {
   }
 
   private void createBackground() {
-    attachChild(new Sprite(400, 240, resourcesManager.matchSettingsBackgroundRegion, vbom) {
+    attachChild(new Sprite(400, 240, resourcesManager.baseBackgroundRegion, vbom) {
       @Override
       protected void preDraw(GLState pGLState, Camera pCamera) {
         super.preDraw(pGLState, pCamera);
@@ -56,7 +56,7 @@ public class MatchSettingsScene extends BaseScene {
   }
 
   private void createMenuChildScene() {
-    nextButton = new ButtonSprite(600, 40, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
+    nextButton = new ButtonSprite(700, 30, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         gameDataManager.arenaIndex = scrollEntityArena.getSelectedMenuIndex();
@@ -65,8 +65,8 @@ public class MatchSettingsScene extends BaseScene {
     });
     registerTouchArea(nextButton);
     attachChild(nextButton);
-    
-    backButton = new ButtonSprite(200, 40, resourcesManager.backNormalRegion, resourcesManager.backPressedRegion, resourcesManager.backDisabledRegion, vbom, new OnClickListener() {
+
+    backButton = new ButtonSprite(100, 30, resourcesManager.backNormalRegion, resourcesManager.backPressedRegion, resourcesManager.backDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
@@ -74,7 +74,7 @@ public class MatchSettingsScene extends BaseScene {
     });
     registerTouchArea(backButton);
     attachChild(backButton);
-    
+
   }
 
   @Override
@@ -92,7 +92,6 @@ public class MatchSettingsScene extends BaseScene {
     // TODO Auto-generated method stub
 
   }
-
 
   @Override
   public void unTouchScrollMenu() {

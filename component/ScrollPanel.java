@@ -118,11 +118,19 @@ public class ScrollPanel extends Entity {
 	public void navigate(int direction){
 		switch (direction) {
 		case -1:
-			
+		  if(getCurrentIndex() > 0){
+        setMovingRight(true);
+        this.mPhysicsHandler.setVelocityX(itemWidth * 2);
+        currentIndex -= 1;
+		  }
 			break;
 
 		case 1:
-			
+      if(getCurrentIndex() < getItemCount() - 1){
+        setMovingRight(false);
+        this.mPhysicsHandler.setVelocityX(itemWidth * -2);
+        currentIndex += 1;
+      }
 			break;
 		default:
 			break;
