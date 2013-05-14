@@ -34,7 +34,7 @@ import com.ralibi.dodombaan.object.Sheep;
 
 public class GamePlayScene extends BaseScene {
   
-  Sprite overlay;
+  Entity pauseOverlay;
   ButtonSprite pauseButton;
   ButtonSprite resumeButton;
   ButtonSprite exitButton;
@@ -230,8 +230,10 @@ public class GamePlayScene extends BaseScene {
   }
 
   private void createMenuPauseScene() {
-    overlay = new Sprite(400, 240, resourcesManager.overlayRegion, vbom);
-    attachChild(overlay);
+    pauseOverlay = new Entity(400, 240, 800, 480);
+    pauseOverlay.attachChild(new Sprite(400, 240, resourcesManager.pauseOverlayRegion, vbom));
+    
+    attachChild(pauseOverlay);
 
     pauseButton = new ButtonSprite(400, 480 - 40, resourcesManager.gamePlayPauseNormalRegion, resourcesManager.gamePlayPausePressedRegion, resourcesManager.gamePlayPauseDisabledRegion, vbom, new OnClickListener() {
       @Override
@@ -249,7 +251,7 @@ public class GamePlayScene extends BaseScene {
       }
     });
     registerTouchArea(resumeButton);
-    overlay.attachChild(resumeButton);
+    pauseOverlay.attachChild(resumeButton);
     
     exitButton = new ButtonSprite(400, 240 - 160, resourcesManager.gamePlayExitToMenuNormalRegion, resourcesManager.gamePlayExitToMenuPressedRegion, resourcesManager.gamePlayExitToMenuDisabledRegion, vbom, new OnClickListener() {
       @Override
@@ -258,9 +260,9 @@ public class GamePlayScene extends BaseScene {
       }
     });
     registerTouchArea(exitButton);
-    overlay.attachChild(exitButton);
+    pauseOverlay.attachChild(exitButton);
     
-    overlay.setVisible(false);
+    pauseOverlay.setVisible(false);
   }
 
   private void createMenuRoundOverScene() {
@@ -326,7 +328,7 @@ public class GamePlayScene extends BaseScene {
   protected void pauseGame() {
     if (!isPaused()) {
       engine.getScene().setIgnoreUpdate(true);
-      overlay.setVisible(true);
+      pauseOverlay.setVisible(true);
       pauseButton.setVisible(false);
       setPaused(true);
     }
@@ -334,7 +336,7 @@ public class GamePlayScene extends BaseScene {
 
   private void resumeGame() {
     if (isPaused()) {
-      overlay.setVisible(false);
+      pauseOverlay.setVisible(false);
       engine.getScene().setIgnoreUpdate(false);
       pauseButton.setVisible(true);
       setPaused(false);

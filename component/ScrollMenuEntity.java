@@ -36,7 +36,7 @@ public class ScrollMenuEntity extends Entity {
   private GestureDetector mDetector;
   private ScrollPanel scrollPanel;
 
-  private Text selectedIconText;
+  // private Text selectedIconText;
   private ButtonSprite selectButton;
   private ButtonSprite navLeftButton;
   private ButtonSprite navRightButton;
@@ -145,7 +145,7 @@ public class ScrollMenuEntity extends Entity {
 
   private void deselectMenu() {
     scrollPanel.setSelectedIndex(-1);
-    selectedIconText.setVisible(false);
+    // selectedIconText.setVisible(false);
     selectButton.setEnabled(true);
     
     updateNavigationButtonState();
@@ -155,7 +155,7 @@ public class ScrollMenuEntity extends Entity {
   public void selectMenu(int index) {
     scrollPanel.setSelectedIndex(index);
     if(!autoselect){
-      selectedIconText.setVisible(true);
+      // selectedIconText.setVisible(true);
       selectButton.setEnabled(false);
     }
     updateNavigationButtonState();
@@ -167,7 +167,7 @@ public class ScrollMenuEntity extends Entity {
     scrollPanel.setItemWidth(textureWidth);
     scrollPanel.setItemHeight(textureHeight);
 
-    selectedIconText = new Text(clippingEntity.getWidth() / 2, textureY, ResourcesManager.getInstance().fontIcon, FontAwesomeString.OK, vbom);
+    // selectedIconText = new Text(clippingEntity.getWidth() / 2, textureY, ResourcesManager.getInstance().fontIcon, FontAwesomeString.OK, vbom);
 
     // Iteration for menu item
     for (int i = 0; i < scrollPanel.getItemCount(); i++) {
@@ -179,7 +179,7 @@ public class ScrollMenuEntity extends Entity {
       scrollPanel.attachChild(sprite);
       pScene.registerTouchArea(sprite);
     }
-    clippingEntity.attachChild(selectedIconText);
+    //clippingEntity.attachChild(selectedIconText);
 
     
     // Create select button
@@ -189,7 +189,7 @@ public class ScrollMenuEntity extends Entity {
         selectMenu(scrollPanel.getCurrentIndex());
       }
     });
-    selectButton.setPosition(clippingEntity.getWidth()/2, selectButton.getHeight()/2 - 5);
+    selectButton.setPosition(clippingEntity.getWidth()/2, selectButton.getHeight()/2);
     attachChild(selectButton);
     pScene.registerTouchArea(selectButton);
 

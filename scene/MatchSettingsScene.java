@@ -56,7 +56,7 @@ public class MatchSettingsScene extends BaseScene {
   }
 
   private void createMenuChildScene() {
-    nextButton = new ButtonSprite(700, 30, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
+    nextButton = new ButtonSprite(700, 35, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         gameDataManager.arenaIndex = scrollEntityArena.getSelectedMenuIndex();

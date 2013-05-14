@@ -4,6 +4,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
+import org.andengine.entity.text.Text;
 import org.andengine.opengl.util.GLState;
 
 import com.ralibi.dodombaan.base.BaseScene;
@@ -11,6 +12,7 @@ import com.ralibi.dodombaan.component.CheckboxEntity;
 import com.ralibi.dodombaan.component.ScrollMenuEntity;
 import com.ralibi.dodombaan.component.CheckboxEntity.ToggleListener;
 import com.ralibi.dodombaan.component.ScrollMenuEntity.DeselectListener;
+import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -43,10 +45,11 @@ public class SettingsScene extends BaseScene {
   }
 
   private void createSettingsList() {
-    scrollTotalRound = new ScrollMenuEntity(200, 265, 40, 38, new Sprite(0, 0, resourcesManager.comboboxRegion, vbom), this, new DeselectListener() {
+    attachChild(new Text(350, 360, ResourcesManager.getInstance().fontSmall, "total round", vbom));
+    scrollTotalRound = new ScrollMenuEntity(450, 360, 40, 38, new Sprite(0, 0, resourcesManager.comboboxRegion, vbom), this, new DeselectListener() {
       @Override
       public void onSelect() {
-        gameDataManager.totalRoundSetting = (scrollTotalRound.getSelectedMenuIndex() * 2) + 3;
+        gameDataManager.setTotalRoundSetting((scrollTotalRound.getSelectedMenuIndex() * 2) + 3);
       }
 
       @Override
@@ -58,47 +61,37 @@ public class SettingsScene extends BaseScene {
     registerTouchArea(scrollTotalRound.getScrollPanel().getChildByIndex(0));
     attachChild(scrollTotalRound);
     scrollTotalRound.setAutoselect(true);
-    
-    
-    sfxCheckbox = new CheckboxEntity(300, 300, this, vbom, "sfx", gameDataManager.sfxSetting, new ToggleListener() {
+    scrollTotalRound.selectMenu((gameDataManager.getTotalRoundSetting() - 3) / 2);
+
+    sfxCheckbox = new CheckboxEntity(350, 300, this, vbom, "sfx", gameDataManager.isSfxSetting(), new ToggleListener() {
       @Override
       public void onchange() {
-        updateSftSetting();
+        if(sfxCheckbox != null){
+          gameDataManager.setSfxSetting(sfxCheckbox.isChecked());
+        }
       }
     });
     attachChild(sfxCheckbox);
     
-    musicCheckbox = new CheckboxEntity(300, 240, this, vbom, "music", gameDataManager.musicSetting, new ToggleListener() {
+    musicCheckbox = new CheckboxEntity(350, 240, this, vbom, "music", gameDataManager.isMusicSetting(), new ToggleListener() {
       @Override
       public void onchange() {
-        updateMusicSetting();
+        if(musicCheckbox != null){
+          gameDataManager.setMusicSetting(musicCheckbox.isChecked());
+        }
       }
     });
     attachChild(musicCheckbox);
     
-    vibrationCheckbox = new CheckboxEntity(300, 180, this, vbom, "vibrate", gameDataManager.vibrationSetting, new ToggleListener() {
+    vibrationCheckbox = new CheckboxEntity(350, 180, this, vbom, "vibrate", gameDataManager.isVibrationSetting(), new ToggleListener() {
       @Override
       public void onchange() {
-        updateVibrationSetting();
+        if(vibrationCheckbox != null){
+          gameDataManager.setVibrationSetting(vibrationCheckbox.isChecked());
+        }
       }
     });
     attachChild(vibrationCheckbox);
-  }
-
-  protected void updateSftSetting() {
-    if(sfxCheckbox != null){
-      gameDataManager.sfxSetting = sfxCheckbox.isChecked();
-    }
-  }
-  protected void updateMusicSetting() {
-    if(musicCheckbox != null){
-      gameDataManager.musicSetting = musicCheckbox.isChecked();
-    }
-  }
-  protected void updateVibrationSetting() {
-    if(vibrationCheckbox != null){
-      gameDataManager.vibrationSetting = vibrationCheckbox.isChecked();
-    }
   }
 
   private void createMenuChildScene() {
@@ -131,7 +124,6 @@ public class SettingsScene extends BaseScene {
   @Override
   public void unTouchScrollMenu() {
     // TODO Auto-generated method stub
-
   }
 
 }
