@@ -16,6 +16,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.debug.Debug;
 
+import android.hardware.Camera.Area;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -48,7 +49,10 @@ public class GamePlayScene extends BaseScene {
   private boolean positioning = true;
 
   // ARENA
-  private Sprite arena;
+  private Sprite rubber;
+  private Sprite rubberVibrating;
+  private Sprite rubberShadow;
+  private Sprite rubberVibratingShadow;
 
   private Entity nailP1;
   private Entity nailP2;
@@ -143,8 +147,20 @@ public class GamePlayScene extends BaseScene {
   }
 
   private void createArena() {
-    arena = new Sprite(400, 240, resourcesManager.gamePlayPlayingArenaRegions.get(gameDataManager.arenaIndex), vbom);
-    attachChild(arena);
+    rubberShadow = new Sprite(400 - 23, 240 - 54, resourcesManager.gamePlayRubberShadowRegion, vbom);
+    attachChild(rubberShadow);
+    rubberVibratingShadow = new Sprite(400 - 23, 240 - 54, resourcesManager.gamePlayRubberVibratingShadowRegion, vbom);
+    attachChild(rubberVibratingShadow);
+    rubberVibratingShadow.setAlpha(0.3f);
+    rubberShadow.setAlpha(0.3f);
+    
+    
+    rubber = new Sprite(400, 240, resourcesManager.gamePlayRubberRegions.get(gameDataManager.arenaIndex), vbom);
+    attachChild(rubber);
+    rubberVibrating = new Sprite(400, 240, resourcesManager.gamePlayRubberVibratingRegions.get(gameDataManager.arenaIndex), vbom);
+    attachChild(rubberVibrating);
+    
+    vibrateRubber(false);
 
     nailP1 = new Entity();
     nailP2 = new Entity();
@@ -159,9 +175,11 @@ public class GamePlayScene extends BaseScene {
 
     FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 
+    int nailSize = 120;
+    
     for (int i = 0; i < resourcesManager.nailNormalRegions.size(); i++) {
       final int _i = i;
-      TiledSprite nail_part_1 = new TiledSprite(80, 240 - ((i - 2) * 20), resourcesManager.nailNormalRegions.get(i), vbom) {
+      TiledSprite nail_part_1 = new TiledSprite(80, 240 - ((i - 2) * nailSize/5), resourcesManager.nailNormalRegions.get(i), vbom) {
         @Override
         public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 
@@ -174,7 +192,7 @@ public class GamePlayScene extends BaseScene {
       Body bodyNailP1 = PhysicsFactory.createCircleBody(mPhysicsWorld, nail_part_1, BodyType.StaticBody, FIXTURE_DEF);
       mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(nail_part_1, bodyNailP1, true, true));
 
-      TiledSprite nail_part_2 = new TiledSprite(720, 240 - ((i - 2) * 20), resourcesManager.nailNormalRegions.get(i), vbom) {
+      TiledSprite nail_part_2 = new TiledSprite(720, 240 - ((i - 2) * nailSize/5), resourcesManager.nailNormalRegions.get(i), vbom) {
         @Override
         public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
           nailAreaTouched(this, pSceneTouchEvent, nailP2, sheepP2, gDetectorP2, _i);
@@ -220,7 +238,7 @@ public class GamePlayScene extends BaseScene {
   }
 
   private void createBackground() {
-    attachChild(new Sprite(400, 240, resourcesManager.gamePlayBackgroundRegion, vbom) {
+    attachChild(new Sprite(400, 240, resourcesManager.gamePlayPlayingBackgroundRegions.get(gameDataManager.arenaIndex), vbom) {
       @Override
       protected void preDraw(GLState pGLState, Camera pCamera) {
         super.preDraw(pGLState, pCamera);
@@ -293,8 +311,10 @@ public class GamePlayScene extends BaseScene {
         }
 
         tiledSprite.setCurrentTileIndex(1);
+        vibrateRubber(true);
       } else {
         tiledSprite.setCurrentTileIndex(0);
+        vibrateRubber(false);
       }
     }
   }
@@ -367,6 +387,8 @@ public class GamePlayScene extends BaseScene {
             }
           }
         }));
+        
+        vibrateRubber(false);
     }
   }
 
@@ -418,6 +440,13 @@ public class GamePlayScene extends BaseScene {
   protected int getOrientationType(Sprite sprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
     int result = (int) Math.floor((double) (pTouchAreaLocalY * 5f / sprite.getHeight()));
     return result - 2;
+  }
+  
+  public void vibrateRubber(boolean vib){
+    rubber.setVisible(!vib);
+    rubberVibrating.setVisible(vib);
+    rubberShadow.setVisible(!vib);
+    rubberVibratingShadow.setVisible(vib);
   }
 
   // INHERITANCE METHOD

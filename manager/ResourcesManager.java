@@ -43,7 +43,7 @@ public class ResourcesManager {
   public float screenRatio;
   public Vibrator vibrator;
 
-  // public String fontName = "OpenSans-Regular.ttf";
+  public String fontText = "OpenSans-Regular.ttf";
   public String fontName = "AlfaSlabOne-Regular-OTF.otf";
   public String fontIconName = "fontawesome-webfont.ttf";
   // public String fontScoreName = "OpenSans-Regular.ttf";
@@ -53,6 +53,7 @@ public class ResourcesManager {
   private final int sheepCount = 6;
   private final int arenaCount = 3;
 
+  
   // ---------------------------------------------
   // TEXTURES & TEXTURE REGIONS
   // ---------------------------------------------
@@ -94,7 +95,7 @@ public class ResourcesManager {
   private BuildableBitmapTextureAtlas matchSettingsTextureAtlas;
 
   // GamePlayScene
-  public ITextureRegion gamePlayBackgroundRegion;
+  public List<ITextureRegion> gamePlayPlayingBackgroundRegions = new ArrayList<ITextureRegion>();
   public ITextureRegion overlayRegion;
   public ITextureRegion pauseOverlayRegion;
 
@@ -105,11 +106,15 @@ public class ResourcesManager {
   public List<ITextureRegion> gamePlaySheepSegment2Regions = new ArrayList<ITextureRegion>();
   public List<ITextureRegion> gamePlaySheepSegment3Regions = new ArrayList<ITextureRegion>();
 
-  public List<ITextureRegion> gamePlayPlayingArenaRegions = new ArrayList<ITextureRegion>();
+  public List<ITextureRegion> gamePlayRubberRegions = new ArrayList<ITextureRegion>();
+  public List<ITextureRegion> gamePlayRubberVibratingRegions = new ArrayList<ITextureRegion>();
   public List<TiledTextureRegion> nailNormalRegions = new ArrayList<TiledTextureRegion>();
+
+  public ITextureRegion gamePlayRubberShadowRegion;
+  public ITextureRegion gamePlayRubberVibratingShadowRegion;
   public ITextureRegion gamePlayIndicatorRegion;
   public ITextureRegion gamePlayIndicatorBackgroundRegion;
-  public ITextureRegion gamePlayNailRegion;
+  // public ITextureRegion gamePlayNailRegion;
 
   public ITextureRegion scoreboardRegionRegion;
   public ITextureRegion scoreBackgroundRegionRegion;
@@ -131,6 +136,7 @@ public class ResourcesManager {
   
   // SHARED RESOURCE
   public ITextureRegion baseBackgroundRegion;
+  public ITextureRegion mainMenuBackgroundRegion;
 
   public ITextureRegion start2PlayerNormalRegion;
   public ITextureRegion start2PlayerPressedRegion;
@@ -250,6 +256,8 @@ public class ResourcesManager {
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/shared/");
     sharedTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
 
+    mainMenuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "main_menu_background.png");
+
     start2PlayerNormalRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "normal/2_players.png");
     start2PlayerPressedRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "pressed/2_players.png");
     start2PlayerDisabledRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(sharedTextureAtlas, activity, "disabled/2_players.png");
@@ -342,7 +350,7 @@ public class ResourcesManager {
     fontIcon.load();
     
     final ITexture mainFontSmallTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    fontSmall = FontFactory.createFromAsset(activity.getFontManager(), mainFontSmallTexture, activity.getAssets(), fontName, (float) 16, true, Color.BLACK.getABGRPackedInt());
+    fontSmall = FontFactory.createFromAsset(activity.getFontManager(), mainFontSmallTexture, activity.getAssets(), fontText, (float) 16, true, Color.BLACK.getABGRPackedInt());
     fontSmall.load();
 
     final ITexture fontScoreIconTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
@@ -482,7 +490,11 @@ public class ResourcesManager {
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game_play/");
     gamePlayTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
 
-    gamePlayBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "game_play_background.png");
+
+    gamePlayPlayingBackgroundRegions.clear();
+    for (int i = 0; i < arenaCount; i++) {
+      gamePlayPlayingBackgroundRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "gameplay_background (" + (i + 1) + ").png"));
+    }
 
     gamePlayIndicatorRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "indicator.png");
     gamePlayIndicatorBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "indicator_background.png");
@@ -491,7 +503,7 @@ public class ResourcesManager {
 
     gamePlayIndicatorBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "indicator_background.png");
 
-    gamePlayNailRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail.png");
+    // gamePlayNailRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail.png");
 
     // gamePlaySheepSegmentRegions.clear();
     gamePlaySheepSegment1Regions.clear();
@@ -505,15 +517,20 @@ public class ResourcesManager {
       gamePlaySheepSegment3Regions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "segments/segment (" + (i + 1) + ") (3).png"));
     }
 
-    gamePlayPlayingArenaRegions.clear();
+    gamePlayRubberRegions.clear();
+    gamePlayRubberVibratingRegions.clear();
     for (int i = 0; i < arenaCount; i++) {
-      gamePlayPlayingArenaRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "playing_arena (" + (i + 1) + ").png"));
+      gamePlayRubberRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "rubber/rubber (" + (i + 1) + ").png"));
+      gamePlayRubberVibratingRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "rubber/rubber_vibrating (" + (i + 1) + ").png"));
     }
+
+    gamePlayRubberShadowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "rubber/rubber_shadow.png");
+    gamePlayRubberVibratingShadowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "rubber/rubber_vibrating_shadow.png");
 
     nailNormalRegions.clear();
     for (int i = 0; i < 5; i++) {
-      ITextureRegion normalTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail/nail_normal_" + (i + 1) + ".png");
-      ITextureRegion pressedTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail/nail_pressed_" + (i + 1) + ".png");
+      ITextureRegion normalTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail/normal/nail (" + (i + 1) + ").png");
+      ITextureRegion pressedTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gamePlayTextureAtlas, activity, "nail/pressed/nail (" + (i + 1) + ").png");
       nailNormalRegions.add(new TiledTextureRegion(normalTextureRegion.getTexture(), normalTextureRegion, pressedTextureRegion));
     }
 

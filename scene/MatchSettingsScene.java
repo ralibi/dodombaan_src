@@ -27,7 +27,7 @@ public class MatchSettingsScene extends BaseScene {
   }
 
   private void createArenaScrollMenu() {
-    scrollEntityArena = new ScrollMenuEntity(400, 265, 666, 380, new Sprite(0, 0, resourcesManager.arenaScrollBackgroundRegion, vbom), this, new DeselectListener() {
+    scrollEntityArena = new ScrollMenuEntity(400, 268, 660, 380, new Sprite(0, 0, resourcesManager.arenaScrollBackgroundRegion, vbom), this, new DeselectListener() {
       @Override
       public void onSelect() {
         nextButton.setEnabled(true);
@@ -39,7 +39,7 @@ public class MatchSettingsScene extends BaseScene {
         nextButton.setEnabled(false);
       }
     });
-    scrollEntityArena.buildSprite(300, 120, 600, 240, resourcesManager.matchSettingsArenaRegions, this, vbom);
+    scrollEntityArena.buildSprite(320, 190, 640, 380, resourcesManager.matchSettingsArenaRegions, this, vbom);
     registerTouchArea(scrollEntityArena);
     attachChild(scrollEntityArena);
     scrollEntityArena.selectMenu(0);

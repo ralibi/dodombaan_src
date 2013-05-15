@@ -35,7 +35,7 @@ public class SheepSelectionScene extends BaseScene {
   }
 
   private void createScrollMenuSheep() {
-    scrollMenuSheepP1 = new ScrollMenuEntity(200, 265, 280, 380, new Sprite(0, 0, resourcesManager.sheepScrollBackgroundRegion, vbom), this, new DeselectListener() {
+    scrollMenuSheepP1 = new ScrollMenuEntity(200, 268, 280, 380, new Sprite(0, 0, resourcesManager.sheepScrollBackgroundRegion, vbom), this, new DeselectListener() {
       @Override
       public void onSelect() {
         if (scrollMenuSheepP2.getSelectedMenuIndex() >= 0) {
@@ -57,7 +57,7 @@ public class SheepSelectionScene extends BaseScene {
 
     buildSheepCharacteristicMenu(scrollMenuSheepP1);
 
-    scrollMenuSheepP2 = new ScrollMenuEntity(600, 265, 280, 380, new Sprite(0, 0, resourcesManager.sheepScrollBackgroundRegion, vbom), this, new DeselectListener() {
+    scrollMenuSheepP2 = new ScrollMenuEntity(600, 268, 280, 380, new Sprite(0, 0, resourcesManager.sheepScrollBackgroundRegion, vbom), this, new DeselectListener() {
       @Override
       public void onSelect() {
         if (scrollMenuSheepP1.getSelectedMenuIndex() >= 0) {
@@ -89,7 +89,7 @@ public class SheepSelectionScene extends BaseScene {
 
       final Entity characteristicGroup = new Entity(0, 0);
       int anchorX = 52 + i * 260;
-      int anchorY = 170;
+      int anchorY = 175;
       int rightPadding = 26;
 
       // Strength
@@ -101,7 +101,7 @@ public class SheepSelectionScene extends BaseScene {
       strengthGroup.attachChild(getCharacteristicMeter(anchorX + rightPadding, anchorY - 10, GameConfigurationManager.STRENGTH[i]));
       characteristicGroup.attachChild(strengthGroup);
 
-      anchorY -= 46;
+      anchorY -= 43;
 
       // Speed
       final Entity speedGroup = new Entity(0, 0);
@@ -112,7 +112,7 @@ public class SheepSelectionScene extends BaseScene {
       speedGroup.attachChild(getCharacteristicMeter(anchorX + rightPadding, anchorY - 10, GameConfigurationManager.SPEED[i]));
       characteristicGroup.attachChild(speedGroup);
 
-      anchorY -= 46;
+      anchorY -= 43;
 
       final Entity agilityGroup = new Entity(0, 0);
       Text agilityText = new Text(0, 0, resourcesManager.fontSmall, "Agility", vbom);

@@ -23,8 +23,8 @@ public class SplashScene extends BaseScene {
 
     // Sprite grass = new Sprite(400,  0, resourcesManager.grassRegion, vbom);
     Sprite logoImage = new Sprite(400,  300, resourcesManager.logoImageRegion, vbom);
-    Sprite logoText = new Sprite(400,  150, resourcesManager.logoTextRegion, vbom);
-    logoText.setScale(0.8f);
+    // Sprite logoText = new Sprite(400,  150, resourcesManager.logoTextRegion, vbom);
+    // logoText.setScale(0.8f);
     Sprite leftLeaf = new Sprite(80,  -20, resourcesManager.leftLeafRegion, vbom);
     Sprite rightLeaf = new Sprite(800 - 144,  40, resourcesManager.rightLeafRegion, vbom);
     
@@ -32,7 +32,7 @@ public class SplashScene extends BaseScene {
     attachChild(leftLeaf);
     attachChild(rightLeaf);
     attachChild(logoImage);
-    attachChild(logoText);
+    // attachChild(logoText);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class MainMenuScene extends BaseScene {
   }
 
   private void createBackground() {
-    attachChild(new Sprite(400, 240, resourcesManager.baseBackgroundRegion, vbom) {
+    attachChild(new Sprite(400, 240, resourcesManager.mainMenuBackgroundRegion, vbom) {
       @Override
       protected void preDraw(GLState pGLState, Camera pCamera) {
         super.preDraw(pGLState, pCamera);
@@ -40,14 +40,14 @@ public class MainMenuScene extends BaseScene {
       }
     });
 
-    Sprite grass = new Sprite(400,  0, resourcesManager.grassRegion, vbom);
-    Sprite logoText = new Sprite(400,  360, resourcesManager.logoTextRegion, vbom);
-    Sprite leftLeaf = new Sprite(80,  90, resourcesManager.leftLeafRegion, vbom);
-    Sprite rightLeaf = new Sprite(800 - 90,  140, resourcesManager.rightLeafRegion, vbom);
+    // Sprite grass = new Sprite(400,  0, resourcesManager.grassRegion, vbom);
+    Sprite logoText = new Sprite(400,  390, resourcesManager.logoTextRegion, vbom);
+    // Sprite leftLeaf = new Sprite(80,  90, resourcesManager.leftLeafRegion, vbom);
+    // Sprite rightLeaf = new Sprite(800 - 90,  140, resourcesManager.rightLeafRegion, vbom);
 
-    attachChild(grass);
-    attachChild(leftLeaf);
-    attachChild(rightLeaf);
+    // attachChild(grass);
+    // attachChild(leftLeaf);
+    // attachChild(rightLeaf);
     attachChild(logoText);
   }
 
@@ -68,7 +68,7 @@ public class MainMenuScene extends BaseScene {
   }
 
   private void createMenuChildScene() {
-    start2PlayerButton = new ButtonSprite(400, 240, resourcesManager.start2PlayerNormalRegion, resourcesManager.start2PlayerPressedRegion, resourcesManager.start2PlayerDisabledRegion, vbom, new OnClickListener() {
+    start2PlayerButton = new ButtonSprite(650 - 120, 290, resourcesManager.start2PlayerNormalRegion, resourcesManager.start2PlayerPressedRegion, resourcesManager.start2PlayerDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadSheepSelectionSceneFromMenu(engine);
@@ -77,7 +77,7 @@ public class MainMenuScene extends BaseScene {
     registerTouchArea(start2PlayerButton);
     attachChild(start2PlayerButton);
     
-    settingsButton = new ButtonSprite(400, 240 - 80, resourcesManager.settingsNormalRegion, resourcesManager.settingsPressedRegion, resourcesManager.settingsDisabledRegion, vbom, new OnClickListener() {
+    settingsButton = new ButtonSprite(650 - 95, 220, resourcesManager.settingsNormalRegion, resourcesManager.settingsPressedRegion, resourcesManager.settingsDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadSettingsScene(engine);

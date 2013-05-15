@@ -150,7 +150,7 @@ public class ScrollMenuEntity extends Entity {
     
     updateNavigationButtonState();
     deselectListener.onDeselect();
-  }
+  } 
 
   public void selectMenu(int index) {
     scrollPanel.setSelectedIndex(index);
@@ -189,7 +189,7 @@ public class ScrollMenuEntity extends Entity {
         selectMenu(scrollPanel.getCurrentIndex());
       }
     });
-    selectButton.setPosition(clippingEntity.getWidth()/2, selectButton.getHeight()/2);
+    selectButton.setPosition(clippingEntity.getWidth()/2, selectButton.getHeight()/2 + 5);
     attachChild(selectButton);
     pScene.registerTouchArea(selectButton);
 
@@ -225,7 +225,7 @@ public class ScrollMenuEntity extends Entity {
         }
       }
     });
-    navLeftButton.setPosition(-32, this.getHeight()/2 - slope);
+    navLeftButton.setPosition(-37, this.getHeight()/2 - slope);
     attachChild(navLeftButton);
     pScene.registerTouchArea(navLeftButton);
     // Create nav button right
@@ -243,7 +243,7 @@ public class ScrollMenuEntity extends Entity {
         }
       }
     });
-    navRightButton.setPosition(this.getWidth() + 32, this.getHeight()/2 + slope);
+    navRightButton.setPosition(this.getWidth() + 37, this.getHeight()/2 + slope);
     attachChild(navRightButton);
     pScene.registerTouchArea(navRightButton);
   }

@@ -213,9 +213,10 @@ public class Sheep {
   }
 
   public void jumpBackward() {
-    int segment_idx = SEGMENT_COUNT - 1;
-    float dY = (bodySegments.get(segment_idx).getPosition().y - 240 / PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
-    bodySegments.get(segment_idx).applyForce(bodySegments.get(segment_idx).getWorldVector(new Vector2(force * BACKWARD_FORCE * direction, -dY)), new Vector2(bodySegments.get(segment_idx).getPosition().x + direction / 2, bodySegments.get(segment_idx).getPosition().y));
+    // emporary disable jump backward 
+//    int segment_idx = SEGMENT_COUNT - 1;
+//    float dY = (bodySegments.get(segment_idx).getPosition().y - 240 / PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
+//    bodySegments.get(segment_idx).applyForce(bodySegments.get(segment_idx).getWorldVector(new Vector2(force * BACKWARD_FORCE * direction, -dY)), new Vector2(bodySegments.get(segment_idx).getPosition().x + direction / 2, bodySegments.get(segment_idx).getPosition().y));
   }
 
   private float getDeltaHeadY() {
