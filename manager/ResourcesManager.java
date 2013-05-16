@@ -220,8 +220,11 @@ public class ResourcesManager {
   public Font fontSmall;
   public Font fontScore;
 
-  public Sound majorSound;
-  public Sound minorSound;
+  public Sound clickSound;
+  public Sound swipeSound;
+  public Sound shortWhistleSound;
+  public Sound longWhistleSound;
+  public Sound clappingHandSound;
 
   // ---------------------------------------------
   // CLASS LOGIC
@@ -361,15 +364,16 @@ public class ResourcesManager {
   
   
   
-  
   // MainMenu Methods
   // ###########################################
 
-  public void loadMenuResources() {
+  public void loadMenuResources()  {
+    Debug.d("[IBI] AUDIO LOADing");
+    loadMenuAudio();
+    Debug.d("[IBI] AUDIO LOADED");
     loadSharedResources();
     loadSharedFonts();
     loadMenuGraphics();
-    loadMenuAudio();
   }
   private void loadMenuGraphics() {
     BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
@@ -381,8 +385,11 @@ public class ResourcesManager {
   private void loadMenuAudio() {
     SoundFactory.setAssetBasePath("mfx/");
     try {
-      this.majorSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "angklung_01.ogg");
-      this.minorSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "angklung_02.ogg");
+      this.clickSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "click.ogg");
+      this.swipeSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "swipe.ogg");
+      this.shortWhistleSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "short_whistle.ogg");
+      this.longWhistleSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "long_whistle.ogg");
+      this.clappingHandSound = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "clapping_hand.ogg");
     } catch (final IOException e) {
       Debug.e(e);
     }
@@ -609,4 +616,5 @@ public class ResourcesManager {
       Debug.e(e);
     }
   }
+  
 }

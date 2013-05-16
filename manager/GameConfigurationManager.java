@@ -7,10 +7,10 @@ public class GameConfigurationManager {
   public static final int[] AGILITY = { 2, 3, 4, 2, 2, 1 };
 
   public static final float[] DENSITY = { .5f, 1f, 3f, 10f, 40f, 100f }; // depend on strength
-  public static final float[] FORCE = { 20, 30, 50, 80, 180, 300 }; // depend on speed
+  public static final float[] FORCE = { 30, 50, 80, 180, 300, 500 }; // depend on speed
   public static final float[] ANGLE = { 8, 18, 30, 46, 62, 80 }; // depend on speed
 
-  public static final int[] DAMPING = { 10, 3, 20 }; // depend on speed
+  public static final int[] DAMPING = { 10, 5, 3 }; // depend on speed
 
   public static final int VIBRATE_STRENGTH = 25;
 

@@ -43,6 +43,7 @@ public class MatchOverScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadGamePlaySceneFromMatchOver(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(rematchButton);
@@ -52,6 +53,7 @@ public class MatchOverScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadSheepSelectionSceneFromMatchOver(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(changeSheepButton);
@@ -61,6 +63,7 @@ public class MatchOverScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadMenuSceneFromMatchOver(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(backToMenuButton);
@@ -69,7 +72,7 @@ public class MatchOverScene extends BaseScene {
     exitButton = new ButtonSprite(400, 240, resourcesManager.matchOverExitNormalRegion, resourcesManager.matchOverExitPressedRegion, resourcesManager.matchOverExitDisabledRegion, vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-
+        playSound(CLICK_SOUND);
       }
     });
     // registerTouchArea(exitButton);

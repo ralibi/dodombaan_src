@@ -7,12 +7,11 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
-import com.ralibi.dodombaan.manager.FontAwesomeString;
+import com.ralibi.dodombaan.base.BaseScene;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
@@ -187,6 +186,7 @@ public class ScrollMenuEntity extends Entity {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         selectMenu(scrollPanel.getCurrentIndex());
+        SceneManager.getInstance().getCurrentScene().playSound(BaseScene.CLICK_SOUND);
       }
     });
     selectButton.setPosition(clippingEntity.getWidth()/2, selectButton.getHeight()/2 + 5);
@@ -195,7 +195,7 @@ public class ScrollMenuEntity extends Entity {
 
     
     createNavButton(pScene, vbom);
-    
+
     deselectMenu();
     // creating new thread for gesture listener
     createNewThread();
@@ -222,6 +222,8 @@ public class ScrollMenuEntity extends Entity {
             scrollPanel.navigate(-1);
             deselectMenu();
           }
+          SceneManager.getInstance().getCurrentScene();
+          SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_SOUND);
         }
       }
     });
@@ -240,6 +242,8 @@ public class ScrollMenuEntity extends Entity {
             scrollPanel.navigate(1);
             deselectMenu();
           }
+          SceneManager.getInstance().getCurrentScene();
+          SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_SOUND);
         }
       }
     });
@@ -290,11 +294,15 @@ public class ScrollMenuEntity extends Entity {
 
             }
             deselectMenu();
+            SceneManager.getInstance().getCurrentScene();
+            SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_SOUND);
             return true;
           }
 
           public boolean onSingleTapUp(MotionEvent e) {
             if (scrollPanel.getCurrentIndex() != scrollPanel.getSelectedIndex()) {
+              SceneManager.getInstance().getCurrentScene();
+              SceneManager.getInstance().getCurrentScene().playSound(BaseScene.CLICK_SOUND);
               selectMenu(scrollPanel.getCurrentIndex());
             } else {
               deselectMenu();

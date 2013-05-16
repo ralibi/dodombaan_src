@@ -41,7 +41,6 @@ public class SheepSelectionScene extends BaseScene {
         if (scrollMenuSheepP2.getSelectedMenuIndex() >= 0) {
           nextButton.setEnabled(true);
         }
-        resourcesManager.majorSound.play();
       }
 
       @Override
@@ -63,7 +62,6 @@ public class SheepSelectionScene extends BaseScene {
         if (scrollMenuSheepP1.getSelectedMenuIndex() >= 0) {
           nextButton.setEnabled(true);
         }
-        resourcesManager.minorSound.play();
       }
 
       @Override
@@ -161,6 +159,7 @@ public class SheepSelectionScene extends BaseScene {
         gameDataManager.p1SheepIndex = scrollMenuSheepP1.getSelectedMenuIndex();
         gameDataManager.p2SheepIndex = scrollMenuSheepP2.getSelectedMenuIndex();
         SceneManager.getInstance().loadMatchSettingsSceneFromSheepSelection(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(nextButton);
@@ -170,6 +169,7 @@ public class SheepSelectionScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadMenuSceneFromSheepSelection(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(backButton);

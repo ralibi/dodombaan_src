@@ -68,6 +68,7 @@ public class SettingsScene extends BaseScene {
       public void onchange() {
         if(sfxCheckbox != null){
           gameDataManager.setSfxSetting(sfxCheckbox.isChecked());
+          playSound(CLICK_SOUND);
         }
       }
     });
@@ -78,6 +79,7 @@ public class SettingsScene extends BaseScene {
       public void onchange() {
         if(musicCheckbox != null){
           gameDataManager.setMusicSetting(musicCheckbox.isChecked());
+          playSound(CLICK_SOUND);
         }
       }
     });
@@ -88,6 +90,7 @@ public class SettingsScene extends BaseScene {
       public void onchange() {
         if(vibrationCheckbox != null){
           gameDataManager.setVibrationSetting(vibrationCheckbox.isChecked());
+          playSound(CLICK_SOUND);
         }
       }
     });
@@ -99,6 +102,7 @@ public class SettingsScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadMenuSceneFromSettings(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(doneButton);

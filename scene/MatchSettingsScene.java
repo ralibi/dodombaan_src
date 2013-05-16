@@ -31,7 +31,6 @@ public class MatchSettingsScene extends BaseScene {
       @Override
       public void onSelect() {
         nextButton.setEnabled(true);
-        resourcesManager.minorSound.play();
       }
 
       @Override
@@ -61,6 +60,7 @@ public class MatchSettingsScene extends BaseScene {
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         gameDataManager.arenaIndex = scrollEntityArena.getSelectedMenuIndex();
         SceneManager.getInstance().loadGamePlayScene(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(nextButton);
@@ -70,6 +70,7 @@ public class MatchSettingsScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(backButton);

@@ -16,7 +16,6 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.debug.Debug;
 
-import android.hardware.Camera.Area;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -257,6 +256,7 @@ public class GamePlayScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         pauseGame();
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(pauseButton);
@@ -266,6 +266,7 @@ public class GamePlayScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         resumeGame();
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(resumeButton);
@@ -275,6 +276,7 @@ public class GamePlayScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadMenuSceneFromGamePlay(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(exitButton);
@@ -301,7 +303,7 @@ public class GamePlayScene extends BaseScene {
   protected void nailAreaTouched(TiledSprite tiledSprite, TouchEvent pSceneTouchEvent, Entity nail, Sheep sheep, GestureDetector gDetector, int index) {
     if (!isPaused()) {
       sheep.moveForward(2 - index);
-      resourcesManager.vibrator.vibrate(GameConfigurationManager.VIBRATE_STRENGTH);
+      vibrate(GameConfigurationManager.VIBRATE_STRENGTH);
       gDetector.onTouchEvent(pSceneTouchEvent.getMotionEvent());
 
       if (pSceneTouchEvent.isActionDown() || pSceneTouchEvent.isActionMove()) {
@@ -343,6 +345,7 @@ public class GamePlayScene extends BaseScene {
 
     detachChild(endRoundOverlay);
     unregisterTouchArea(endRoundOverlay);
+    playSound(SHORT_WHISTLE_SOUND);
   }
 
   protected void pauseGame() {
@@ -373,6 +376,14 @@ public class GamePlayScene extends BaseScene {
       setPaused(true);
       winningAnnouncementText.setText("Player " + gameDataManager.winner + " WON");
       
+
+      if (isMaxScoreReached()) {
+        playSound(LONG_WHISTLE_SOUND);
+        playSound(CLAPPING_HAND_SOUND);
+      } else {
+        playSound(SHORT_WHISTLE_SOUND);
+      }
+      
       attachChild(endRoundOverlay);
       registerTouchArea(endRoundOverlay);
 
@@ -382,7 +393,6 @@ public class GamePlayScene extends BaseScene {
             if (isMaxScoreReached()) {
               SceneManager.getInstance().loadMatchOverScene(engine);
             } else {
-              Debug.d("restartTimerHandler");
               restartSheepPosition();
             }
           }
@@ -434,7 +444,7 @@ public class GamePlayScene extends BaseScene {
   }
   
   private boolean isMaxScoreReached(){
-    return gameDataManager.p1Score == gameDataManager.maxScore || gameDataManager.p2Score == gameDataManager.maxScore;
+    return gameDataManager.p1Score == gameDataManager.getTotalMaximumScore() || gameDataManager.p2Score == gameDataManager.getTotalMaximumScore();
   }
 
   protected int getOrientationType(Sprite sprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {

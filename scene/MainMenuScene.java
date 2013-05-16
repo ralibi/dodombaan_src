@@ -72,6 +72,7 @@ public class MainMenuScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadSheepSelectionSceneFromMenu(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(start2PlayerButton);
@@ -81,6 +82,7 @@ public class MainMenuScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         SceneManager.getInstance().loadSettingsScene(engine);
+        playSound(CLICK_SOUND);
       }
     });
     registerTouchArea(settingsButton);

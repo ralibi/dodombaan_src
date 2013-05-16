@@ -24,7 +24,6 @@ public class GameDataManager {
   public int winner = 0;
   public int p1Score = 0;
   public int p2Score = 0;
-  public int maxScore = 3;
 
   private static final GameDataManager INSTANCE = new GameDataManager();
 
