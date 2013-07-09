@@ -16,14 +16,15 @@ public class MatchOverScene extends BaseScene {
   // VARIABLES
   // ---------------------------------------------
   ButtonSprite rematchButton;
-  ButtonSprite changeSheepButton;
+  ButtonSprite changeRamButton;
   // ButtonSprite changeArenaButton;
-  ButtonSprite backToMenuButton;
+  ButtonSprite mainMenuButton;
   ButtonSprite exitButton;
 
   @Override
   public void createScene() {
     createBackground();
+    createPosingRam();
     createMenuChildScene();
   }
 
@@ -35,53 +36,93 @@ public class MatchOverScene extends BaseScene {
         pGLState.enableDither();
       }
     });
+
+    Sprite crowd = new Sprite(400, 240, resourcesManager.matchOverBackgroundRegion, vbom);
+	if(gameDataManager.winner == 1){
+		crowd.setFlippedHorizontal(true);
+	}
+    attachChild(crowd);
+    
+  }
+
+  private void createPosingRam() {
+	  
+//	  rematchButton
+//	  changeRamButton
+//	  backToMenuButton
+	  
+	if(gameDataManager.winner == 1){
+		Sprite winnerSprite = new Sprite(800-600, 180, resourcesManager.ramSelectionRamRegions.get(gameDataManager.p1RamIndex), vbom);
+		//winnerSprite.setScale(0.4f);
+		attachChild(winnerSprite);
+
+		Sprite loserSprite = new Sprite(800-90, 130, resourcesManager.ramSelectionRamRegions.get(gameDataManager.p2RamIndex), vbom);
+		loserSprite.setScale(0.4f);
+		attachChild(loserSprite);
+	}
+	else{
+		Sprite winnerSprite = new Sprite(600, 180, resourcesManager.ramSelectionRamRegions.get(gameDataManager.p2RamIndex), vbom);
+		//winnerSprite.setScale(0.4f);
+		attachChild(winnerSprite);
+
+		Sprite loserSprite = new Sprite(90, 130, resourcesManager.ramSelectionRamRegions.get(gameDataManager.p1RamIndex), vbom);
+		loserSprite.setScale(0.4f);
+		attachChild(loserSprite);
+	}
   }
 
   private void createMenuChildScene() {
 
-    rematchButton = new ButtonSprite(400, 240, resourcesManager.matchOverRematchNormalRegion, resourcesManager.matchOverRematchPressedRegion, resourcesManager.matchOverRematchDisabledRegion, vbom, new OnClickListener() {
+    rematchButton = new ButtonSprite(130, 380, resourcesManager.rematchButtonRegions[0], resourcesManager.rematchButtonRegions[1], resourcesManager.rematchButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-        SceneManager.getInstance().loadGamePlaySceneFromMatchOver(engine);
-        playSound(CLICK_SOUND);
+      	SceneManager.getInstance().changeScene(SceneType.SCENE_MATCH_OVER, SceneType.SCENE_GAME_PLAY);
+        playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(rematchButton);
     attachChild(rematchButton);
 
-    changeSheepButton = new ButtonSprite(400, 240 - 80, resourcesManager.matchOverChangeSheepNormalRegion, resourcesManager.matchOverChangeSheepPressedRegion, resourcesManager.matchOverChangeSheepDisabledRegion, vbom, new OnClickListener() {
+    changeRamButton = new ButtonSprite(135, 300, resourcesManager.changeRamButtonRegions[0], resourcesManager.changeRamButtonRegions[1], resourcesManager.changeRamButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-        SceneManager.getInstance().loadSheepSelectionSceneFromMatchOver(engine);
-        playSound(CLICK_SOUND);
+      	SceneManager.getInstance().changeScene(SceneType.SCENE_MATCH_OVER, SceneType.SCENE_RAM_SELECTION);
+        playSound(CLICK_MUSIC);
       }
     });
-    registerTouchArea(changeSheepButton);
-    attachChild(changeSheepButton);
+    registerTouchArea(changeRamButton);
+    attachChild(changeRamButton);
 
-    backToMenuButton = new ButtonSprite(400, 240 - 160, resourcesManager.matchOverBackToMenuNormalRegion, resourcesManager.matchOverBackToMenuPressedRegion, resourcesManager.matchOverBackToMenuDisabledRegion, vbom, new OnClickListener() {
+    mainMenuButton = new ButtonSprite(135, 242, resourcesManager.mainMenuButtonRegions[0], resourcesManager.mainMenuButtonRegions[1], resourcesManager.mainMenuButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-        SceneManager.getInstance().loadMenuSceneFromMatchOver(engine);
-        playSound(CLICK_SOUND);
+        onBackKeyPressed();
+        playSound(CLICK_MUSIC);
       }
     });
-    registerTouchArea(backToMenuButton);
-    attachChild(backToMenuButton);
+    registerTouchArea(mainMenuButton);
+    attachChild(mainMenuButton);
 
-    exitButton = new ButtonSprite(400, 240, resourcesManager.matchOverExitNormalRegion, resourcesManager.matchOverExitPressedRegion, resourcesManager.matchOverExitDisabledRegion, vbom, new OnClickListener() {
+    exitButton = new ButtonSprite(400, 240, resourcesManager.quitButtonRegions[0], resourcesManager.quitButtonRegions[1], resourcesManager.quitButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-        playSound(CLICK_SOUND);
+        playSound(CLICK_MUSIC);
       }
     });
     // registerTouchArea(exitButton);
     // attachChild(exitButton);
+    
+
+	if(gameDataManager.winner == 1){
+		rematchButton.setX(800-rematchButton.getX());
+		changeRamButton.setX(800-changeRamButton.getX());
+		mainMenuButton.setX(800-mainMenuButton.getX());
+	}
   }
 
   @Override
   public void onBackKeyPressed() {
-    SceneManager.getInstance().loadMenuSceneFromMatchOver(engine);
+  	SceneManager.getInstance().changeScene(SceneType.SCENE_MATCH_OVER, SceneType.SCENE_MAIN_MENU);
   }
 
   @Override

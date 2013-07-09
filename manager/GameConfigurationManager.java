@@ -18,6 +18,8 @@ public class GameConfigurationManager {
   public static final boolean DEFAULT_MUSIC_SETTING = true;
   public static final boolean DEFAULT_VIBRATION_SETTING = true;
   public static final int DEFAULT_TOTAL_ROUND_SETTING = 5;
+  
+  public static final String[] RAM_NAME = { "Kampiun", "Dongkrak", "Si Bagong", "Panglima", "Pangeran", "Si Kapten" };
 
   private static final GameConfigurationManager INSTANCE = new GameConfigurationManager();
 

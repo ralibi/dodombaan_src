@@ -19,9 +19,6 @@ public class ScrollPanel extends Entity {
 	private int itemHeight = 0;
 	private int currentIndex = 0;
 	private int selectedIndex = -1;
-	
-	private int parentWidth = 0;
-	float paddingLeft;
 
 	//---------------------------------------------
     // CONSTRUCTOR
@@ -34,8 +31,6 @@ public class ScrollPanel extends Entity {
 		super();
 		
 		this.mPhysicsHandler = new PhysicsHandler(this);
-		parentWidth = width;
-		paddingLeft = (parentWidth-itemWidth)/2;
 		this.registerUpdateHandler(this.mPhysicsHandler);
 	}
 	
@@ -96,7 +91,6 @@ public class ScrollPanel extends Entity {
 
 	public void setItemWidth(int itemWidth) {
 		this.itemWidth = itemWidth;
-    paddingLeft = (parentWidth-itemWidth)/2;
 	}
 
 	public int getItemHeight() {
@@ -159,8 +153,8 @@ public class ScrollPanel extends Entity {
 		super.onManagedUpdate(pSecondsElapsed);
 		
 		if(!this.touching){
-			float posMinX = paddingLeft;
-			float posMaxX = ((1-itemCount) * itemWidth) + paddingLeft;
+			float posMinX = 0;
+			float posMaxX = ((1-itemCount) * itemWidth);
 			float posSnapX = getSnapX(currentIndex);
 			
 
@@ -213,6 +207,6 @@ public class ScrollPanel extends Entity {
 	}
 
 	private float getSnapX(int index){
-	  return (-index * itemWidth) + paddingLeft;
+	  return (-index * itemWidth);
 	}
 }

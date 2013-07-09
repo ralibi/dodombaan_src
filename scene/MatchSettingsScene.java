@@ -55,22 +55,22 @@ public class MatchSettingsScene extends BaseScene {
   }
 
   private void createMenuChildScene() {
-    nextButton = new ButtonSprite(700, 35, resourcesManager.nextNormalRegion, resourcesManager.nextPressedRegion, resourcesManager.nextDisabledRegion, vbom, new OnClickListener() {
+    nextButton = new ButtonSprite(700, 35, resourcesManager.nextButtonRegions[0], resourcesManager.nextButtonRegions[1], resourcesManager.nextButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         gameDataManager.arenaIndex = scrollEntityArena.getSelectedMenuIndex();
-        SceneManager.getInstance().loadGamePlayScene(engine);
-        playSound(CLICK_SOUND);
+      	SceneManager.getInstance().changeScene(SceneType.SCENE_MATCH_SETTINGS, SceneType.SCENE_GAME_PLAY);
+        playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(nextButton);
     attachChild(nextButton);
 
-    backButton = new ButtonSprite(100, 30, resourcesManager.backNormalRegion, resourcesManager.backPressedRegion, resourcesManager.backDisabledRegion, vbom, new OnClickListener() {
+    backButton = new ButtonSprite(100, 30, resourcesManager.backButtonRegions[0], resourcesManager.backButtonRegions[1], resourcesManager.backButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-        SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
-        playSound(CLICK_SOUND);
+        onBackKeyPressed();
+        playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(backButton);
@@ -80,7 +80,7 @@ public class MatchSettingsScene extends BaseScene {
 
   @Override
   public void onBackKeyPressed() {
-    SceneManager.getInstance().loadSheepSelectionSceneFromMatchSettings(engine);
+  	SceneManager.getInstance().changeScene(SceneType.SCENE_MATCH_SETTINGS, SceneType.SCENE_RAM_SELECTION);
   }
 
   @Override

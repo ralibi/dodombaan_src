@@ -28,7 +28,7 @@ import com.ralibi.dodombaan.manager.GameConfigurationManager;
 import com.ralibi.dodombaan.manager.GameDataManager;
 import com.ralibi.dodombaan.manager.ResourcesManager;
 
-public class Sheep {
+public class Ram {
   private final int SEGMENT_COUNT = 3;
   private final float PX_TO_M_RATIO = PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT;
   private FixtureDef fixtureDef;
@@ -39,8 +39,6 @@ public class Sheep {
   private int linear_damping;
   private int angular_damping;
   private final int ARENA_CENTER_FORCE = 3;
-  private final int SHEEP_CENTER_FORCE = 10;
-  private final int BACKWARD_FORCE = -50;
 
   private final int ARENA_WIDTH = 32;
 
@@ -52,14 +50,16 @@ public class Sheep {
 
   public float x = 0;
   public float y = 0;
-  public int sheepIndex = 0;
+  public int ramIndex = 0;
   public int direction = 1;
+  Sprite ram_drop;
 
   public float segmentWidth = 32f;
   public float segmentHeight = 32f;
 
-  Rectangle indicatorP1;
-  Rectangle indicatorBackgroundP1;
+  Rectangle indicator;
+  Rectangle indicatorBackground;
+  Rectangle indicatorBlackBackground;
 
   private float center = 0;
   private float absCenter = 0;
@@ -94,34 +94,34 @@ public class Sheep {
 
   // ///////////////
 
-  public Sheep(float pX, float pY, int sIdx, int dir) {
+  public Ram(float pX, float pY, int sIdx, int dir) {
     this.x = pX;
     this.y = pY;
-    this.sheepIndex = sIdx;
+    this.ramIndex = sIdx;
     this.direction = dir;
   }
 
-  public void createAndAttachSheep(Scene pScene, PhysicsWorld mPhysicsWorld, VertexBufferObjectManager vbom) {
+  public void createAndAttachRam(Scene pScene, PhysicsWorld mPhysicsWorld, VertexBufferObjectManager vbom) {
     final Vector2[] vertices = getSegmentVertices();
 
     this.mPhysicsWorld = mPhysicsWorld;
     segmentOut = new float[SEGMENT_COUNT];
 
-    density = GameConfigurationManager.DENSITY[GameConfigurationManager.STRENGTH[sheepIndex]];
-    force = density * GameConfigurationManager.FORCE[GameConfigurationManager.SPEED[sheepIndex]];
-    angle = GameConfigurationManager.ANGLE[GameConfigurationManager.AGILITY[sheepIndex]];
+    density = GameConfigurationManager.DENSITY[GameConfigurationManager.STRENGTH[ramIndex]];
+    force = density * GameConfigurationManager.FORCE[GameConfigurationManager.SPEED[ramIndex]];
+    angle = GameConfigurationManager.ANGLE[GameConfigurationManager.AGILITY[ramIndex]];
     linear_damping = GameConfigurationManager.DAMPING[GameDataManager.getInstance().arenaIndex];
     angular_damping = linear_damping;
 
     // Segment 0 is the head
-    List<ITextureRegion> sheepSegmentRegion = new ArrayList<ITextureRegion>(); 
-    sheepSegmentRegion.add(ResourcesManager.getInstance().gamePlaySheepSegment1Regions.get(sheepIndex));
-    sheepSegmentRegion.add(ResourcesManager.getInstance().gamePlaySheepSegment2Regions.get(sheepIndex));
-    sheepSegmentRegion.add(ResourcesManager.getInstance().gamePlaySheepSegment3Regions.get(sheepIndex));
+    List<ITextureRegion> ramSegmentRegion = new ArrayList<ITextureRegion>(); 
+    ramSegmentRegion.add(ResourcesManager.getInstance().gamePlayRamSegment1Regions.get(ramIndex));
+    ramSegmentRegion.add(ResourcesManager.getInstance().gamePlayRamSegment2Regions.get(ramIndex));
+    ramSegmentRegion.add(ResourcesManager.getInstance().gamePlayRamSegment3Regions.get(ramIndex));
     
     for (int i = 0; i < SEGMENT_COUNT; i++) {
       final int itemI = i;
-      Sprite sprite = new Sprite(this.x + (32 * direction * i), 240 - 60 * direction, sheepSegmentRegion.get(i), vbom) {
+      Sprite sprite = new Sprite(this.x + (32 * direction * i), 240 - 60 * direction, ramSegmentRegion.get(i), vbom) {
         @Override
         protected void onManagedUpdate(final float pSecondsElapsed) {
           if (!matchOver) {
@@ -171,10 +171,8 @@ public class Sheep {
       body.setAngularDamping(angular_damping);
       pScene.attachChild(sprite);
       mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(sprite, body, true, true));
-
       spriteSegments.add(sprite);
       bodySegments.add(body);
-
     }
 
     for (int i = 0; i < SEGMENT_COUNT - 1; i++) {
@@ -192,6 +190,13 @@ public class Sheep {
 
       mPhysicsWorld.createJoint(revoluteJointDef);
     }
+    
+
+    ram_drop = new Sprite(0, 0, ResourcesManager.getInstance().gamePlayRamDropRegions.get(ramIndex), vbom);
+    if(direction < 0) {
+    	ram_drop.setFlippedHorizontal(true);
+    }
+    pScene.attachChild(ram_drop);
 
     createIndicator(pScene);
   }
@@ -217,6 +222,21 @@ public class Sheep {
 //    int segment_idx = SEGMENT_COUNT - 1;
 //    float dY = (bodySegments.get(segment_idx).getPosition().y - 240 / PX_TO_M_RATIO + getDeltaHeadY()) * SHEEP_CENTER_FORCE;
 //    bodySegments.get(segment_idx).applyForce(bodySegments.get(segment_idx).getWorldVector(new Vector2(force * BACKWARD_FORCE * direction, -dY)), new Vector2(bodySegments.get(segment_idx).getPosition().x + direction / 2, bodySegments.get(segment_idx).getPosition().y));
+  }
+  
+  private void jumpForward() {
+    int segment_idx = 0;
+    bodySegments.get(segment_idx).applyForce(new Vector2(force * 30 * direction, 0), new Vector2(bodySegments.get(segment_idx).getPosition().x + direction / 2, bodySegments.get(segment_idx).getPosition().y));
+  }
+  
+  public void specialStrike() {
+  	jumpForward();
+  }
+  public void specialSpeed() {
+  	
+  }
+  public void specialDefence() {
+  	
   }
 
   private float getDeltaHeadY() {
@@ -244,17 +264,32 @@ public class Sheep {
     setCenter(sum);
     setAbsCenter(Math.abs(sum));
 
+		
     if (absCenter >= 32) {
       setOut(true);
+
+  		ram_drop.setPosition(spriteSegments.get(1));
+  		ram_drop.setRotation(spriteSegments.get(1).getRotation());
+  		
+      if(sum < 0){
+	    	ram_drop.setFlippedVertical(true);
+	  		ram_drop.setY(ram_drop.getY() - 20);
+      }
+      else{
+	    	ram_drop.setFlippedVertical(false);
+	  		ram_drop.setY(ram_drop.getY() + 20);
+      }
     } else {
       setOut(false);
     }
   }
 
   protected void updateIndicator() {
-    indicatorP1.setPosition(getHeadPosX(), getHeadPosY() + (absCenter + 24) * center / absCenter);
-    indicatorBackgroundP1.setPosition(getHeadPosX(), getHeadPosY() + (32 + 24) * center / absCenter);
-    indicatorP1.setWidth(2 * absCenter);
+    indicator.setPosition(getHeadPosX(), getHeadPosY() + (absCenter + 24) * center / absCenter);
+    indicatorBlackBackground.setPosition(getHeadPosX(), getHeadPosY() + (32 + 24) * center / absCenter);
+    indicatorBackground.setPosition(getHeadPosX(), getHeadPosY() + (32 + 24) * center / absCenter);
+    
+    indicator.setWidth(2 * absCenter);
     if (absCenter <= 16) {
       // indicatorP1.setColor(absCenter / 16, 1, 0);
     } else {
@@ -273,18 +308,20 @@ public class Sheep {
   }
 
   private void createIndicator(Scene pScene) {
-    indicatorP1 = new Rectangle(getHeadPosX(), getHeadPosY(), 64, 4, ResourcesManager.getInstance().vbom);
-    indicatorP1.setColor(.6f, 0, 0);
-    indicatorBackgroundP1 = new Rectangle(getHeadPosX(), getHeadPosY(), 64, 4, ResourcesManager.getInstance().vbom);
-    indicatorBackgroundP1.setColor(0, .6f, 0);
+    indicator = new Rectangle(getHeadPosX(), getHeadPosY(), 64, 4, ResourcesManager.getInstance().vbom);
+    indicator.setColor(.6f, 0, 0);
 
-    ResourcesManager.getInstance().gamePlayIndicatorRegion.setTextureWidth(32);
-    ResourcesManager.getInstance().gamePlayIndicatorRegion.setTextureX(16);
+    indicatorBlackBackground = new Rectangle(getHeadPosX(), getHeadPosY(), 66, 6, ResourcesManager.getInstance().vbom);
+    indicatorBlackBackground.setColor(0, 0, 0);
+    
+    indicatorBackground = new Rectangle(getHeadPosX(), getHeadPosY(), 64, 4, ResourcesManager.getInstance().vbom);
+    indicatorBackground.setColor(0, .6f, 0);
 
     rotateIndicator(90);
 
-    pScene.attachChild(indicatorBackgroundP1);
-    pScene.attachChild(indicatorP1);
+    pScene.attachChild(indicatorBlackBackground);
+    pScene.attachChild(indicatorBackground);
+    pScene.attachChild(indicator);
   }
 
   private float getHeadPosX() {
@@ -298,8 +335,9 @@ public class Sheep {
   }
 
   private void rotateIndicator(int degree) {
-    indicatorP1.setRotation(degree);
-    indicatorBackgroundP1.setRotation(degree);
+    indicator.setRotation(degree);
+    indicatorBackground.setRotation(degree);
+    indicatorBlackBackground.setRotation(degree);
   }
 
   public void restartPosition() {
@@ -318,9 +356,9 @@ public class Sheep {
       // mGroundBody.get(i).setTransform(localPoint, 0);
       mouseJointDef.bodyA = mGroundBody.get(i);
       mouseJointDef.bodyB = bodySegments.get(i);
-      mouseJointDef.dampingRatio = 3f / linear_damping;
+      mouseJointDef.dampingRatio = 8f / linear_damping;
       mouseJointDef.frequencyHz = 10;
-      mouseJointDef.maxForce = (7f * linear_damping * bodySegments.get(i).getMass());
+      mouseJointDef.maxForce = (12f * linear_damping * bodySegments.get(i).getMass());
       mouseJointDef.collideConnected = true;
 
       mouseJointDef.target.set(bodySegments.get(i).getWorldCenter());
@@ -332,10 +370,12 @@ public class Sheep {
   }
 
   public void positioning() {
+
     for (int i = 0; i < SEGMENT_COUNT; i++) {
       final Vector2 vec = Vector2Pool.obtain((this.x + (direction * 64) - (32 * direction * i)) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT, (240) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
       mMouseJointActive.get(i).setTarget(vec);
       Vector2Pool.recycle(vec);
+      showDrop(false);
     }
   }
 
@@ -347,5 +387,12 @@ public class Sheep {
     }
     mMouseJointActive.clear();
     mGroundBody.clear();
+  }
+
+	public void showDrop(boolean showed) {
+    ram_drop.setVisible(showed);
+    for (int i = 0; i < SEGMENT_COUNT; i++) {
+    	spriteSegments.get(i).setVisible(!showed);
+    }
   }
 }

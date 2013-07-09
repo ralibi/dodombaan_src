@@ -18,8 +18,8 @@ public class GameDataManager {
   private SharedPreferences sharedPreferences;
   private Editor editor;
   
-  public int p1SheepIndex = 0;
-  public int p2SheepIndex = 0;
+  public int p1RamIndex = 0;
+  public int p2RamIndex = 0;
   public int arenaIndex = 0;
   public int winner = 0;
   public int p1Score = 0;

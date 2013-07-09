@@ -28,7 +28,7 @@ public class SettingsScene extends BaseScene {
   @Override
   public void createScene() {
     createBackground();
-    attachChild(new Sprite(400, 240, resourcesManager.largePopupBackgroundRegion, vbom));
+    //attachChild(new Sprite(400, 240, resourcesManager.largePopupBackgroundRegion, vbom));
     
     createSettingsList();
     createMenuChildScene();
@@ -68,7 +68,7 @@ public class SettingsScene extends BaseScene {
       public void onchange() {
         if(sfxCheckbox != null){
           gameDataManager.setSfxSetting(sfxCheckbox.isChecked());
-          playSound(CLICK_SOUND);
+          playSound(CLICK_MUSIC);
         }
       }
     });
@@ -79,7 +79,7 @@ public class SettingsScene extends BaseScene {
       public void onchange() {
         if(musicCheckbox != null){
           gameDataManager.setMusicSetting(musicCheckbox.isChecked());
-          playSound(CLICK_SOUND);
+          playSound(CLICK_MUSIC);
         }
       }
     });
@@ -90,7 +90,7 @@ public class SettingsScene extends BaseScene {
       public void onchange() {
         if(vibrationCheckbox != null){
           gameDataManager.setVibrationSetting(vibrationCheckbox.isChecked());
-          playSound(CLICK_SOUND);
+          playSound(CLICK_MUSIC);
         }
       }
     });
@@ -98,11 +98,11 @@ public class SettingsScene extends BaseScene {
   }
 
   private void createMenuChildScene() {
-    doneButton = new ButtonSprite(400, 100, resourcesManager.doneNormalRegion, resourcesManager.donePressedRegion, resourcesManager.doneDisabledRegion, vbom, new OnClickListener() {
+    doneButton = new ButtonSprite(400, 100, resourcesManager.okButtonRegions[0], resourcesManager.okButtonRegions[1], resourcesManager.okButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-        SceneManager.getInstance().loadMenuSceneFromSettings(engine);
-        playSound(CLICK_SOUND);
+        onBackKeyPressed();
+        playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(doneButton);
@@ -111,7 +111,7 @@ public class SettingsScene extends BaseScene {
 
   @Override
   public void onBackKeyPressed() {
-    SceneManager.getInstance().loadMenuSceneFromSettings(engine);
+  	SceneManager.getInstance().changeScene(SceneType.SCENE_SETTINGS, SceneType.SCENE_MAIN_MENU);
   }
 
   @Override

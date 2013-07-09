@@ -182,14 +182,14 @@ public class ScrollMenuEntity extends Entity {
 
     
     // Create select button
-    selectButton = new ButtonSprite(0, 0, ResourcesManager.getInstance().selectNormalRegion, ResourcesManager.getInstance().selectPressedRegion, ResourcesManager.getInstance().selectDisabledRegion, vbom, new OnClickListener() {
+    selectButton = new ButtonSprite(0, 0, ResourcesManager.getInstance().selectButtonRegions[0], ResourcesManager.getInstance().selectButtonRegions[1], ResourcesManager.getInstance().selectButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         selectMenu(scrollPanel.getCurrentIndex());
-        SceneManager.getInstance().getCurrentScene().playSound(BaseScene.CLICK_SOUND);
+        SceneManager.getInstance().getCurrentScene().playSound(BaseScene.CLICK_MUSIC);
       }
     });
-    selectButton.setPosition(clippingEntity.getWidth()/2, selectButton.getHeight()/2 + 5);
+    selectButton.setPosition(clippingEntity.getWidth()-42, selectButton.getHeight()/2 + 5);
     attachChild(selectButton);
     pScene.registerTouchArea(selectButton);
 
@@ -206,12 +206,12 @@ public class ScrollMenuEntity extends Entity {
   
   private void createNavButton(Scene pScene, VertexBufferObjectManager vbom) {
     int slope = 0;
-    if(SceneManager.getInstance().getCurrentSceneType() == SceneType.SCENE_SHEEP_SELECTION){
+    if(SceneManager.getInstance().getCurrentSceneType() == SceneType.SCENE_RAM_SELECTION){
       slope = 32;
     }
     
     // Create nav button
-    navLeftButton = new ButtonSprite(0, 0, ResourcesManager.getInstance().navLeftNormalRegion, ResourcesManager.getInstance().navLeftPressedRegion, ResourcesManager.getInstance().navLeftDisabledRegion, vbom, new OnClickListener() {
+    navLeftButton = new ButtonSprite(0, 0, ResourcesManager.getInstance().navLeftButtonRegions[0], ResourcesManager.getInstance().navLeftButtonRegions[1], ResourcesManager.getInstance().navLeftButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         if(scrollPanel.getCurrentIndex() > 0) {
@@ -223,15 +223,15 @@ public class ScrollMenuEntity extends Entity {
             deselectMenu();
           }
           SceneManager.getInstance().getCurrentScene();
-          SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_SOUND);
+          SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_MUSIC);
         }
       }
     });
-    navLeftButton.setPosition(-37, this.getHeight()/2 - slope);
+    navLeftButton.setPosition(-22, this.getHeight()/2 - slope);
     attachChild(navLeftButton);
     pScene.registerTouchArea(navLeftButton);
     // Create nav button right
-    navRightButton = new ButtonSprite(0, 0, ResourcesManager.getInstance().navRightNormalRegion, ResourcesManager.getInstance().navRightPressedRegion, ResourcesManager.getInstance().navRightDisabledRegion, vbom, new OnClickListener() {
+    navRightButton = new ButtonSprite(0, 0, ResourcesManager.getInstance().navRightButtonRegions[0], ResourcesManager.getInstance().navRightButtonRegions[1], ResourcesManager.getInstance().navRightButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
         if(scrollPanel.getCurrentIndex() < getScrollPanel().getItemCount() - 1) {
@@ -243,11 +243,11 @@ public class ScrollMenuEntity extends Entity {
             deselectMenu();
           }
           SceneManager.getInstance().getCurrentScene();
-          SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_SOUND);
+          SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_MUSIC);
         }
       }
     });
-    navRightButton.setPosition(this.getWidth() + 37, this.getHeight()/2 + slope);
+    navRightButton.setPosition(this.getWidth() + 22, this.getHeight()/2 + slope);
     attachChild(navRightButton);
     pScene.registerTouchArea(navRightButton);
   }
@@ -295,14 +295,14 @@ public class ScrollMenuEntity extends Entity {
             }
             deselectMenu();
             SceneManager.getInstance().getCurrentScene();
-            SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_SOUND);
+            SceneManager.getInstance().getCurrentScene().playSound(BaseScene.SWIPE_MUSIC);
             return true;
           }
 
           public boolean onSingleTapUp(MotionEvent e) {
             if (scrollPanel.getCurrentIndex() != scrollPanel.getSelectedIndex()) {
               SceneManager.getInstance().getCurrentScene();
-              SceneManager.getInstance().getCurrentScene().playSound(BaseScene.CLICK_SOUND);
+              SceneManager.getInstance().getCurrentScene().playSound(BaseScene.CLICK_MUSIC);
               selectMenu(scrollPanel.getCurrentIndex());
             } else {
               deselectMenu();
