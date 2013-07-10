@@ -22,7 +22,7 @@ public class CheckboxEntity extends Entity{
     this.checked = checked;
     this.toggleListener = toggleListener;
     
-    attachChild(new Text(0, 0, ResourcesManager.getInstance().fontSmall, txt, vbom));
+    attachChild(new Text(0, 0, ResourcesManager.getInstance().fontScore, txt, vbom));
     
     checkedButton = new Sprite(100,  0, ResourcesManager.getInstance().checkboxCheckedRegion, vbom);
     uncheckedButton = new Sprite(100,  0, ResourcesManager.getInstance().checkboxUncheckedRegion, vbom){

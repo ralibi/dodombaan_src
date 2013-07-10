@@ -11,10 +11,14 @@ public class ClippingEntity extends Entity {
 
 	protected float ratio = ResourcesManager.getInstance().camera.getSurfaceHeight() / ResourcesManager.getInstance().camera.getHeight();
 	
+	float xClip, yClip;
+	
 	public ClippingEntity(float x, float y, int width, int height) {
-		super(x, y);
+		super(width/2, height/2);
 		this.setWidth(width);
 		this.setHeight(height);
+		this.xClip = x;
+		this.yClip = y;
 	}
 	
 	@Override
@@ -22,8 +26,8 @@ public class ClippingEntity extends Entity {
 		
         glState.pushProjectionGLMatrix();
         glState.enableScissorTest();
-        final int x = (int)((getX() - getWidth()/2) * ratio);
-        final int y = (int)((getY() - getHeight()/2) * ratio);
+        final int x = (int)((xClip - getWidth()/2) * ratio);
+        final int y = (int)((yClip - getHeight()/2) * ratio);
         GLES20.glScissor(x, y, (int)(getWidth() * ratio), (int)(getHeight()* ratio));
         super.onManagedDraw(glState, camera);
         glState.disableScissorTest();

@@ -10,7 +10,7 @@ public class GameDataManager {
   private final String MUSIC_SETTING = "MUSIC_SETTING";
   private final String VIBRATION_SETTING = "VIBRATION_SETTING";
   private final String TOTAL_ROUND_SETTING = "TOTAL_ROUND_SETTING";
-  
+  private final String WEATHER_DRIED_SETTING = "WEATHER_DRIED_SETTING";
   
   // ---------------------------------------------
   // VARIABLES
@@ -24,6 +24,8 @@ public class GameDataManager {
   public int winner = 0;
   public int p1Score = 0;
   public int p2Score = 0;
+  
+  public boolean multiplayerSingleDevicePath = false;
 
   private static final GameDataManager INSTANCE = new GameDataManager();
 
@@ -78,4 +80,13 @@ public class GameDataManager {
     editor.commit();
   }
 
+  public void setWeatherDriedSetting(boolean driedSetting) {
+    editor.putBoolean(WEATHER_DRIED_SETTING, driedSetting);
+    editor.commit();
+  }
+
+  public boolean isWeatherDriedSetting() {
+    return sharedPreferences.getBoolean(WEATHER_DRIED_SETTING, GameConfigurationManager.DEFAULT_WEATHER_DRIED_SETTING);
+  }
+  
 }

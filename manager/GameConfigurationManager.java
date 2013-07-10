@@ -19,7 +19,10 @@ public class GameConfigurationManager {
   public static final boolean DEFAULT_VIBRATION_SETTING = true;
   public static final int DEFAULT_TOTAL_ROUND_SETTING = 5;
   
+  public static final boolean DEFAULT_WEATHER_DRIED_SETTING = true;
+  
   public static final String[] RAM_NAME = { "Kampiun", "Dongkrak", "Si Bagong", "Panglima", "Pangeran", "Si Kapten" };
+  public static final String[] ARENA_NAME = { "Cikandang", "Bababakan Siliwangi", "Lanud Sulaeman" };
 
   private static final GameConfigurationManager INSTANCE = new GameConfigurationManager();
 

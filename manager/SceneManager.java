@@ -20,7 +20,6 @@ import com.ralibi.dodombaan.scene.MultiplayerBluetoothMenuScene;
 import com.ralibi.dodombaan.scene.MultiplayerChampionshipMenuScene;
 import com.ralibi.dodombaan.scene.MultiplayerMenuScene;
 import com.ralibi.dodombaan.scene.MultiplayerSingleDeviceMenuScene;
-import com.ralibi.dodombaan.scene.SettingsScene;
 import com.ralibi.dodombaan.scene.RamSelectionScene;
 import com.ralibi.dodombaan.scene.SplashScene;
 
@@ -33,7 +32,6 @@ public class SceneManager {
   private BaseScene menuScene;
   private BaseScene ramSelectionScene;
   private BaseScene matchSettingsScene;
-  private BaseScene settingsScene;
   private BaseScene matchOverScene;
   private BaseScene gamePlayScene;
   private BaseScene loadingScene;
@@ -81,7 +79,6 @@ public class SceneManager {
     SCENE_MAIN_MENU, 
     SCENE_GAME_PLAY, 
     SCENE_LOADING, 
-    SCENE_SETTINGS, 
     SCENE_RAM_SELECTION, 
     SCENE_MATCH_SETTINGS, 
     SCENE_MULTIPLAYER_MENU,
@@ -129,9 +126,6 @@ public class SceneManager {
         break;
       case SCENE_LOADING:
         setScene(loadingScene);
-        break;
-      case SCENE_SETTINGS:
-        setScene(settingsScene);
         break;
       case SCENE_MATCH_SETTINGS:
         setScene(matchSettingsScene);
@@ -223,9 +217,6 @@ public class SceneManager {
         break;
       case SCENE_LOADING:
         break;
-      case SCENE_SETTINGS:
-      	unloadSettingsScene();
-        break;
       case SCENE_MATCH_SETTINGS:
       	unloadMatchSettingsScene();
         break;
@@ -297,9 +288,6 @@ public class SceneManager {
       case SCENE_SPLASH:
         break;
       case SCENE_LOADING:
-        break;
-      case SCENE_SETTINGS:
-      	loadSettingsScene(engine);
         break;
       case SCENE_MATCH_SETTINGS:
       	loadMatchSettingsScene(engine);
@@ -420,23 +408,6 @@ public class SceneManager {
     ResourcesManager.getInstance().unloadRamSelectionTextures();
   }
 
-
-  private void loadSettingsScene(final Engine mEngine) {
-    mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() {
-      public void onTimePassed(final TimerHandler pTimerHandler) {
-        mEngine.unregisterUpdateHandler(pTimerHandler);
-        ResourcesManager.getInstance().loadSettingsResources();
-        settingsScene = new SettingsScene();
-        setScene(settingsScene);
-      }
-    }));
-  }
-  
-  private void unloadSettingsScene() {
-    setScene(loadingScene);
-    settingsScene.disposeScene();
-    ResourcesManager.getInstance().unloadSettingsTextures();
-  }
 
   
   private void loadMatchSettingsScene(final Engine mEngine) {

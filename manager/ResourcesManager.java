@@ -195,10 +195,15 @@ public class ResourcesManager {
 	public ITextureRegion[] hostButtonRegions = { null, null, null };
 	public ITextureRegion[] clientButtonRegions = { null, null, null };
 
+	public ITextureRegion[] dryButtonRegions = { null, null, null };
+	public ITextureRegion[] wetButtonRegions = { null, null, null };
+
 	public ITextureRegion logoImageRegion;
 	public ITextureRegion mainCharacter;
 	public ITextureRegion secondaryCharacter;
 	public ITextureRegion landMainCharacter;
+
+	public ITextureRegion mudRegion;
 
 	public ITextureRegion comboboxRegion;
 	public ITextureRegion checkboxUncheckedRegion;
@@ -258,6 +263,7 @@ public class ResourcesManager {
 
 		supportingObjectTextureAtlas2 = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 		matchOverBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(supportingObjectTextureAtlas2, activity, "match_over_background.png");
+		mudRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(supportingObjectTextureAtlas2, activity, "mud.png");
 		textureAtlasBuilderException(this.supportingObjectTextureAtlas2);
 
 		wikiHelpContentTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
@@ -327,6 +333,8 @@ public class ResourcesManager {
 
 		createButtonFromAsset(hostButtonRegions, "host", buttonTextureAtlas2);
 		createButtonFromAsset(clientButtonRegions, "client", buttonTextureAtlas2);
+		createButtonFromAsset(dryButtonRegions, "dry", buttonTextureAtlas2);
+		createButtonFromAsset(wetButtonRegions, "wet", buttonTextureAtlas2);
 
 		textureAtlasBuilderException(this.buttonTextureAtlas);
 		textureAtlasBuilderException(this.buttonTextureAtlas2);
@@ -379,6 +387,19 @@ public class ResourcesManager {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		menuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 		textureAtlasBuilderException(this.menuTextureAtlas);
+		
+		
+		
+
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+		settingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
+
+		totalScrollRegions.clear();
+		for (int i = 0; i < 9; i++) {
+			totalScrollRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "total_round/total_round (" + (i + 1) + ").png"));
+		}
+
+		textureAtlasBuilderException(this.settingsTextureAtlas);
 	}
 
 	private void loadMenuAudio() {
@@ -403,27 +424,6 @@ public class ResourcesManager {
 		menuTextureAtlas.unload();
 	}
 
-	// Settings Scene Methods
-	// ###########################################
-	public void loadSettingsResources() {
-		loadSettingsGraphics();
-	}
-
-	private void loadSettingsGraphics() {
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		settingsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-
-		totalScrollRegions.clear();
-		for (int i = 0; i < 9; i++) {
-			totalScrollRegions.add(BitmapTextureAtlasTextureRegionFactory.createFromAsset(settingsTextureAtlas, activity, "total_round/total_round (" + (i + 1) + ").png"));
-		}
-
-		textureAtlasBuilderException(this.settingsTextureAtlas);
-	}
-
-	public void unloadSettingsTextures() {
-		// TODO Auto-generated method stub
-	}
 
 	// RamSelection Methods
 	// ###########################################

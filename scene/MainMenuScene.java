@@ -8,6 +8,8 @@ import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.opengl.util.GLState;
 
 import com.ralibi.dodombaan.base.BaseScene;
+import com.ralibi.dodombaan.component.CheckboxEntity;
+import com.ralibi.dodombaan.component.CheckboxEntity.ToggleListener;
 import com.ralibi.dodombaan.manager.SceneManager;
 import com.ralibi.dodombaan.manager.SceneManager.SceneType;
 
@@ -36,6 +38,11 @@ public class MainMenuScene extends BaseScene {
   
   Scene wikiScene;
   Scene helpScene;
+  Scene settingsScene;
+  
+  CheckboxEntity sfxCheckbox;
+  CheckboxEntity musicCheckbox;
+  CheckboxEntity vibrationCheckbox;
 
   @Override
   public void createScene() {
@@ -45,6 +52,31 @@ public class MainMenuScene extends BaseScene {
 
     createWikiChildScene();
     createHelpChildScene();
+    createSettingsChildScene();
+  }
+
+  private void createSettingsChildScene() { 
+  settingsScene = new Scene();
+  Sprite overlaySprite = new Sprite(400,  240, resourcesManager.overlayBlackRegion, vbom);
+  settingsScene.attachChild(overlaySprite);
+  
+  Sprite fullPanelSprite = new Sprite(400,  240 + 32, resourcesManager.fullPanelRegion, vbom);
+  settingsScene.attachChild(fullPanelSprite);
+  
+  createSettingsList();
+  
+  settingsScene.setBackgroundEnabled(false);
+  
+  Sprite hideChildScene = new ButtonSprite(400, 100, resourcesManager.backButtonRegions[0], resourcesManager.backButtonRegions[1], resourcesManager.backButtonRegions[2], vbom, new OnClickListener() {
+      @Override
+      public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+        setEnabledParentButton(true);
+        clearChildScene();
+    	  playSound(CLICK_MUSIC);
+      }
+    });
+    registerTouchArea(hideChildScene);
+    settingsScene.attachChild(hideChildScene);
   }
 
   private void createWikiChildScene() {	
@@ -63,8 +95,9 @@ public class MainMenuScene extends BaseScene {
 	Sprite hideChildScene = new ButtonSprite(400, 100, resourcesManager.backButtonRegions[0], resourcesManager.backButtonRegions[1], resourcesManager.backButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-    	  wikiScene.back();
     	  setEnabledParentButton(true);
+    	  clearChildScene();
+    	  playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(hideChildScene);
@@ -88,8 +121,9 @@ public class MainMenuScene extends BaseScene {
 	Sprite hideChildScene = new ButtonSprite(400, 100, resourcesManager.backButtonRegions[0], resourcesManager.backButtonRegions[1], resourcesManager.backButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-    	  helpScene.back();
     	  setEnabledParentButton(true);
+    	  clearChildScene();
+    	  playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(hideChildScene);
@@ -138,7 +172,8 @@ private void createBackground() {
     settingsButton = new ButtonSprite(baseToolbarButtonX, 32, resourcesManager.settingsButtonRegions[0], resourcesManager.settingsButtonRegions[1], resourcesManager.settingsButtonRegions[2], vbom, new OnClickListener() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-      	SceneManager.getInstance().changeScene(SceneType.SCENE_MAIN_MENU, SceneType.SCENE_SETTINGS);
+    	  setChildScene(settingsScene);
+    	  setEnabledParentButton(false);
         playSound(CLICK_MUSIC);
       }
     });
@@ -150,6 +185,7 @@ private void createBackground() {
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
     	  setChildScene(helpScene);
     	  setEnabledParentButton(false);
+    	  playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(helpButton);
@@ -160,6 +196,7 @@ private void createBackground() {
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
     	  setChildScene(wikiScene);
     	  setEnabledParentButton(false);
+    	  playSound(CLICK_MUSIC);
       }
     });
     registerTouchArea(wikiButton);
@@ -197,6 +234,7 @@ private void createBackground() {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
       	SceneManager.getInstance().changeScene(SceneType.SCENE_MAIN_MENU, SceneType.SCENE_RAM_SELECTION);
+      	gameDataManager.multiplayerSingleDevicePath = true;
         playSound(CLICK_MUSIC);
       }
     });
@@ -247,6 +285,44 @@ private void createBackground() {
     attachChild(myFriendsButton);
     myFriendsButton.setX(myFriendsButton.getX() - myFriendsButton.getWidth()/2);
     
+  }
+  
+  
+
+  private void createSettingsList() {
+
+    sfxCheckbox = new CheckboxEntity(350, 360, this, vbom, "sfx", gameDataManager.isSfxSetting(), new ToggleListener() {
+      @Override
+      public void onchange() {
+        if(sfxCheckbox != null){
+          gameDataManager.setSfxSetting(sfxCheckbox.isChecked());
+          playSound(CLICK_MUSIC);
+        }
+      }
+    });
+    settingsScene.attachChild(sfxCheckbox);
+    
+    musicCheckbox = new CheckboxEntity(350, 300, this, vbom, "music", gameDataManager.isMusicSetting(), new ToggleListener() {
+      @Override
+      public void onchange() {
+        if(musicCheckbox != null){
+          gameDataManager.setMusicSetting(musicCheckbox.isChecked());
+          playSound(CLICK_MUSIC);
+        }
+      }
+    });
+    settingsScene.attachChild(musicCheckbox);
+    
+    vibrationCheckbox = new CheckboxEntity(350, 240, this, vbom, "vibrate", gameDataManager.isVibrationSetting(), new ToggleListener() {
+      @Override
+      public void onchange() {
+        if(vibrationCheckbox != null){
+          gameDataManager.setVibrationSetting(vibrationCheckbox.isChecked());
+          playSound(CLICK_MUSIC);
+        }
+      }
+    });
+    settingsScene.attachChild(vibrationCheckbox);
   }
 
 

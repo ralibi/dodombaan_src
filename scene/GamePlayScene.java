@@ -265,6 +265,10 @@ public class GamePlayScene extends BaseScene {
         pGLState.enableDither();
       }
     });
+    if(!gameDataManager.isWeatherDriedSetting()){
+    	attachChild(new Sprite(400, 240, resourcesManager.mudRegion, vbom));
+    }
+    
   }
 
   private void createMenuPauseScene() {

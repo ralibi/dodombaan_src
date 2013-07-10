@@ -47,8 +47,8 @@ public class ScrollMenuEntity extends Entity {
   public ScrollMenuEntity(float x, float y, int width, int height, Sprite backgroundSprite, Scene pScene, DeselectListener deselectListener) {
     super(x, y, width, height);
     if(backgroundSprite != null){
-      pScene.attachChild(backgroundSprite);
-      backgroundSprite.setPosition(x, y);
+      attachChild(backgroundSprite);
+      backgroundSprite.setPosition(width/2, height/2);
     }
     clippingEntity = new ClippingEntity(x, y, width, height) {
       @Override
@@ -102,7 +102,7 @@ public class ScrollMenuEntity extends Entity {
     };
     scrollPanel = new ScrollPanel(width, height);
     clippingEntity.attachChild(scrollPanel);
-    pScene.attachChild(clippingEntity);
+    attachChild(clippingEntity);
     pScene.registerTouchArea(clippingEntity);
 
     this.deselectListener = deselectListener;

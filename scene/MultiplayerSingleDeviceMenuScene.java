@@ -56,6 +56,7 @@ public class MultiplayerSingleDeviceMenuScene extends BaseScene {
       @Override
       public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
       	SceneManager.getInstance().changeScene(SceneType.SCENE_MULTIPLAYER_SINGLE_DEVICE_MENU, SceneType.SCENE_RAM_SELECTION);
+      	gameDataManager.multiplayerSingleDevicePath = false;
         playSound(CLICK_MUSIC);
       }
     });

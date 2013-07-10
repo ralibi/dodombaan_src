@@ -30,10 +30,7 @@ public class RamSelectionScene extends BaseScene {
   @Override
   public void createScene() {
     createBackground();
-
     createToolbar();
-    
-    createMenu();
     createScrollMenuRam();
   }
 
@@ -185,14 +182,12 @@ public class RamSelectionScene extends BaseScene {
     });
   }
 
-  private void createMenu() {
-
-
-  }
-
   @Override
   public void onBackKeyPressed() {
-  	SceneManager.getInstance().changeScene(SceneType.SCENE_RAM_SELECTION, SceneManager.getInstance().prevSceneType);
+  	if(gameDataManager.multiplayerSingleDevicePath)
+  		SceneManager.getInstance().changeScene(SceneType.SCENE_RAM_SELECTION, SceneType.SCENE_MAIN_MENU);
+  	else
+  		SceneManager.getInstance().changeScene(SceneType.SCENE_RAM_SELECTION, SceneType.SCENE_MULTIPLAYER_SINGLE_DEVICE_MENU);
   }
 
   @Override
